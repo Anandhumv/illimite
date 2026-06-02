@@ -1,0 +1,11 @@
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  categoryId: string;
+  stock: number;
+  imageUrl: string;
+  rating: number;
+  createdAt: any; // Firestore Timestamp or Date
+}
