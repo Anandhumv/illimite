@@ -1,0 +1,36 @@
+<div class="detail-container">
+    <a routerLink="/" class="back-link">← Back to Curation Catalog</a>
+
+    @if (isLoading) {
+    <div class="loader-placeholder">Loading premium asset specs...</div>
+    } @else {
+    <div class="detail-grid">
+        <div class="detail-media-pane">
+            @if (mockProduct.imageUrl) {
+            <img [src]="mockProduct.imageUrl" [alt]="mockProduct.name" class="detail-image" />
+            } @else {
+            <div class="detail-image-fallback">🛋️</div>
+            }
+        </div>
+
+        <div class="detail-info-pane">
+            <span class="detail-tag">{{ mockProduct.categoryName }}</span>
+            <h1 class="detail-title">{{ mockProduct.name }}</h1>
+            <p class="detail-price">{{ formatPrice(mockProduct.price) }}</p>
+
+            <div class="detail-divider"></div>
+
+            <p class="detail-description">{{ mockProduct.description }}</p>
+
+            <div class="detail-meta">
+                <p class="detail-stock" [class.low-stock]="mockProduct.stock <= 5">
+                    Availability: <strong>{{ mockProduct.stock }} items left in stock</strong>
+                </p>
+                <p class="detail-slug">System Identifier Core Reference: <code>{{ productSlug }}</code></p>
+            </div>
+
+            <button class="btn-add-cart">Add to Collection Cart</button>
+        </div>
+    </div>
+    }
+</div>

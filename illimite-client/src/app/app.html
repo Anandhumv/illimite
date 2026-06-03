@@ -31,17 +31,9 @@
     </div>
 
     <div class="product-grid" *ngIf="!isLoading() && !errorMessage() && products().length > 0">
-      <article class="product-card" *ngFor="let product of products(); trackBy: trackByProductId">
-        <div class="product-card__image" aria-hidden="true">
-          <span>{{ getProductInitial(product) }}</span>
-        </div>
-
-        <div class="product-card__details">
-          <p class="product-card__category">{{ product.categoryName }}</p>
-          <h3 class="product-card__name">{{ product.name }}</h3>
-          <p class="product-card__price">{{ formatPrice(product.price) }}</p>
-        </div>
-      </article>
+      @for (item of products(); track item.id) {
+      <app-product-card [product]="item"></app-product-card>
+      }
     </div>
   </section>
 </main>

@@ -1,3 +1,4 @@
+import { ProductCard } from './components/product-card/product-card';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiProductService } from './services/api-product.service';
@@ -5,7 +6,8 @@ import { Product } from './models/product.model';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule],
+  // ADDED: ProductCard added to the imports array here so app.html recognizes <app-product-card>
+  imports: [CommonModule, ProductCard],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

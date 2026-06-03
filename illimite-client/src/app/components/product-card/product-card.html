@@ -1,0 +1,19 @@
+<div class="product-card" [routerLink]="['/products', product.slug]">
+    <div class="product-card__image-container">
+        @if (product.imageUrl) {
+        <img [src]="product.imageUrl" [alt]="product.name" class="product-card__image" #cardImage
+            (error)="cardImage.style.display = 'none'; fallbackPlaceholder.style.display = 'flex'" />
+        }
+
+        <div #fallbackPlaceholder class="product-card__placeholder"
+            [style.display]="product.imageUrl ? 'none' : 'flex'">
+            <span>{{ (product.categoryName || product.name || 'P').charAt(0).toUpperCase() }}</span>
+        </div>
+    </div>
+
+    <div class="product-card__content">
+        <p class="product-card__category">{{ product.categoryName }}</p>
+        <h3 class="product-card__name">{{ product.name }}</h3>
+        <p class="product-card__price">{{ formatPrice(product.price) }}</p>
+    </div>
+</div>
