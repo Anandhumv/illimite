@@ -13,15 +13,35 @@ if (emulatorHost) {
   });
   console.log(`[Seed] Initializing in Emulator Mode at ${emulatorHost}`);
 } else if (serviceAccountPath) {
+  let serviceAccount;
+  let resolvedPath;
   try {
-    const resolvedPath = path.resolve(process.cwd(), serviceAccountPath);
-    const serviceAccount = JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
+    resolvedPath = path.resolve(__dirname, serviceAccountPath);
+    const data = fs.readFileSync(resolvedPath, 'utf8');
+    serviceAccount = JSON.parse(data);
+  } catch (firstErr) {
+    try {
+      // Fallback: try with duplicated .json extension
+      resolvedPath = path.resolve(__dirname, serviceAccountPath + '.json');
+      if (!fs.existsSync(resolvedPath)) {
+        resolvedPath = path.resolve(__dirname, 'firebase-key.json.json');
+      }
+      const data = fs.readFileSync(resolvedPath, 'utf8');
+      serviceAccount = JSON.parse(data);
+    } catch (secondErr) {
+      console.error(`[Seed] Error loading service account key from "${serviceAccountPath}":`, firstErr.message);
+      console.error(`[Seed] Fallback loading also failed:`, secondErr.message);
+      process.exit(1);
+    }
+  }
+
+  try {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount)
     });
     console.log(`[Seed] Initializing in Production Mode using service account: ${resolvedPath}`);
   } catch (err) {
-    console.error(`[Seed] Error loading service account key from "${serviceAccountPath}":`, err.message);
+    console.error(`[Seed] Error initializing firebase-admin:`, err.message);
     process.exit(1);
   }
 } else {
