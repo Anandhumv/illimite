@@ -50,6 +50,33 @@ app.get('/api/products/:id', async (req, res) => {
   }
 });
 
+// POST /api/cart/items - Mock Day 2 contract route for cart syncing
+app.post('/api/cart/items', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Cart synchronized successfully'
+  });
+});
+
+// POST /api/orders - Mock Day 2 contract route for order submission
+app.post('/api/orders', (req, res) => {
+  res.status(201).json({
+    success: true,
+    orderId: 'mock-order-id-12345',
+    message: 'Order placed successfully'
+  });
+});
+
+// PATCH /api/orders/:id/status - Mock Day 2 contract route for fulfillment states
+app.patch('/api/orders/:id/status', (req, res) => {
+  res.status(200).json({
+    success: true,
+    orderId: req.params.id,
+    status: req.body.status,
+    message: 'Order status updated'
+  });
+});
+
 // --- Start Server ---
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
