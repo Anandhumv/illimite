@@ -15,7 +15,11 @@
   <!-- Error State -->
   @if (errorMessage()) {
     <div class="error-state">
-      <p>{{ errorMessage() }}</p>
+      <div class="error-icon">!</div>
+      <p class="error-message">{{ errorMessage() }}</p>
+      @if (errorCode()) {
+        <p class="error-code">Error code: {{ errorCode() }}</p>
+      }
       <button (click)="loadActiveProducts()">Retry</button>
     </div>
   }
