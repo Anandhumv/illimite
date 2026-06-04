@@ -1,10 +1,13 @@
 const admin = require("firebase-admin");
-const serviceAccount = require("./serviceAccountKey.json");
+const path = require("path");
+
+const serviceAccountPath = process.env.SERVICE_ACCOUNT_PATH || "./config/serviceAccountKey.json";
+const resolvedServiceAccountPath = path.resolve(__dirname, "..", serviceAccountPath);
+const serviceAccount = require(resolvedServiceAccountPath);
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    // Converted to storage bucket setup to complete Day 1 asset hurdles
-    storageBucket: "illimite-app.appspot.com"
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "illimite-ec139.firebasestorage.app"
 });
 
 const db = admin.firestore();

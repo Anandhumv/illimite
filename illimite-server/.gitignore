@@ -3,4 +3,6 @@ node_modules/
 firebase-key.json
 firebase-key.json.json
 *.key.json
-illimite-server/config/serviceAccountKey.json
+config/serviceAccountKey.json
+firebase-debug.log
+*-debug.log

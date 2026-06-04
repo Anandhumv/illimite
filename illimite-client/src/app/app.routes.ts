@@ -7,5 +7,5 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     { path: 'products/:slug', component: ProductDetailComponent }, // Dynamic route handler
-    // Add fallback redirect paths or home pages if applicable...
+    { path: '**', redirectTo: '' }
 ];
