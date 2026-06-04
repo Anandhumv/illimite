@@ -3,6 +3,8 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { App } from './app';
 import { ApiProductService } from './services/api-product.service';
+import { AuthService } from './core/services/auth.service';
+import { CartService } from './core/services/cart.service';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -26,7 +28,29 @@ describe('App', () => {
                 stock: 25,
                 createdAt: new Date().toISOString()
               }
+            ]),
+            getCategories: () => of([
+              {
+                id: 'lighting',
+                name: 'Lighting',
+                slug: 'lighting',
+                imageUrl: ''
+              }
             ])
+          }
+        },
+        {
+          provide: AuthService,
+          useValue: {
+            currentUser: () => null,
+            signOut: () => Promise.resolve()
+          }
+        },
+        {
+          provide: CartService,
+          useValue: {
+            cartItems: () => [],
+            addToCart: () => Promise.resolve()
           }
         }
       ]

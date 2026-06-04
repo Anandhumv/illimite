@@ -1,0 +1,21 @@
+.ui-empty {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+  min-height: 150px;
+  place-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.ui-empty h3 {
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.ui-empty p {
+  max-width: 420px;
+}

@@ -1,0 +1,75 @@
+<section class="checkout-page">
+  <header class="page-heading">
+    <p>Checkout</p>
+    <h1>Review your cart</h1>
+  </header>
+
+  <div class="checkout-grid">
+    <section class="panel">
+      <h2>Cart items</h2>
+
+      @if (cartService.cartItems().length === 0) {
+        <p class="muted">Your cart is empty.</p>
+        <a routerLink="/">Browse catalog</a>
+      } @else {
+        <div class="cart-list">
+          @for (item of cartService.cartItems(); track item.productId) {
+            <div class="cart-row">
+              @if (productFor(item.productId); as product) {
+                @if (product.imageUrl) {
+                  <img [src]="product.imageUrl" [alt]="product.name" />
+                } @else {
+                  <div class="cart-thumb">{{ product.categoryName.charAt(0).toUpperCase() }}</div>
+                }
+              } @else {
+                <div class="cart-thumb">IL</div>
+              }
+
+              <div>
+                <strong>{{ productFor(item.productId)?.name || item.productId }}</strong>
+                <p>{{ item.qty }} x {{ item.priceAtAdd | currency }}</p>
+              </div>
+              <input
+                type="number"
+                min="1"
+                [ngModel]="item.qty"
+                (ngModelChange)="updateQuantity(item.productId, $event)"
+              />
+              <button type="button" class="ghost-action" (click)="removeItem(item.productId)">Remove</button>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="panel">
+      <h2>Order details</h2>
+      <label>
+        Shipping address
+        <textarea [(ngModel)]="shippingAddress" rows="4" placeholder="Street, city, postal code"></textarea>
+      </label>
+      <label>
+        Payment reference
+        <input [(ngModel)]="paymentRef" />
+      </label>
+
+      <div class="summary-line">
+        <span>Items</span>
+        <strong>{{ cartService.cartItems().length }}</strong>
+      </div>
+
+      <div class="summary-line summary-line--total">
+        <span>Order total</span>
+        <strong>{{ total() | currency }}</strong>
+      </div>
+
+      <button type="button" (click)="submitOrder()" [disabled]="isSubmitting() || cartService.cartItems().length === 0">
+        {{ isSubmitting() ? 'Placing order...' : 'Place order' }}
+      </button>
+
+      @if (message()) {
+        <p class="message">{{ message() }}</p>
+      }
+    </section>
+  </div>
+</section>

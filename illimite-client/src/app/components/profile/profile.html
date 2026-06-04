@@ -1,0 +1,25 @@
+<section class="profile-page">
+  <header class="page-heading">
+    <p>Account</p>
+    <h1>Your profile</h1>
+  </header>
+
+  @if (authService.currentUser(); as user) {
+    <div class="profile-panel">
+      <div class="profile-avatar">{{ user.displayName.charAt(0).toUpperCase() }}</div>
+      <div>
+        <h2>{{ user.displayName }}</h2>
+        <p>{{ user.email }}</p>
+        <span>{{ user.role }}</span>
+      </div>
+    </div>
+  } @else {
+    <div class="profile-panel">
+      <div>
+        <h2>No active session</h2>
+        <p>Please sign in to view your account profile.</p>
+        <a routerLink="/login">Sign in</a>
+      </div>
+    </div>
+  }
+</section>

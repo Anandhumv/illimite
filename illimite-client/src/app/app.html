@@ -7,11 +7,21 @@
 
     <nav class="app-nav" aria-label="Primary navigation">
       <a mat-button routerLink="/">Catalog</a>
-      <a mat-button routerLink="/login">Login</a>
-      <a mat-button routerLink="/register">Register</a>
+      <a mat-button routerLink="/checkout">Checkout</a>
+      <a mat-button routerLink="/orders">Orders</a>
+      @if (isAdmin()) {
+        <a mat-button routerLink="/admin">Admin</a>
+      }
+      @if (authService.currentUser(); as user) {
+        <a mat-button routerLink="/profile">{{ user.displayName }}</a>
+        <button mat-button type="button" (click)="logout()">Logout</button>
+      } @else {
+        <a mat-button routerLink="/login">Login</a>
+        <a mat-button routerLink="/register">Register</a>
+      }
     </nav>
 
-    <button mat-stroked-button class="cart-action" matBadge="0" matBadgeSize="small">
+    <button mat-stroked-button class="cart-action" routerLink="/checkout" [matBadge]="cartCount()" matBadgeSize="small">
       Cart
     </button>
   </mat-toolbar>
@@ -32,26 +42,49 @@
         <div class="catalog-toolbar">
           <div>
             <h2 id="catalog-heading">Product Catalog</h2>
-            <p>{{ productCount() }} products loaded from the API</p>
+            <p>{{ filteredProductCount() }} of {{ productCount() }} products shown</p>
           </div>
         </div>
 
-        <div class="status-panel" *ngIf="isLoading()">
-          <span class="status-panel__mark"></span>
-          Loading products...
+        <div class="catalog-controls" aria-label="Catalog filters">
+          <label>
+            Search
+            <input
+              type="search"
+              placeholder="Find lighting, decor, wellness..."
+              [ngModel]="searchTerm()"
+              (ngModelChange)="searchTerm.set($event)"
+            />
+          </label>
+
+          <label>
+            Category
+            <select [ngModel]="selectedCategoryId()" (ngModelChange)="selectedCategoryId.set($event)">
+              <option value="all">All categories</option>
+              @for (category of categories(); track category.id) {
+                <option [value]="category.id">{{ category.name }}</option>
+              }
+            </select>
+          </label>
         </div>
 
-        <div class="status-panel status-panel--error" *ngIf="!isLoading() && errorMessage()">
-          {{ errorMessage() }}
-        </div>
+        @if (cartMessage()) {
+          <app-ui-dialog [message]="cartMessage()" tone="success"></app-ui-dialog>
+        }
 
-        <div class="status-panel" *ngIf="!isLoading() && !errorMessage() && products().length === 0">
-          No products found yet.
-        </div>
+        <app-ui-loader *ngIf="isLoading()" label="Loading products..."></app-ui-loader>
 
-        <div class="product-grid" *ngIf="!isLoading() && !errorMessage() && products().length > 0">
-          @for (item of products(); track item.id) {
-            <app-product-card [product]="item"></app-product-card>
+        <app-ui-dialog *ngIf="!isLoading() && errorMessage()" [message]="errorMessage() || ''" tone="error"></app-ui-dialog>
+
+        <app-ui-empty-state
+          *ngIf="!isLoading() && !errorMessage() && filteredProducts().length === 0"
+          title="No products found"
+          message="Try another search term or category."
+        ></app-ui-empty-state>
+
+        <div class="product-grid" *ngIf="!isLoading() && !errorMessage() && filteredProducts().length > 0">
+          @for (item of filteredProducts(); track item.id) {
+            <app-product-card [product]="item" (addToCart)="addToCart($event)"></app-product-card>
           }
         </div>
       </section>

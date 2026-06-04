@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Product } from '../../models/product.model';
@@ -13,6 +13,12 @@ import { Product } from '../../models/product.model';
 export class ProductCard {
   // Receives individual product objects from your parent app.html loop
   @Input({ required: true }) product!: Product;
+  @Output() addToCart = new EventEmitter<Product>();
+
+  onAddToCart(event: Event): void {
+    event.stopPropagation();
+    this.addToCart.emit(this.product);
+  }
 
   getProductInitial(product: Product): string {
     return (product.categoryName || product.name || 'P').charAt(0).toUpperCase();

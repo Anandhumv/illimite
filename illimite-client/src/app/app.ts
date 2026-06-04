@@ -1,24 +1,34 @@
 import { ProductCard } from './components/product-card/product-card';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { filter } from 'rxjs';
-import { ApiProductService } from './services/api-product.service';
+import { ApiProductService, CategoryOption } from './services/api-product.service';
 import { Product } from './models/product.model';
+import { AuthService } from './core/services/auth.service';
+import { CartService } from './core/services/cart.service';
+import { UiLoaderComponent } from './components/shared/ui-loader/ui-loader';
+import { UiEmptyStateComponent } from './components/shared/ui-empty-state/ui-empty-state';
+import { UiDialogComponent } from './components/shared/ui-dialog/ui-dialog';
 
 @Component({
   selector: 'app-root',
   imports: [
     CommonModule,
+    FormsModule,
     RouterLink,
     RouterOutlet,
     MatBadgeModule,
     MatButtonModule,
     MatToolbarModule,
-    ProductCard
+    ProductCard,
+    UiLoaderComponent,
+    UiEmptyStateComponent,
+    UiDialogComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
@@ -26,13 +36,33 @@ import { Product } from './models/product.model';
 export class App implements OnInit {
   private readonly apiProductService = inject(ApiProductService);
   private readonly router = inject(Router);
+  readonly authService = inject(AuthService);
+  readonly cartService = inject(CartService);
 
   readonly products = signal<Product[]>([]);
+  readonly categories = signal<CategoryOption[]>([]);
+  readonly searchTerm = signal<string>('');
+  readonly selectedCategoryId = signal<string>('all');
+  readonly cartMessage = signal<string>('');
   readonly isLoading = signal<boolean>(true);
   readonly errorMessage = signal<string | null>(null);
+  readonly filteredProducts = computed(() => {
+    const query = this.searchTerm().trim().toLowerCase();
+    const categoryId = this.selectedCategoryId();
+
+    return this.products().filter((product) => {
+      const matchesCategory = categoryId === 'all' || product.categoryId === categoryId;
+      const searchableText = `${product.name} ${product.categoryName} ${product.description}`.toLowerCase();
+      const matchesSearch = !query || searchableText.includes(query);
+      return matchesCategory && matchesSearch;
+    });
+  });
   readonly productCount = computed(() => this.products().length);
+  readonly filteredProductCount = computed(() => this.filteredProducts().length);
+  readonly cartCount = computed(() => this.cartService.cartItems().reduce((sum, item) => sum + item.qty, 0));
   readonly currentUrl = signal<string>('/');
   readonly isHomeRoute = computed(() => this.currentUrl() === '/' || this.currentUrl() === '');
+  readonly isAdmin = computed(() => this.authService.currentUser()?.role === 'admin');
 
   ngOnInit(): void {
     this.currentUrl.set(this.router.url);
@@ -51,6 +81,11 @@ export class App implements OnInit {
         this.isLoading.set(false);
       }
     });
+
+    this.apiProductService.getCategories().subscribe({
+      next: (categories) => this.categories.set(categories),
+      error: (err) => console.error('Failed to load categories:', err)
+    });
   }
 
   trackByProductId(_: number, product: Product): string {
@@ -67,5 +102,16 @@ export class App implements OnInit {
       currency: 'USD',
       maximumFractionDigits: 0
     }).format(price);
+  }
+
+  async addToCart(product: Product): Promise<void> {
+    await this.cartService.addToCart(product.id || product.slug, 1, product.price);
+    this.cartMessage.set(`${product.name} added to cart.`);
+    setTimeout(() => this.cartMessage.set(''), 1800);
+  }
+
+  async logout(): Promise<void> {
+    await this.authService.signOut();
+    this.router.navigate(['/']);
   }
 }

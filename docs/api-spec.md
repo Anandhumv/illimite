@@ -3,17 +3,23 @@
 ## Public Routes
 
 - GET /api/health -> Returns backend health status
+- GET /api/categories -> Returns Category[]
 - GET /api/products -> Returns Product[]
 - GET /api/products/:id -> Returns a single Product by Firestore document id or slug
 
+## Auth Routes
+
+- GET /api/auth/session -> Protected token verification route; requires `Authorization: Bearer <Firebase ID token>`
+
 ## Customer Routes
 
-- POST /api/cart/items -> Mock cart sync contract; accepts cart payload, returns `{ success: true, message: "Cart synchronized successfully" }`
-- POST /api/orders -> Mock order submission contract; accepts order payload, returns `{ success: true, orderId: "mock-order-id-12345", message: "Order placed successfully" }`
+- POST /api/cart/items -> Protected cart sync route; persists cart items to `carts/{uid}`
+- GET /api/orders -> Protected order history route; returns the signed-in user's orders
+- POST /api/orders -> Protected order creation route; validates stock, decrements product stock, writes an order, and clears the server cart
 
 ## Admin Routes
 
-- PATCH /api/orders/:id/status -> Mock fulfillment status contract; accepts `{ status }`, returns `{ success: true, orderId, status, message: "Order status updated" }`
+- PATCH /api/orders/:id/status -> Protected fulfillment status route; accepts `{ status }`, updates order status
 - POST /api/products -> Future admin product creation route; not part of the Day 2 mock contract
 
 ## Asset Routes
@@ -22,6 +28,7 @@
 
 ## Implementation Notes
 
-- Product read routes are backed by Firestore.
-- Cart, order, and order-status routes are currently mock contract stubs to lock the Day 2 API shape.
+- Product and category read routes are backed by Firestore.
+- Cart sync, order creation, order history, and order-status routes are backed by Firestore.
+- Protected routes use Firebase Admin SDK token verification middleware.
 - Admin product creation is documented for future implementation and is not implemented yet.
