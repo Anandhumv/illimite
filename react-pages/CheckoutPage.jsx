@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const CheckoutPage = () => {
+  const [fullName, setFullName] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [phone, setPhone] = useState('');
+
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
@@ -20,6 +26,8 @@ const CheckoutPage = () => {
                   id="fullName"
                   placeholder="Enter your full name"
                   type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                 />
               </div>
 
@@ -32,6 +40,8 @@ const CheckoutPage = () => {
                   id="address"
                   placeholder="House number, street, area"
                   type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
                 />
               </div>
 
@@ -45,6 +55,8 @@ const CheckoutPage = () => {
                     id="city"
                     placeholder="City"
                     type="text"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
                   />
                 </div>
 
@@ -57,6 +69,8 @@ const CheckoutPage = () => {
                     id="pincode"
                     placeholder="Pincode"
                     type="text"
+                    value={pincode}
+                    onChange={(e) => setPincode(e.target.value)}
                   />
                 </div>
               </div>
@@ -70,6 +84,8 @@ const CheckoutPage = () => {
                   id="phone"
                   placeholder="Phone number"
                   type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
             </div>
