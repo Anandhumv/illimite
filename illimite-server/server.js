@@ -66,6 +66,15 @@ app.post('/api/orders', (req, res) => {
   });
 });
 
+// GET /api/orders - Return hardcoded order history
+app.get('/api/orders', (req, res) => {
+  const orders = [
+    { id: 'ORD001', date: '2026-06-01', items: 2, status: 'Delivered', total: 59.97 },
+    { id: 'ORD002', date: '2026-06-03', items: 1, status: 'Pending', total: 29.99 }
+  ];
+  res.status(200).json(orders);
+});
+
 // PATCH /api/orders/:id/status - Mock Day 2 contract route for fulfillment states
 app.patch('/api/orders/:id/status', (req, res) => {
   res.status(200).json({
