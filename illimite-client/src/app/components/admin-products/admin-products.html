@@ -31,10 +31,38 @@
     </div>
   }
 
-  <!-- Data State (placeholder — table will be added later) -->
+  <!-- Data State -->
   @if (!isLoading() && !errorMessage() && products().length > 0) {
-    <div class="products-content">
-      <p>Loaded {{ products().length }} active products. Table coming next.</p>
+    <div class="products-table-wrapper">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Category</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products(); track product.id) {
+            <tr>
+              <td class="cell-name">{{ product.name }}</td>
+              <td class="cell-price">{{ formatPrice(product.price) }}</td>
+              <td class="cell-stock">
+                <span class="stock-badge" [class.low-stock]="product.stock < 10">
+                  {{ product.stock }}
+                </span>
+              </td>
+              <td class="cell-category">{{ product.categoryName }}</td>
+              <td class="cell-actions">
+                <button class="btn-action btn-edit">Edit</button>
+                <button class="btn-action btn-delete">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
   }
 </div>
