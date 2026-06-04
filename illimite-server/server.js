@@ -68,7 +68,10 @@ app.get('/api/products/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch product', details: err.message });
   }
 });
-
+// POST /api/orders — Task 3.3 stub
+app.post('/api/orders', (req, res) => {
+  res.status(201).json({ success: true, message: 'Order received' });
+});
 // --- Start Server ---
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
