@@ -7,19 +7,41 @@ const CheckoutPage = () => {
   const [pincode, setPincode] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const cartItems = [
     { name: 'Product A', qty: 1, price: 29.99 },
     { name: 'Product B', qty: 2, price: 14.99 }
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!fullName || !address || !city || !pincode || !phone) {
       setError('Please fill all fields.');
       return;
     }
     setError('');
+    setSuccess('');
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          shipping: { fullName, address, city, pincode, phone },
+          items: cartItems
+        })
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      setSuccess('Order placed successfully!');
+    } catch (err) {
+      setError('Something went wrong. Try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -107,6 +129,9 @@ const CheckoutPage = () => {
               {error && (
                 <p className="text-sm font-medium text-red-600">{error}</p>
               )}
+              {success && (
+                <p className="text-sm font-medium text-green-600">{success}</p>
+              )}
             </div>
           </section>
 
@@ -140,8 +165,8 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            <button type="submit" className="mt-6 w-full rounded-lg bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-800">
-              Place Order
+            <button type="submit" disabled={loading} className="mt-6 w-full rounded-lg bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60">
+              {loading ? 'Placing order...' : 'Place Order'}
             </button>
           </aside>
         </form>
