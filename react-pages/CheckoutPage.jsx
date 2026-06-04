@@ -7,6 +7,11 @@ const CheckoutPage = () => {
   const [pincode, setPincode] = useState('');
   const [phone, setPhone] = useState('');
 
+  const cartItems = [
+    { name: 'Product A', qty: 1, price: 29.99 },
+    { name: 'Product B', qty: 2, price: 14.99 }
+  ];
+
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
@@ -95,35 +100,21 @@ const CheckoutPage = () => {
             <h2 className="mb-6 text-xl font-semibold text-slate-900">Order Summary</h2>
 
             <div className="space-y-4">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-medium text-slate-900">Minimal Chair</p>
-                  <p className="text-sm text-slate-500">Qty: 1</p>
+              {cartItems.map((item, index) => (
+                <div key={index} className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-medium text-slate-900">{item.name}</p>
+                    <p className="text-sm text-slate-500">Qty: {item.qty}</p>
+                  </div>
+                  <p className="font-medium text-slate-900">${item.price}</p>
                 </div>
-                <p className="font-medium text-slate-900">$120</p>
-              </div>
-
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-medium text-slate-900">Ceramic Table Lamp</p>
-                  <p className="text-sm text-slate-500">Qty: 1</p>
-                </div>
-                <p className="font-medium text-slate-900">$80</p>
-              </div>
-
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-medium text-slate-900">Cotton Throw Pillow</p>
-                  <p className="text-sm text-slate-500">Qty: 2</p>
-                </div>
-                <p className="font-medium text-slate-900">$50</p>
-              </div>
+              ))}
             </div>
 
             <div className="mt-6 space-y-3 border-t border-slate-200 pt-5">
               <div className="flex justify-between text-slate-600">
                 <span>Subtotal</span>
-                <span>$250</span>
+                <span>${cartItems.reduce((sum, item) => sum + item.qty * item.price, 0).toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-slate-600">
                 <span>Shipping</span>
@@ -131,7 +122,7 @@ const CheckoutPage = () => {
               </div>
               <div className="flex justify-between border-t border-slate-200 pt-4 text-lg font-bold text-slate-900">
                 <span>Total</span>
-                <span>$250</span>
+                <span>${cartItems.reduce((sum, item) => sum + item.qty * item.price, 0).toFixed(2)}</span>
               </div>
             </div>
 
