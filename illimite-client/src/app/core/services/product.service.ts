@@ -88,4 +88,22 @@ export class ProductService {
       throw error;
     }
   }
+
+  /**
+   * Fetch only active products (active === true).
+   */
+  async getActiveProducts(): Promise<Product[]> {
+    try {
+      const productsCol = collection(this.firestore, 'products');
+      const q = query(productsCol, where('active', '==', true));
+      const productSnapshot = await getDocs(q);
+      return productSnapshot.docs.map(docSnap => ({
+        id: docSnap.id,
+        ...docSnap.data()
+      })) as Product[];
+    } catch (error) {
+      console.error('Error fetching active products:', error);
+      throw error;
+    }
+  }
 }

@@ -1,0 +1,35 @@
+<div class="admin-products-container">
+  <header class="page-header">
+    <h1>Products Management</h1>
+    <p class="subtitle">Active Products: {{ productCount() }}</p>
+  </header>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <p>Loading active products...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (errorMessage()) {
+    <div class="error-state">
+      <p>{{ errorMessage() }}</p>
+      <button (click)="loadActiveProducts()">Retry</button>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading() && !errorMessage() && products().length === 0) {
+    <div class="empty-state">
+      <p>No active products found.</p>
+    </div>
+  }
+
+  <!-- Data State (placeholder — table will be added later) -->
+  @if (!isLoading() && !errorMessage() && products().length > 0) {
+    <div class="products-content">
+      <p>Loaded {{ products().length }} active products. Table coming next.</p>
+    </div>
+  }
+</div>

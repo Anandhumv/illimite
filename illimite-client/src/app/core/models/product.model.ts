@@ -7,5 +7,6 @@ export interface Product {
   stock: number;
   imageUrl: string;
   rating: number;
+  active: boolean;
   createdAt: any; // Firestore Timestamp or Date
 }
