@@ -1,3 +1,68 @@
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-toolbar {
+  align-items: center;
+  background: rgba(255, 253, 250, 0.92);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  display: grid;
+  gap: 24px;
+  grid-template-columns: auto 1fr auto;
+  min-height: 72px;
+  padding: 0 clamp(20px, 5vw, 72px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.brand {
+  align-items: center;
+  color: var(--ink);
+  display: inline-flex;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.brand__mark {
+  align-items: center;
+  background: var(--ink);
+  border-radius: 8px;
+  color: var(--card);
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 800;
+  height: 34px;
+  justify-content: center;
+  letter-spacing: 0.08em;
+  width: 34px;
+}
+
+.brand__name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.app-nav {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.cart-action {
+  border-color: var(--line);
+}
+
+.route-page {
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 48px clamp(20px, 5vw, 72px) 72px;
+}
+
 .catalog-page {
   min-height: 100vh;
   padding: 40px clamp(20px, 5vw, 72px) 64px;
@@ -183,6 +248,20 @@
 }
 
 @media (max-width: 760px) {
+  .app-toolbar {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    height: auto;
+    justify-items: start;
+    padding-bottom: 16px;
+    padding-top: 16px;
+  }
+
+  .app-nav {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
   .catalog-page {
     padding-top: 24px;
   }

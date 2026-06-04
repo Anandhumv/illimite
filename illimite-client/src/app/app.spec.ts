@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { App } from './app';
 import { ApiProductService } from './services/api-product.service';
@@ -8,6 +9,7 @@ describe('App', () => {
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
+        provideRouter([]),
         {
           provide: ApiProductService,
           useValue: {
@@ -18,8 +20,11 @@ describe('App', () => {
                 description: 'A seeded catalog product.',
                 price: 189,
                 imageUrl: '',
-                category: 'Lighting',
-                stockCount: 25
+                slug: 'lumiere-pendant-light',
+                categoryId: 'lighting',
+                categoryName: 'Lighting',
+                stock: 25,
+                createdAt: new Date().toISOString()
               }
             ])
           }

@@ -3,3 +3,7 @@ node_modules/
 firebase-key.json
 firebase-key.json.json
 *.key.json
+config/serviceAccountKey.json
+config/*firebase-adminsdk*.json
+firebase-debug.log
+*-debug.log

@@ -1,39 +1,64 @@
-<main class="catalog-page">
-  <header class="catalog-hero">
-    <p class="catalog-hero__eyebrow">Illimite Catalog</p>
-    <div class="catalog-hero__layout">
-      <h1 class="catalog-hero__title">Curated products for calm, modern spaces.</h1>
-      <p class="catalog-hero__copy">
-        A minimal storefront view powered by your seeded backend products.
-      </p>
-    </div>
-  </header>
+<div class="app-shell">
+  <mat-toolbar class="app-toolbar">
+    <a class="brand" routerLink="/">
+      <span class="brand__mark">IL</span>
+      <span class="brand__name">Illimite</span>
+    </a>
 
-  <section class="catalog-section" aria-labelledby="catalog-heading">
-    <div class="catalog-toolbar">
-      <div>
-        <h2 id="catalog-heading">Product Catalog</h2>
-        <p>{{ productCount() }} products loaded from the API</p>
-      </div>
-    </div>
+    <nav class="app-nav" aria-label="Primary navigation">
+      <a mat-button routerLink="/">Catalog</a>
+      <a mat-button routerLink="/login">Login</a>
+      <a mat-button routerLink="/register">Register</a>
+    </nav>
 
-    <div class="status-panel" *ngIf="isLoading()">
-      <span class="status-panel__mark"></span>
-      Loading products...
-    </div>
+    <button mat-stroked-button class="cart-action" matBadge="0" matBadgeSize="small">
+      Cart
+    </button>
+  </mat-toolbar>
 
-    <div class="status-panel status-panel--error" *ngIf="!isLoading() && errorMessage()">
-      {{ errorMessage() }}
-    </div>
+  @if (isHomeRoute()) {
+    <main class="catalog-page">
+      <header class="catalog-hero">
+        <p class="catalog-hero__eyebrow">Illimite Catalog</p>
+        <div class="catalog-hero__layout">
+          <h1 class="catalog-hero__title">Curated products for calm, modern spaces.</h1>
+          <p class="catalog-hero__copy">
+            A minimal storefront view powered by your seeded backend products.
+          </p>
+        </div>
+      </header>
 
-    <div class="status-panel" *ngIf="!isLoading() && !errorMessage() && products().length === 0">
-      No products found yet.
-    </div>
+      <section class="catalog-section" aria-labelledby="catalog-heading">
+        <div class="catalog-toolbar">
+          <div>
+            <h2 id="catalog-heading">Product Catalog</h2>
+            <p>{{ productCount() }} products loaded from the API</p>
+          </div>
+        </div>
 
-    <div class="product-grid" *ngIf="!isLoading() && !errorMessage() && products().length > 0">
-      @for (item of products(); track item.id) {
-      <app-product-card [product]="item"></app-product-card>
-      }
-    </div>
-  </section>
-</main>
+        <div class="status-panel" *ngIf="isLoading()">
+          <span class="status-panel__mark"></span>
+          Loading products...
+        </div>
+
+        <div class="status-panel status-panel--error" *ngIf="!isLoading() && errorMessage()">
+          {{ errorMessage() }}
+        </div>
+
+        <div class="status-panel" *ngIf="!isLoading() && !errorMessage() && products().length === 0">
+          No products found yet.
+        </div>
+
+        <div class="product-grid" *ngIf="!isLoading() && !errorMessage() && products().length > 0">
+          @for (item of products(); track item.id) {
+            <app-product-card [product]="item"></app-product-card>
+          }
+        </div>
+      </section>
+    </main>
+  } @else {
+    <main class="route-page">
+      <router-outlet></router-outlet>
+    </main>
+  }
+</div>
