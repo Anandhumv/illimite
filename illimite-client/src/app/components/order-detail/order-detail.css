@@ -83,6 +83,43 @@
   text-align: right;
 }
 
+.status-flow {
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 14px;
+}
+
+.flow-step {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 6px 9px;
+  text-transform: uppercase;
+}
+
+.flow-step--done {
+  background: rgba(52, 80, 69, 0.12);
+  border-color: rgba(52, 80, 69, 0.28);
+  color: #345045;
+}
+
+.flow-step--current {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--card);
+}
+
+.flow-step--cancelled {
+  background: rgba(154, 63, 49, 0.12);
+  border-color: rgba(154, 63, 49, 0.28);
+  color: #9a3f31;
+}
+
 .total {
   font-size: 1.1rem;
 }

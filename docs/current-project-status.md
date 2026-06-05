@@ -4,7 +4,7 @@ Last updated: June 5, 2026
 
 ## Current Stage
 
-Illimite is currently past the foundation stage and has completed the first four planned milestones:
+Illimite is currently past the foundation stage and has completed the first six planned milestones:
 
 ```text
 Day 1: Complete
@@ -12,10 +12,11 @@ Day 2: Complete
 Day 3: Complete for Auth + skeletons
 Day 4: Complete for real-data core build
 Day 5: Complete for cart/order/admin polish + security rules
-Overall project completion: about 65-70%
+Day 6: Complete for integration polish
+Overall project completion: about 70-75%
 ```
 
-The app is now an early ecommerce MVP with Firebase setup, backend API foundation, seeded product/category data, a searchable/filterable product catalog, Firebase-backed auth screens, protected routes, product detail loading, add-to-cart behavior, API-backed cart/order flows, a dedicated cart page, checkout confirmation, order detail pages, order history, profile, admin product management, admin order management, and Firebase security rules files.
+The app is now an early ecommerce MVP with Firebase setup, backend API foundation, seeded product/category data, a searchable/filterable product catalog, Firebase-backed auth screens, protected routes, product detail loading, add-to-cart behavior, API-backed cart/order flows, a dedicated cart page, checkout confirmation, order detail pages, order history, profile, admin product management, admin order management, global toast/error handling, order status flow UI, and Firebase security rules files.
 
 ## Completed Work
 
@@ -203,6 +204,26 @@ storage.rules
 
 - Firebase config now references Firestore and Storage rules.
 
+### Day 6 - Integration
+
+Completed:
+
+- Global toast service exists for success, error, and info messages.
+- Angular global error handler is wired through `ErrorHandler`.
+- Login/register success and failure states show toast feedback.
+- Auth and admin route guards show feedback when access is blocked.
+- Catalog product loading/category failures show toast feedback.
+- Catalog search/filter controls include a clear filters action.
+- Empty/loading states remain wired through shared UI components.
+- Add-to-cart feedback is consistent from catalog and product detail.
+- Cart quantity update, item removal, and clear-cart actions show toast feedback.
+- Checkout success/failure shows toast feedback.
+- Admin product create/edit/delete actions show toast feedback.
+- Admin order status updates show toast feedback.
+- Admin order management includes order view links.
+- Admin order management shows a visual status flow.
+- Order detail page shows the fulfillment status flow.
+
 ## Current Frontend Structure
 
 Main frontend path:
@@ -316,7 +337,7 @@ Angular test result:
 Known warning:
 
 ```text
-Angular build passes, but the initial bundle exceeds the configured 500 kB budget.
+Angular build passes, but the initial bundle and app CSS exceed the configured budgets.
 ```
 
 This warning is not blocking development, but it should be optimized before production.
@@ -339,6 +360,8 @@ This warning is not blocking development, but it should be optimized before prod
    - order detail
    - admin product create/edit/delete
    - admin order status update
+   - toast messages
+   - blocked auth/admin route messages
 2. Confirm Firebase Authentication providers are enabled in the Firebase console:
    - Email/password
    - Google
@@ -380,6 +403,7 @@ Day 2: Product/category data model + seed + API contract complete.
 Day 3: Auth + product detail + protected route skeletons complete.
 Day 4: Core real-data catalog, cart, checkout, orders, and admin product listing complete.
 Day 5: Cart page, order confirmation/detail, admin CRUD/order management, and security rules complete.
+Day 6: Global errors/toasts, auth-role feedback, search/filter polish, cart feedback, and order status flow complete.
 ```
 
 The next major phase is to test the end-to-end flows in the browser, deploy/review Firebase rules, and continue toward payment/admin polish.

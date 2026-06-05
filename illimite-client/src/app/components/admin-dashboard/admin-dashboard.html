@@ -178,6 +178,8 @@
           <div>Customer</div>
           <div>Total</div>
           <div>Status</div>
+          <div>Flow</div>
+          <div>View</div>
           @for (order of orders(); track order.id) {
             <div>
               <strong>{{ order.id }}</strong>
@@ -187,6 +189,7 @@
             <div>{{ order.total | currency }}</div>
             <div>
               <select
+                class="status-select"
                 [ngModel]="order.status"
                 (ngModelChange)="updateOrderStatus(order, $event)"
                 [name]="'status-' + order.id"
@@ -195,6 +198,23 @@
                   <option [value]="status">{{ status }}</option>
                 }
               </select>
+            </div>
+            <div class="status-flow compact-flow">
+              @for (status of activeOrderStatuses; track status) {
+                <span
+                  class="flow-step"
+                  [class.flow-step--done]="statusStepState(order, status) === 'done'"
+                  [class.flow-step--current]="statusStepState(order, status) === 'current'"
+                >
+                  {{ status }}
+                </span>
+              }
+              @if (order.status === 'cancelled') {
+                <span class="flow-step flow-step--cancelled">cancelled</span>
+              }
+            </div>
+            <div>
+              <a class="view-action" [routerLink]="['/orders', order.id]">View</a>
             </div>
           }
         </div>

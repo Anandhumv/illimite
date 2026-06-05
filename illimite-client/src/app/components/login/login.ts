@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -19,12 +20,14 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastService: ToastService
   ) { }
 
   async onSubmit() {
     if (!this.email || !this.password) {
       this.errorMessage = 'Please fill in all fields.';
+      this.toastService.error(this.errorMessage);
       return;
     }
 
@@ -34,10 +37,12 @@ export class LoginComponent {
     try {
       await this.authService.signInWithEmailAndPassword(this.email, this.password);
       this.isLoading = false;
+      this.toastService.success('Signed in successfully.');
       this.router.navigate(['/']);
     } catch (error) {
       this.isLoading = false;
       this.errorMessage = this.getAuthError(error);
+      this.toastService.error(this.errorMessage);
     }
   }
 
@@ -48,10 +53,12 @@ export class LoginComponent {
     try {
       await this.authService.signInWithGoogle();
       this.isLoading = false;
+      this.toastService.success('Signed in with Google.');
       this.router.navigate(['/']);
     } catch (error) {
       this.isLoading = false;
       this.errorMessage = this.getAuthError(error);
+      this.toastService.error(this.errorMessage);
     }
   }
 

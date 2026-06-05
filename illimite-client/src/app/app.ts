@@ -14,6 +14,7 @@ import { CartService } from './core/services/cart.service';
 import { UiLoaderComponent } from './components/shared/ui-loader/ui-loader';
 import { UiEmptyStateComponent } from './components/shared/ui-empty-state/ui-empty-state';
 import { UiDialogComponent } from './components/shared/ui-dialog/ui-dialog';
+import { ToastService } from './core/services/toast.service';
 
 @Component({
   selector: 'app-root',
@@ -38,12 +39,12 @@ export class App implements OnInit {
   private readonly router = inject(Router);
   readonly authService = inject(AuthService);
   readonly cartService = inject(CartService);
+  readonly toastService = inject(ToastService);
 
   readonly products = signal<Product[]>([]);
   readonly categories = signal<CategoryOption[]>([]);
   readonly searchTerm = signal<string>('');
   readonly selectedCategoryId = signal<string>('all');
-  readonly cartMessage = signal<string>('');
   readonly isLoading = signal<boolean>(true);
   readonly errorMessage = signal<string | null>(null);
   readonly filteredProducts = computed(() => {
@@ -77,15 +78,25 @@ export class App implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load products:', err);
-        this.errorMessage.set('Unable to load products. Please confirm the backend is running on port 5000.');
+        const message = 'Unable to load products. Please confirm the backend is running on port 5000.';
+        this.errorMessage.set(message);
+        this.toastService.error(message);
         this.isLoading.set(false);
       }
     });
 
     this.apiProductService.getCategories().subscribe({
       next: (categories) => this.categories.set(categories),
-      error: (err) => console.error('Failed to load categories:', err)
+      error: (err) => {
+        console.error('Failed to load categories:', err);
+        this.toastService.error('Unable to load categories.');
+      }
     });
+  }
+
+  clearFilters(): void {
+    this.searchTerm.set('');
+    this.selectedCategoryId.set('all');
   }
 
   trackByProductId(_: number, product: Product): string {
@@ -105,13 +116,18 @@ export class App implements OnInit {
   }
 
   async addToCart(product: Product): Promise<void> {
-    await this.cartService.addToCart(product.id || product.slug, 1, product.price);
-    this.cartMessage.set(`${product.name} added to cart.`);
-    setTimeout(() => this.cartMessage.set(''), 1800);
+    try {
+      await this.cartService.addToCart(product.id || product.slug, 1, product.price);
+      this.toastService.success(`${product.name} added to cart.`);
+    } catch (error) {
+      console.error('Failed to add product to cart:', error);
+      this.toastService.error('Unable to add this product to cart.');
+    }
   }
 
   async logout(): Promise<void> {
     await this.authService.signOut();
+    this.toastService.info('Signed out successfully.');
     this.router.navigate(['/']);
   }
 }

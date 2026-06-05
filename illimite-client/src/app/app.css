@@ -57,6 +57,42 @@
   border-color: var(--line);
 }
 
+.toast-stack {
+  display: grid;
+  gap: 10px;
+  max-width: min(420px, calc(100vw - 32px));
+  position: fixed;
+  right: 18px;
+  top: 88px;
+  z-index: 50;
+}
+
+.toast {
+  background: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 18px 42px rgba(35, 28, 20, 0.16);
+  color: var(--card);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  line-height: 1.4;
+  padding: 13px 16px;
+  text-align: left;
+}
+
+.toast--success {
+  background: #345045;
+}
+
+.toast--error {
+  background: #9a3f31;
+}
+
+.toast--info {
+  background: #5f4b35;
+}
+
 .route-page {
   margin: 0 auto;
   max-width: 1180px;
@@ -117,6 +153,16 @@
   justify-content: space-between;
   margin-bottom: 24px;
   padding-bottom: 18px;
+}
+
+.clear-filter-action {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 800;
+  padding: 10px 14px;
 }
 
 .catalog-toolbar h2 {
@@ -302,6 +348,12 @@
   .app-nav {
     flex-wrap: wrap;
     justify-content: flex-start;
+  }
+
+  .toast-stack {
+    left: 16px;
+    right: 16px;
+    top: 150px;
   }
 
   .catalog-page {

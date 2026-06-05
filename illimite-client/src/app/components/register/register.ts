@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-register',
@@ -20,12 +21,14 @@ export class RegisterComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastService: ToastService
   ) { }
 
   async onRegister() {
     if (!this.name || !this.email || !this.password) {
       this.errorMessage = 'All fields are strictly required.';
+      this.toastService.error(this.errorMessage);
       return;
     }
 
@@ -35,10 +38,12 @@ export class RegisterComponent {
     try {
       await this.authService.signUpWithEmailAndPassword(this.email, this.password, this.name);
       this.isLoading = false;
+      this.toastService.success('Account created successfully.');
       this.router.navigate(['/']);
     } catch (error) {
       this.isLoading = false;
       this.errorMessage = this.getAuthError(error);
+      this.toastService.error(this.errorMessage);
     }
   }
 

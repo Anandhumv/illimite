@@ -7,6 +7,7 @@ import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
 import { ApiProductService } from '../../services/api-product.service';
 import { Product } from '../../models/product.model';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-checkout',
@@ -20,6 +21,7 @@ export class CheckoutComponent implements OnInit {
   private readonly orderService = inject(OrderService);
   private readonly apiProductService = inject(ApiProductService);
   private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
 
   shippingAddress = '';
   paymentRef = 'mock-payment-ref';
@@ -41,7 +43,10 @@ export class CheckoutComponent implements OnInit {
           }, {})
         );
       },
-      error: (err) => console.error('Failed to load checkout product summaries:', err)
+      error: (err) => {
+        console.error('Failed to load checkout product summaries:', err);
+        this.toastService.error('Unable to load checkout product details.');
+      }
     });
   }
 
@@ -69,10 +74,12 @@ export class CheckoutComponent implements OnInit {
 
     try {
       const order = await this.orderService.placeOrder(this.shippingAddress, this.paymentRef);
+      this.toastService.success('Order placed successfully.');
       await this.router.navigate(['/orders', order.id, 'confirmation']);
     } catch (error) {
       const fallback = 'Checkout skeleton is ready. Sign in and add cart items to place an order.';
       this.message.set(error instanceof Error ? error.message : fallback);
+      this.toastService.error(this.message());
     } finally {
       this.isSubmitting.set(false);
     }

@@ -27,6 +27,21 @@
     </button>
   </mat-toolbar>
 
+  <div class="toast-stack" aria-live="polite" aria-atomic="true">
+    @for (toast of toastService.toasts(); track toast.id) {
+      <button
+        type="button"
+        class="toast"
+        [class.toast--success]="toast.tone === 'success'"
+        [class.toast--error]="toast.tone === 'error'"
+        [class.toast--info]="toast.tone === 'info'"
+        (click)="toastService.dismiss(toast.id)"
+      >
+        {{ toast.message }}
+      </button>
+    }
+  </div>
+
   @if (isHomeRoute()) {
     <main class="catalog-page">
       <header class="catalog-hero">
@@ -45,6 +60,9 @@
             <h2 id="catalog-heading">Product Catalog</h2>
             <p>{{ filteredProductCount() }} of {{ productCount() }} products shown</p>
           </div>
+          @if (searchTerm() || selectedCategoryId() !== 'all') {
+            <button type="button" class="clear-filter-action" (click)="clearFilters()">Clear filters</button>
+          }
         </div>
 
         <div class="catalog-controls" aria-label="Catalog filters">
@@ -68,10 +86,6 @@
             </select>
           </label>
         </div>
-
-        @if (cartMessage()) {
-          <app-ui-dialog [message]="cartMessage()" tone="success"></app-ui-dialog>
-        }
 
         <app-ui-loader *ngIf="isLoading()" label="Loading products..."></app-ui-loader>
 

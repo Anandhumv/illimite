@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
 import { ApiProductService } from '../../services/api-product.service';
 import { Product } from '../../models/product.model';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-cart',
@@ -16,6 +17,7 @@ import { Product } from '../../models/product.model';
 export class CartComponent implements OnInit {
   readonly cartService = inject(CartService);
   private readonly apiProductService = inject(ApiProductService);
+  private readonly toastService = inject(ToastService);
 
   readonly productLookup = signal<Record<string, Product>>({});
   readonly isLoading = signal(true);
@@ -35,7 +37,10 @@ export class CartComponent implements OnInit {
         );
         this.isLoading.set(false);
       },
-      error: () => this.isLoading.set(false)
+      error: () => {
+        this.toastService.error('Unable to load cart product details.');
+        this.isLoading.set(false);
+      }
     });
   }
 
@@ -45,13 +50,16 @@ export class CartComponent implements OnInit {
 
   async updateQuantity(productId: string, qty: number): Promise<void> {
     await this.cartService.updateQuantity(productId, Number(qty));
+    this.toastService.info('Cart quantity updated.');
   }
 
   async removeItem(productId: string): Promise<void> {
     await this.cartService.removeFromCart(productId);
+    this.toastService.info('Item removed from cart.');
   }
 
   async clearCart(): Promise<void> {
     await this.cartService.clearCart();
+    this.toastService.info('Cart cleared.');
   }
 }

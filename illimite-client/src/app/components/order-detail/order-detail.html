@@ -32,6 +32,21 @@
 
       <aside class="panel summary">
         <h2>Summary</h2>
+        <div class="status-flow">
+          @if (orderData.status === 'cancelled') {
+            <span class="flow-step flow-step--cancelled">cancelled</span>
+          } @else {
+            @for (status of activeOrderStatuses; track status) {
+              <span
+                class="flow-step"
+                [class.flow-step--done]="statusStepState(orderData, status) === 'done'"
+                [class.flow-step--current]="statusStepState(orderData, status) === 'current'"
+              >
+                {{ status }}
+              </span>
+            }
+          }
+        </div>
         <div>
           <span>Status</span>
           <strong>{{ orderData.status }}</strong>

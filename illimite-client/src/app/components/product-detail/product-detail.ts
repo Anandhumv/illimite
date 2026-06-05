@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiProductService } from '../../services/api-product.service';
 import { CartService } from '../../core/services/cart.service';
 import { Product } from '../../models/product.model';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -16,6 +17,7 @@ export class ProductDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly apiProductService = inject(ApiProductService);
   private readonly cartService = inject(CartService);
+  private readonly toastService = inject(ToastService);
 
   productSlug: string | null = null;
   product: Product | null = null;
@@ -39,6 +41,7 @@ export class ProductDetailComponent implements OnInit {
       },
       error: () => {
         this.errorMessage = 'Unable to load this product. Please return to the catalog.';
+        this.toastService.error(this.errorMessage);
         this.isLoading = false;
       }
     });
@@ -49,8 +52,14 @@ export class ProductDetailComponent implements OnInit {
       return;
     }
 
-    await this.cartService.addToCart(this.product.id || this.product.slug, 1, this.product.price);
-    this.cartMessage = 'Added to cart.';
+    try {
+      await this.cartService.addToCart(this.product.id || this.product.slug, 1, this.product.price);
+      this.cartMessage = 'Added to cart.';
+      this.toastService.success(`${this.product.name} added to cart.`);
+    } catch (error) {
+      console.error('Failed to add product to cart:', error);
+      this.toastService.error('Unable to add this product to cart.');
+    }
   }
 
   formatPrice(price: number): string {

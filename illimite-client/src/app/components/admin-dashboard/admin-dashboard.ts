@@ -1,11 +1,13 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ApiProductService } from '../../services/api-product.service';
 import { Product } from '../../models/product.model';
 import { Order, OrderStatus } from '../../core/models/order.model';
 import { OrderService } from '../../core/services/order.service';
+import { ToastService } from '../../core/services/toast.service';
 
 interface ProductForm {
   id: string;
@@ -22,13 +24,14 @@ interface ProductForm {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css'
 })
 export class AdminDashboardComponent implements OnInit {
   private readonly apiProductService = inject(ApiProductService);
   private readonly orderService = inject(OrderService);
+  private readonly toastService = inject(ToastService);
 
   readonly products = signal<Product[]>([]);
   readonly categories = signal<{ id: string; name: string; slug: string; imageUrl: string }[]>([]);
@@ -39,6 +42,7 @@ export class AdminDashboardComponent implements OnInit {
   readonly adminMessage = signal('');
   readonly editingProductId = signal<string | null>(null);
   readonly orderStatuses: OrderStatus[] = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'];
+  readonly activeOrderStatuses: OrderStatus[] = ['pending', 'paid', 'processing', 'shipped', 'delivered'];
   readonly productForm = signal<ProductForm>(this.emptyProductForm());
   readonly lowStockCount = computed(() => this.products().filter(product => product.stock <= 5).length);
   readonly totalStock = computed(() => this.products().reduce((sum, product) => sum + product.stock, 0));
@@ -71,7 +75,9 @@ export class AdminDashboardComponent implements OnInit {
       this.categories.set(categories);
       this.orders.set(orders);
     } catch (error) {
-      this.errorMessage.set(error instanceof Error ? error.message : 'Unable to load admin data.');
+      const message = error instanceof Error ? error.message : 'Unable to load admin data.';
+      this.errorMessage.set(message);
+      this.toastService.error(message);
     } finally {
       this.isLoading.set(false);
     }
@@ -119,6 +125,7 @@ export class AdminDashboardComponent implements OnInit {
 
     if (!form.name.trim() || !form.slug.trim() || !form.categoryId) {
       this.adminMessage.set('Product name, slug, and category are required.');
+      this.toastService.error(this.adminMessage());
       return;
     }
 
@@ -142,15 +149,18 @@ export class AdminDashboardComponent implements OnInit {
           products.map(product => product.id === response.product.id ? response.product : product)
         );
         this.adminMessage.set('Product updated successfully.');
+        this.toastService.success(this.adminMessage());
       } else {
         const response = await firstValueFrom(this.apiProductService.createProduct(payload));
         this.products.update(products => [response.product, ...products]);
         this.adminMessage.set('Product created successfully.');
+        this.toastService.success(this.adminMessage());
       }
 
       this.resetForm();
     } catch (error) {
       this.adminMessage.set(error instanceof Error ? error.message : 'Unable to save product.');
+      this.toastService.error(this.adminMessage());
     } finally {
       this.isSaving.set(false);
     }
@@ -166,21 +176,48 @@ export class AdminDashboardComponent implements OnInit {
       await firstValueFrom(this.apiProductService.deleteProduct(product.id));
       this.products.update(products => products.filter(item => item.id !== product.id));
       this.adminMessage.set('Product deleted successfully.');
+      this.toastService.success(this.adminMessage());
     } catch (error) {
       this.adminMessage.set(error instanceof Error ? error.message : 'Unable to delete product.');
+      this.toastService.error(this.adminMessage());
     }
   }
 
   async updateOrderStatus(order: Order, status: OrderStatus): Promise<void> {
+    if (order.status === status) {
+      return;
+    }
+
     try {
       await this.orderService.updateOrderStatus(order.id, status);
       this.orders.update(orders =>
         orders.map(item => item.id === order.id ? { ...item, status } : item)
       );
-      this.adminMessage.set('Order status updated.');
+      this.adminMessage.set(`Order moved to ${status}.`);
+      this.toastService.success(this.adminMessage());
     } catch (error) {
       this.adminMessage.set(error instanceof Error ? error.message : 'Unable to update order status.');
+      this.toastService.error(this.adminMessage());
     }
+  }
+
+  statusStepState(order: Order, status: OrderStatus): 'done' | 'current' | 'pending' | 'cancelled' {
+    if (order.status === 'cancelled') {
+      return status === 'cancelled' ? 'cancelled' : 'pending';
+    }
+
+    const currentIndex = this.activeOrderStatuses.indexOf(order.status);
+    const statusIndex = this.activeOrderStatuses.indexOf(status);
+
+    if (statusIndex < currentIndex) {
+      return 'done';
+    }
+
+    if (statusIndex === currentIndex) {
+      return 'current';
+    }
+
+    return 'pending';
   }
 
   private emptyProductForm(): ProductForm {
