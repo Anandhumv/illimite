@@ -1,27 +1,23 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { filter, map, take } from 'rxjs/operators';
+import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { UserProfile } from '../models/user.model';
 
-export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
+export const roleGuard: CanActivateFn = (route) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const requiredRoles: Array<UserProfile['role']> = route.data['roles'] ?? [];
+  // 1. Get the allowed roles declared on the route (e.g. data: { roles: ['admin'] })
+  const expectedRoles: Array<UserProfile['role']> = route.data['roles'] ?? [];
 
-  return toObservable(authService.currentUser).pipe(
-    filter(user => user !== undefined),
-    take(1),
-    map(user => {
-      if (!user) {
-        return router.createUrlTree(['/auth/login']);
-      }
-      if (requiredRoles.length === 0 || requiredRoles.includes(user.role)) {
-        return true;
-      }
-      return router.createUrlTree(['/unauthorized']);
-    })
-  );
+  // 2. Read the current user from the signal (already resolved by authGuard running first)
+  const user = authService.currentUser();
+
+  // 3. Verify access
+  if (user && (expectedRoles.length === 0 || expectedRoles.includes(user.role))) {
+    return true; // ✅ Access granted
+  }
+
+  // ❌ Access denied — redirect to dashboard
+  return router.createUrlTree(['/dashboard']);
 };

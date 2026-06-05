@@ -1,0 +1,31 @@
+<nav class="navbar">
+  <a class="navbar__brand" routerLink="/dashboard">
+    <span class="navbar__logo">✦</span>
+    <span class="navbar__name">Illimite</span>
+  </a>
+
+  <ul class="navbar__links">
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="navbar__link--active" class="navbar__link">
+        Dashboard
+      </a>
+    </li>
+
+    <!-- 🔑 Admin-only link — shown only when role === 'admin' -->
+    @if (authService.currentUser()?.role === 'admin') {
+      <li>
+        <a routerLink="/admin" routerLinkActive="navbar__link--active" class="navbar__link navbar__link--admin">
+          <span class="navbar__admin-badge">Admin</span>
+          Panel
+        </a>
+      </li>
+    }
+  </ul>
+
+  <div class="navbar__user">
+    @if (authService.currentUser(); as user) {
+      <span class="navbar__greeting">{{ user.displayName }}</span>
+      <button class="navbar__logout-btn" (click)="authService.signOut()">Sign out</button>
+    }
+  </div>
+</nav>

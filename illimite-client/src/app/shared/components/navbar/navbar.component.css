@@ -1,0 +1,108 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 64px;
+  background: rgba(10, 10, 20, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Brand */
+.navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+.navbar__logo {
+  font-size: 1.4rem;
+  background: linear-gradient(135deg, #a78bfa, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.navbar__name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #f1f5f9;
+}
+
+/* Nav links */
+.navbar__links {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.navbar__link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #94a3b8;
+  transition: color 0.2s, background 0.2s;
+}
+.navbar__link:hover {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.06);
+}
+.navbar__link--active {
+  color: #f1f5f9;
+  background: rgba(167, 139, 250, 0.12);
+}
+
+/* Admin link */
+.navbar__link--admin {
+  color: #fbbf24;
+}
+.navbar__link--admin:hover {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fcd34d;
+}
+.navbar__admin-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* User section */
+.navbar__user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.navbar__greeting {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+.navbar__logout-btn {
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.navbar__logout-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
