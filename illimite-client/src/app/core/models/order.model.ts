@@ -1,10 +1,12 @@
 export interface OrderItem {
   productId: string;
+  name?: string;
+  imageUrl?: string;
   qty: number;
   price: number;
 }
 
-export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'paid' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 
 export interface Order {
   id: string;
@@ -15,4 +17,5 @@ export interface Order {
   shippingAddress: string;
   paymentRef: string;
   createdAt: any; // Firestore Timestamp or Date
+  updatedAt?: any;
 }

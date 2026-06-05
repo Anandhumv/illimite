@@ -14,6 +14,9 @@
     <div class="product-card__content">
         <p class="product-card__category">{{ product.categoryName }}</p>
         <h3 class="product-card__name">{{ product.name }}</h3>
-        <p class="product-card__price">{{ formatPrice(product.price) }}</p>
+        <div class="product-card__footer">
+            <p class="product-card__price">{{ formatPrice(product.price) }}</p>
+            <button type="button" class="product-card__cart" (click)="onAddToCart($event)">Add</button>
+        </div>
     </div>
 </div>

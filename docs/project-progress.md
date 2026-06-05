@@ -1,17 +1,17 @@
 # Illimite Project Completion Overview
 
-Last updated: June 4, 2026
+Last updated: June 5, 2026
 
 ## 1. Current Project Stage
 
-Illimite is currently in the **early ecommerce MVP foundation stage**.
+Illimite is currently in the **early ecommerce MVP core build stage**.
 
-The project has a working Angular frontend structure, an Express backend structure, Firebase client and admin integration, product catalog UI, product card routing, login/register mock screens, product detail skeleton, Firestore product seeding, API documentation, and Firebase Hosting configuration.
+The project has a working Angular frontend structure, an Express backend structure, Firebase client and admin integration, searchable/filterable product catalog UI, product card routing, Firebase-backed login/register screens, product detail API integration, API-backed cart/order flows, Firestore product seeding, API documentation, and Firebase Hosting configuration.
 
 Estimated overall completion:
 
 ```text
-Overall project completion: 40-45%
+Overall project completion: 55-60%
 ```
 
 This percentage is based on the full ecommerce goal: catalog, auth, cart, checkout, orders, admin/product management, storage, hosting, and deployment.
@@ -149,12 +149,12 @@ Day 2 is complete.
 Product/category models, seed data structure, Postman/API contract, and mock cart/order stubs are locked.
 ```
 
-### Day 3: UI Skeletons, Routes, Mock Auth/Product Detail
+### Day 3: Auth + Skeletons
 
 Current status:
 
 ```text
-Day 3 completion: 45-55%
+Day 3 completion: 100%
 ```
 
 Completed:
@@ -169,36 +169,84 @@ Completed:
 ```
 
 - Product detail component exists.
-- Product detail currently uses mock placeholder data.
+- Product detail fetches real product data from the backend API.
+- Product detail supports add-to-cart behavior.
 - Login component exists.
 - Register component exists.
-- Login/register screens have form validation and loading states.
-- Login/register use mock localStorage token flow for now.
+- Login/register screens have form validation, loading states, and real Firebase Auth integration.
+- Google sign-in is wired through Firebase Auth.
+- Logout/current-user UI exists in the app shell.
+- Profile page exists.
+- Auth route guard exists.
+- Auth HTTP interceptor attaches Firebase ID tokens to backend requests.
+- Backend Firebase token verification middleware exists.
+- Checkout page skeleton exists.
+- Order history page skeleton exists.
+- Admin dashboard layout skeleton exists.
+- Backend protected order/cart mock stubs exist.
 - Routes exist:
 
 ```text
 /login
 /register
 /products/:slug
+/profile
+/checkout
+/orders
+/admin
 ```
 
 - Component specs were fixed and now pass.
 
 Still remaining:
 
-- Product detail page must fetch real product data.
-- Login/register must connect to real Firebase Auth service.
-- Need logout/current-user UI in the app shell.
-- Need route guards for protected pages.
-- Need add-to-cart behavior.
-- Need cart UI/page/drawer.
-- Need checkout/order UI.
+- No Day 3 checklist tasks remain.
+- Checkout, orders, and admin pages are skeleton-level screens and will need full production workflows in later days.
 
 Day 3 verdict:
 
 ```text
-Day 3 is actively in progress.
-You have the skeleton screens and routes, but real service integration is still pending.
+Day 3 is complete for the Auth + skeletons milestone.
+```
+
+### Day 4: Core Build Connected To Real Data
+
+Current status:
+
+```text
+Day 4 completion: 100%
+```
+
+Completed:
+
+- Admin navigation is visible only for users with role `admin`.
+- Admin route uses an admin role guard.
+- Shared UI primitives exist for:
+  - loader
+  - dialog/notice
+  - empty state
+- Product list is connected to the backend product API.
+- Product detail is connected to the backend product API.
+- Category data is loaded from the backend category API.
+- Catalog category filter exists.
+- Catalog search exists.
+- Cart starts from catalog and product detail add-to-cart actions.
+- Signed-in cart sync uses the protected backend cart API.
+- Checkout form includes shipping address and order summary.
+- Checkout submits orders through the protected backend order API.
+- Backend order creation validates stock, decrements stock, writes an order, and clears the server cart.
+- Order history loads from the protected backend order API.
+- Admin dashboard lists real products from the backend API.
+
+Still remaining:
+
+- No Day 4 checklist tasks remain.
+- Future production work remains for payment, full admin CRUD, order detail pages, and deployment hardening.
+
+Day 4 verdict:
+
+```text
+Day 4 is complete for the core real-data build milestone.
 ```
 
 ## 3. Current Working Architecture
@@ -249,7 +297,7 @@ Current frontend capabilities:
 - Render product cards.
 - Navigate to product details by slug.
 - Render mock product detail.
-- Render mock login/register screens.
+- Render Firebase-backed login/register screens.
 - Use Material toolbar/layout elements.
 - Provide Firebase app/auth/firestore/storage.
 
@@ -378,8 +426,8 @@ Fully done in code:
 - Product API read routes.
 - Product catalog UI.
 - Product card component.
-- Login/register skeleton.
-- Product detail skeleton.
+- Firebase-backed login/register UI.
+- Product detail API integration.
 - Postman collection.
 - Firebase Hosting config.
 - Secret/log gitignore protection.
@@ -391,11 +439,9 @@ Not done:
 
 - Firebase Hosting deployed successfully.
 - Storage upload tested successfully.
-- Real Firebase login/register UI integration.
-- Real product detail API integration.
-- Cart UI.
+- Full cart drawer/page polish.
 - Add-to-cart behavior.
-- Checkout UI.
+- Production checkout workflow beyond skeleton.
 - Order creation API.
 - Admin product create API.
 - Admin order status API.
@@ -409,9 +455,9 @@ Immediate next steps:
 3. Deploy Firebase Hosting.
 4. Test image upload route.
 5. Connect product detail page to real API.
-6. Connect login/register to `AuthService`.
-7. Build cart UI and add-to-cart behavior.
-8. Build checkout/order UI.
+6. Expand cart UI beyond the current checkout skeleton.
+7. Replace checkout/order skeletons with full production workflows.
+8. Add admin product/order management actions.
 
 ## 9. Simple Final Answer
 
@@ -422,6 +468,6 @@ Current status:
 ```text
 Day 1: Complete.
 Day 2: Complete.
-Day 3: In progress, skeleton UI done, real integrations pending.
+Day 3: Complete for Auth + skeletons.
 Overall: About 40-45% complete.
 ```

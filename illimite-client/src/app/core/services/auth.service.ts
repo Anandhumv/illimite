@@ -2,7 +2,9 @@ import { inject, Injectable, signal } from '@angular/core';
 import {
   Auth,
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut as fbSignOut,
   updateProfile,
   onAuthStateChanged,
@@ -118,6 +120,51 @@ export class AuthService {
       console.error('Sign in failed:', error);
       throw error;
     }
+  }
+
+  /**
+   * Login or register with Google and ensure a Firestore user profile exists.
+   */
+  async signInWithGoogle(): Promise<UserProfile> {
+    try {
+      const provider = new GoogleAuthProvider();
+      const credential = await signInWithPopup(this.auth, provider);
+      const firebaseUser = credential.user;
+      const userDocRef = doc(this.firestore, `users/${firebaseUser.uid}`);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        const profile = userDocSnap.data() as UserProfile;
+        this.currentUser.set(profile);
+        return profile;
+      }
+
+      const userProfile: UserProfile = {
+        uid: firebaseUser.uid,
+        displayName: firebaseUser.displayName || 'Google User',
+        email: firebaseUser.email || '',
+        role: 'customer',
+        createdAt: serverTimestamp()
+      };
+
+      await setDoc(userDocRef, userProfile);
+
+      const localProfile: UserProfile = {
+        ...userProfile,
+        createdAt: new Date()
+      };
+
+      this.currentUser.set(localProfile);
+      return localProfile;
+    } catch (error) {
+      console.error('Google sign in failed:', error);
+      throw error;
+    }
+  }
+
+  async getIdToken(): Promise<string | null> {
+    const user = this.auth.currentUser;
+    return user ? user.getIdToken() : null;
   }
 
   /**

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -16,9 +17,12 @@ export class LoginComponent {
   errorMessage = '';
   isLoading = false;
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) { }
 
-  onSubmit() {
+  async onSubmit() {
     if (!this.email || !this.password) {
       this.errorMessage = 'Please fill in all fields.';
       return;
@@ -27,21 +31,41 @@ export class LoginComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Mock authentication trigger for Day 3 skeleton phase
-    setTimeout(() => {
+    try {
+      await this.authService.signInWithEmailAndPassword(this.email, this.password);
       this.isLoading = false;
-      // Store a temporary flag to unblock routing development
-      localStorage.setItem('token', 'mock-skeleton-jwt-token');
       this.router.navigate(['/']);
-    }, 1000);
+    } catch (error) {
+      this.isLoading = false;
+      this.errorMessage = this.getAuthError(error);
+    }
   }
 
-  loginWithGoogle() {
+  async loginWithGoogle() {
     this.isLoading = true;
-    setTimeout(() => {
+    this.errorMessage = '';
+
+    try {
+      await this.authService.signInWithGoogle();
       this.isLoading = false;
-      localStorage.setItem('token', 'mock-google-skeleton-token');
       this.router.navigate(['/']);
-    }, 1200);
+    } catch (error) {
+      this.isLoading = false;
+      this.errorMessage = this.getAuthError(error);
+    }
+  }
+
+  private getAuthError(error: unknown): string {
+    const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : '';
+
+    if (code.includes('auth/invalid-credential') || code.includes('auth/wrong-password')) {
+      return 'Email or password is incorrect.';
+    }
+
+    if (code.includes('auth/popup-closed-by-user')) {
+      return 'Google sign-in was cancelled.';
+    }
+
+    return 'Unable to sign in right now. Please try again.';
   }
 }

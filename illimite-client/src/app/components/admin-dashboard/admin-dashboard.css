@@ -1,0 +1,90 @@
+.admin-page {
+  display: grid;
+  gap: 24px;
+}
+
+.page-heading p {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.page-heading h1 {
+  color: var(--ink);
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1;
+}
+
+.metric-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.metric-card,
+.admin-panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 22px;
+}
+
+.metric-card p {
+  color: var(--muted);
+  font-size: 0.84rem;
+  margin-bottom: 8px;
+}
+
+.metric-card strong {
+  color: var(--ink);
+  font-size: 2rem;
+}
+
+.admin-panel h2 {
+  color: var(--ink);
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+}
+
+.admin-table {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  overflow: hidden;
+}
+
+.admin-table div {
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  padding: 14px;
+}
+
+.admin-table div:nth-child(-n + 3) {
+  background: var(--panel);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.admin-empty {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  padding: 18px;
+}
+
+.low-stock {
+  color: #9a3f31 !important;
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .metric-grid,
+  .admin-table {
+    grid-template-columns: 1fr;
+  }
+}

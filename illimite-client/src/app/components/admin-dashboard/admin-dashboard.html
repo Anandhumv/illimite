@@ -1,0 +1,38 @@
+<section class="admin-page">
+  <header class="page-heading">
+    <p>Admin</p>
+    <h1>Dashboard skeleton</h1>
+  </header>
+
+  <div class="metric-grid">
+    @for (metric of metrics(); track metric.label) {
+      <article class="metric-card">
+        <p>{{ metric.label }}</p>
+        <strong>{{ metric.value }}</strong>
+      </article>
+    }
+  </div>
+
+  <section class="admin-panel">
+    <h2>Product inventory</h2>
+
+    @if (isLoading()) {
+      <div class="admin-empty">Loading products...</div>
+    } @else if (errorMessage()) {
+      <div class="admin-empty">{{ errorMessage() }}</div>
+    } @else if (products().length === 0) {
+      <div class="admin-empty">No products available.</div>
+    } @else {
+      <div class="admin-table">
+        <div>Product</div>
+        <div>Category</div>
+        <div>Stock</div>
+        @for (product of products(); track product.id) {
+          <div>{{ product.name }}</div>
+          <div>{{ product.categoryName }}</div>
+          <div [class.low-stock]="product.stock <= 5">{{ product.stock }}</div>
+        }
+      </div>
+    }
+  </section>
+</section>

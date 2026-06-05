@@ -1,36 +1,43 @@
 <div class="detail-container">
-    <a routerLink="/" class="back-link">← Back to Curation Catalog</a>
+  <a routerLink="/" class="back-link">Back to catalog</a>
 
-    @if (isLoading) {
-    <div class="loader-placeholder">Loading premium asset specs...</div>
-    } @else {
+  @if (isLoading) {
+    <div class="loader-placeholder">Loading product details...</div>
+  } @else if (errorMessage) {
+    <div class="loader-placeholder loader-placeholder--error">{{ errorMessage }}</div>
+  } @else if (product) {
     <div class="detail-grid">
-        <div class="detail-media-pane">
-            @if (mockProduct.imageUrl) {
-            <img [src]="mockProduct.imageUrl" [alt]="mockProduct.name" class="detail-image" />
-            } @else {
-            <div class="detail-image-fallback">🛋️</div>
-            }
+      <div class="detail-media-pane">
+        @if (product.imageUrl) {
+          <img [src]="product.imageUrl" [alt]="product.name" class="detail-image" />
+        } @else {
+          <div class="detail-image-fallback">{{ product.categoryName.charAt(0).toUpperCase() }}</div>
+        }
+      </div>
+
+      <div class="detail-info-pane">
+        <span class="detail-tag">{{ product.categoryName }}</span>
+        <h1 class="detail-title">{{ product.name }}</h1>
+        <p class="detail-price">{{ formatPrice(product.price) }}</p>
+
+        <div class="detail-divider"></div>
+
+        <p class="detail-description">{{ product.description }}</p>
+
+        <div class="detail-meta">
+          <p class="detail-stock" [class.low-stock]="product.stock <= 5">
+            Availability: <strong>{{ product.stock }} items left in stock</strong>
+          </p>
+          <p class="detail-slug">Reference: <code>{{ product.slug || productSlug }}</code></p>
         </div>
 
-        <div class="detail-info-pane">
-            <span class="detail-tag">{{ mockProduct.categoryName }}</span>
-            <h1 class="detail-title">{{ mockProduct.name }}</h1>
-            <p class="detail-price">{{ formatPrice(mockProduct.price) }}</p>
-
-            <div class="detail-divider"></div>
-
-            <p class="detail-description">{{ mockProduct.description }}</p>
-
-            <div class="detail-meta">
-                <p class="detail-stock" [class.low-stock]="mockProduct.stock <= 5">
-                    Availability: <strong>{{ mockProduct.stock }} items left in stock</strong>
-                </p>
-                <p class="detail-slug">System Identifier Core Reference: <code>{{ productSlug }}</code></p>
-            </div>
-
-            <button class="btn-add-cart">Add to Collection Cart</button>
+        <div class="detail-actions">
+          <button type="button" class="btn-add-cart" (click)="addCurrentProductToCart()">Add to cart</button>
+          @if (cartMessage) {
+            <span>{{ cartMessage }}</span>
+          }
         </div>
+      </div>
     </div>
-    }
+  }
 </div>

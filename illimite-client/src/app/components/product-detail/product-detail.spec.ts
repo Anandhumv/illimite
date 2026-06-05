@@ -1,7 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 
 import { ProductDetailComponent } from './product-detail';
+import { ApiProductService } from '../../services/api-product.service';
+import { CartService } from '../../core/services/cart.service';
 
 describe('ProductDetailComponent', () => {
   let component: ProductDetailComponent;
@@ -20,6 +23,29 @@ describe('ProductDetailComponent', () => {
                 get: () => 'sample-product'
               }
             }
+          }
+        },
+        {
+          provide: ApiProductService,
+          useValue: {
+            getProductById: () => of({
+              id: 'sample-product',
+              slug: 'sample-product',
+              name: 'Sample Product',
+              description: 'Sample description',
+              price: 99,
+              imageUrl: '',
+              categoryId: 'decor',
+              categoryName: 'Decor',
+              stock: 10,
+              createdAt: new Date().toISOString()
+            })
+          }
+        },
+        {
+          provide: CartService,
+          useValue: {
+            addToCart: () => Promise.resolve()
           }
         }
       ]

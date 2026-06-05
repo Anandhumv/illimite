@@ -1,0 +1,60 @@
+.orders-page,
+.orders-list {
+  display: grid;
+  gap: 20px;
+}
+
+.page-heading p {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.page-heading h1 {
+  color: var(--ink);
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1;
+}
+
+.panel,
+.order-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  padding: 22px;
+}
+
+.order-card {
+  align-items: center;
+  color: var(--ink);
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr auto auto;
+}
+
+.order-card h2 {
+  font-size: 1rem;
+}
+
+.order-card p {
+  color: var(--muted);
+}
+
+.order-card span {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .order-card {
+    align-items: start;
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,18 @@
+.ui-dialog {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  margin-bottom: 18px;
+  padding: 12px 16px;
+}
+
+.ui-dialog--success {
+  border-color: rgba(52, 80, 69, 0.35);
+  color: #345045;
+}
+
+.ui-dialog--error {
+  border-color: #d6aaa0;
+  color: #9a3f31;
+}

@@ -1,5 +1,7 @@
 import { inject, Injectable, signal, effect, untracked } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Firestore, doc, getDoc, setDoc, serverTimestamp } from '@angular/fire/firestore';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from './auth.service';
 import { Cart, CartItem } from '../models/cart.model';
 
@@ -7,11 +9,13 @@ import { Cart, CartItem } from '../models/cart.model';
   providedIn: 'root'
 })
 export class CartService {
+  private readonly http = inject(HttpClient);
   private readonly firestore = inject(Firestore);
   private readonly authService = inject(AuthService);
 
   readonly cartItems = signal<CartItem[]>([]);
   private readonly GUEST_CART_KEY = 'illimite_guest_cart';
+  private readonly apiBaseUrl = 'http://localhost:5000/api';
 
   constructor() {
     // Monitor auth state changes to load and sync cart
@@ -120,14 +124,9 @@ export class CartService {
     const user = this.authService.currentUser();
     if (user) {
       try {
-        const cartDocRef = doc(this.firestore, `carts/${user.uid}`);
-        await setDoc(cartDocRef, {
-          uid: user.uid,
-          items,
-          updatedAt: serverTimestamp()
-        });
+        await firstValueFrom(this.http.post(`${this.apiBaseUrl}/cart/items`, { items }));
       } catch (error) {
-        console.error('Error saving cart to Firestore:', error);
+        console.error('Error saving cart through API:', error);
       }
     } else {
       this.saveGuestCart(items);

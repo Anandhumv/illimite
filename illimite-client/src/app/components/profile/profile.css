@@ -1,0 +1,62 @@
+.profile-page {
+  display: grid;
+  gap: 24px;
+}
+
+.page-heading p {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.page-heading h1 {
+  color: var(--ink);
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1;
+}
+
+.profile-panel {
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  gap: 18px;
+  padding: 24px;
+}
+
+.profile-avatar {
+  align-items: center;
+  background: var(--ink);
+  border-radius: 50%;
+  color: var(--card);
+  display: flex;
+  font-size: 1.4rem;
+  font-weight: 800;
+  height: 64px;
+  justify-content: center;
+  width: 64px;
+}
+
+.profile-panel h2 {
+  color: var(--ink);
+  font-size: 1.35rem;
+  margin-bottom: 4px;
+}
+
+.profile-panel p {
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.profile-panel span,
+.profile-panel a {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}

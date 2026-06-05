@@ -1,0 +1,5 @@
+@if (message) {
+  <div class="ui-dialog" [class.ui-dialog--success]="tone === 'success'" [class.ui-dialog--error]="tone === 'error'">
+    {{ message }}
+  </div>
+}
