@@ -11,12 +11,12 @@
     <form class="auth-form" (ngSubmit)="onRegister()" #registerForm="ngForm">
       <div class="form-group">
         <label for="name">Full Name</label>
-        <input type="text" id="name" name="name" [(ngModel)]="name" required placeholder="Anandhu M V" />
+        <input type="text" id="name" name="name" [(ngModel)]="name" required />
       </div>
 
       <div class="form-group">
         <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" [(ngModel)]="email" required placeholder="name@example.com" />
+        <input type="email" id="email" name="email" [(ngModel)]="email" required />
       </div>
 
       <div class="form-group">
@@ -27,7 +27,6 @@
           name="password"
           [(ngModel)]="password"
           required
-          placeholder="Minimum 6 characters"
         />
       </div>
 

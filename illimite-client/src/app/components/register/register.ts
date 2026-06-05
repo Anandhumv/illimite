@@ -44,6 +44,7 @@ export class RegisterComponent {
 
   private getAuthError(error: unknown): string {
     const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : '';
+    const message = typeof error === 'object' && error && 'message' in error ? String(error.message) : '';
 
     if (code.includes('auth/email-already-in-use')) {
       return 'An account already exists for this email.';
@@ -51,6 +52,30 @@ export class RegisterComponent {
 
     if (code.includes('auth/weak-password')) {
       return 'Password must be at least 6 characters.';
+    }
+
+    if (code.includes('auth/operation-not-allowed')) {
+      return 'Email/password sign-up is not enabled in Firebase Authentication.';
+    }
+
+    if (code.includes('auth/invalid-email')) {
+      return 'Enter a valid email address.';
+    }
+
+    if (code.includes('auth/network-request-failed')) {
+      return 'Network error. Check your internet connection and try again.';
+    }
+
+    if (code.includes('auth/api-key-not-valid')) {
+      return 'Firebase API key is invalid. Check the Angular environment config.';
+    }
+
+    if (code.includes('auth/unauthorized-domain')) {
+      return 'This localhost/domain is not allowed in Firebase Authentication settings.';
+    }
+
+    if (code || message) {
+      return `${code || 'Firebase error'}: ${message || 'Unable to create account.'}`;
     }
 
     return 'Unable to create your account right now. Please try again.';

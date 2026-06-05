@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   firebase: {
-    apiKey: 'AIzaSyBkuwnSnT9HDbwTR6EJhZBzs4QNJLQvVRc',
+    apiKey: 'AIzaSyBkuwnSnT9HDbwTR6EJhZBzs4QNJLQVvRc',
     authDomain: 'illimite-ec139.firebaseapp.com',
     projectId: 'illimite-ec139',
     storageBucket: 'illimite-ec139.firebasestorage.app',
