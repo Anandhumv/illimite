@@ -1,9 +1,9 @@
 const express = require('express');
 const cors = require('cors');
+const { admin, db, bucket } = require('./config/firebase');
 require('dotenv').config();
 
 // 1. Import your central Firebase configuration module and upload router
-const { db } = require('./config/firebase');
 const uploadRouter = require('./routes/upload');
 
 const app = express();
@@ -83,6 +83,25 @@ app.patch('/api/orders/:id/status', (req, res) => {
     status: req.body.status,
     message: 'Order status updated'
   });
+});
+// GET /api/admin/products — Task 3.6
+app.get('/api/admin/products', async (req, res) => {
+  try {
+    const snapshot = await db.collection('products')
+      .where('active', '==', true)
+      .get();
+    const products = snapshot.docs.map(doc => ({
+      id: doc.id,
+      name: doc.data().name,
+      price: doc.data().price,
+      stock: doc.data().stock,
+      category: doc.data().category
+    }));
+    res.status(200).json(products);
+  } catch (err) {
+    console.error('[Server] Error fetching admin products:', err.message);
+    res.status(500).json({ error: 'Failed to fetch products', details: err.message });
+  }
 });
 // --- Start Server ---
 const PORT = process.env.PORT || 5000;
