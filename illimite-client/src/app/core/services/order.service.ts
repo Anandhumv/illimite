@@ -54,8 +54,11 @@ export class OrderService {
   }
 
   async getOrderById(orderId: string): Promise<Order | null> {
-    const orders = await this.getUserOrders();
-    return orders.find(order => order.id === orderId) || null;
+    return await firstValueFrom(this.http.get<Order>(`${this.apiBaseUrl}/orders/${orderId}`));
+  }
+
+  async getAllOrders(): Promise<Order[]> {
+    return await firstValueFrom(this.http.get<Order[]>(`${this.apiBaseUrl}/admin/orders`));
   }
 
   async updateOrderStatus(orderId: string, status: OrderStatus): Promise<void> {

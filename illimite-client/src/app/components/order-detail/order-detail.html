@@ -1,0 +1,54 @@
+<section class="order-detail-page">
+  <a class="back-link" routerLink="/orders">Back to orders</a>
+
+  @if (isLoading()) {
+    <div class="panel">Loading order...</div>
+  } @else if (message()) {
+    <div class="panel">{{ message() }}</div>
+  } @else if (order(); as orderData) {
+    <header class="page-heading">
+      <p>Order detail</p>
+      <h1>{{ orderData.id }}</h1>
+    </header>
+
+    <div class="detail-grid">
+      <section class="panel">
+        <h2>Items</h2>
+        @for (item of orderData.items; track item.productId) {
+          <div class="order-row">
+            @if (item.imageUrl) {
+              <img [src]="item.imageUrl" [alt]="item.name || item.productId" />
+            } @else {
+              <span class="thumb">IL</span>
+            }
+            <div>
+              <strong>{{ item.name || item.productId }}</strong>
+              <p>{{ item.qty }} x {{ item.price | currency }}</p>
+            </div>
+            <strong>{{ item.qty * item.price | currency }}</strong>
+          </div>
+        }
+      </section>
+
+      <aside class="panel summary">
+        <h2>Summary</h2>
+        <div>
+          <span>Status</span>
+          <strong>{{ orderData.status }}</strong>
+        </div>
+        <div>
+          <span>Payment</span>
+          <strong>{{ orderData.paymentRef }}</strong>
+        </div>
+        <div>
+          <span>Ship to</span>
+          <strong>{{ orderData.shippingAddress }}</strong>
+        </div>
+        <div class="total">
+          <span>Total</span>
+          <strong>{{ orderData.total | currency }}</strong>
+        </div>
+      </aside>
+    </div>
+  }
+</section>

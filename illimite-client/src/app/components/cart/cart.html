@@ -1,0 +1,69 @@
+<section class="cart-page">
+  <header class="page-heading">
+    <p>Cart</p>
+    <h1>Your selected pieces</h1>
+  </header>
+
+  @if (cartService.cartItems().length === 0) {
+    <section class="empty-panel">
+      <h2>Your cart is empty</h2>
+      <p>Start with the catalog and add products you want to review.</p>
+      <a routerLink="/">Browse catalog</a>
+    </section>
+  } @else {
+    <div class="cart-layout">
+      <section class="cart-list" aria-label="Cart items">
+        @for (item of cartService.cartItems(); track item.productId) {
+          <article class="cart-item">
+            @if (productFor(item.productId); as product) {
+              @if (product.imageUrl) {
+                <img [src]="product.imageUrl" [alt]="product.name" />
+              } @else {
+                <div class="cart-thumb">{{ product.categoryName.charAt(0).toUpperCase() }}</div>
+              }
+              <div class="cart-item__details">
+                <p>{{ product.categoryName }}</p>
+                <h2>{{ product.name }}</h2>
+                <span>{{ item.priceAtAdd | currency }} each</span>
+              </div>
+            } @else {
+              <div class="cart-thumb">IL</div>
+              <div class="cart-item__details">
+                <p>Product</p>
+                <h2>{{ item.productId }}</h2>
+                <span>{{ item.priceAtAdd | currency }} each</span>
+              </div>
+            }
+
+            <label>
+              Qty
+              <input
+                type="number"
+                min="1"
+                [ngModel]="item.qty"
+                (ngModelChange)="updateQuantity(item.productId, $event)"
+              />
+            </label>
+
+            <strong>{{ item.qty * item.priceAtAdd | currency }}</strong>
+            <button type="button" class="text-action" (click)="removeItem(item.productId)">Remove</button>
+          </article>
+        }
+      </section>
+
+      <aside class="cart-summary">
+        <h2>Summary</h2>
+        <div>
+          <span>Items</span>
+          <strong>{{ cartService.cartItems().length }}</strong>
+        </div>
+        <div class="total">
+          <span>Total</span>
+          <strong>{{ total() | currency }}</strong>
+        </div>
+        <a class="primary-action" routerLink="/checkout">Continue to checkout</a>
+        <button type="button" class="secondary-action" (click)="clearCart()">Clear cart</button>
+      </aside>
+    </div>
+  }
+</section>

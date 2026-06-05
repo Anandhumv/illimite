@@ -1,0 +1,28 @@
+<section class="confirmation-page">
+  @if (isLoading()) {
+    <div class="confirmation-panel">Loading order confirmation...</div>
+  } @else if (message()) {
+    <div class="confirmation-panel">{{ message() }}</div>
+  } @else if (order(); as orderData) {
+    <section class="confirmation-panel">
+      <p>Order confirmed</p>
+      <h1>Thank you for your order.</h1>
+      <div class="order-meta">
+        <span>Order ID</span>
+        <strong>{{ orderData.id }}</strong>
+      </div>
+      <div class="order-meta">
+        <span>Status</span>
+        <strong>{{ orderData.status }}</strong>
+      </div>
+      <div class="order-meta total">
+        <span>Total</span>
+        <strong>{{ orderData.total | currency }}</strong>
+      </div>
+      <div class="actions">
+        <a routerLink="/orders">View orders</a>
+        <a routerLink="/">Continue shopping</a>
+      </div>
+    </section>
+  }
+</section>

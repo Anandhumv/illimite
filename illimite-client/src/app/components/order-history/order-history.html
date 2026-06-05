@@ -20,6 +20,7 @@
           </div>
           <strong>{{ order.total | currency }}</strong>
           <span>{{ order.status }}</span>
+          <a [routerLink]="['/orders', order.id]">Details</a>
         </article>
       }
     </div>

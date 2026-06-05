@@ -11,10 +11,11 @@ Day 1: Complete
 Day 2: Complete
 Day 3: Complete for Auth + skeletons
 Day 4: Complete for real-data core build
-Overall project completion: about 55-60%
+Day 5: Complete for cart/order/admin polish + security rules
+Overall project completion: about 65-70%
 ```
 
-The app is now an early ecommerce MVP with Firebase setup, backend API foundation, seeded product/category data, a searchable/filterable product catalog, Firebase-backed auth screens, protected routes, product detail loading, add-to-cart behavior, API-backed cart/order flows, order history, profile, and an admin product inventory view.
+The app is now an early ecommerce MVP with Firebase setup, backend API foundation, seeded product/category data, a searchable/filterable product catalog, Firebase-backed auth screens, protected routes, product detail loading, add-to-cart behavior, API-backed cart/order flows, a dedicated cart page, checkout confirmation, order detail pages, order history, profile, admin product management, admin order management, and Firebase security rules files.
 
 ## Completed Work
 
@@ -145,6 +146,63 @@ Completed:
 - Order history loads from the protected backend order API.
 - Admin dashboard lists real products from the backend API.
 
+### Day 5 - Cart, Orders, Admin Management, Security Rules
+
+Completed:
+
+- Dedicated cart page exists:
+
+```text
+/cart
+```
+
+- Cart page supports quantity updates, item removal, clear cart, and checkout navigation.
+- Checkout redirects to an order confirmation page after successful order creation:
+
+```text
+/orders/:id/confirmation
+```
+
+- Order detail page exists:
+
+```text
+/orders/:id
+```
+
+- Order history links to the order detail page.
+- Admin dashboard supports product create/edit/delete through protected backend API routes.
+- Admin dashboard lists real orders and can update fulfillment status.
+- Backend admin-only role middleware exists.
+- Backend product management routes exist:
+
+```text
+POST /api/products
+PATCH /api/products/:id
+DELETE /api/products/:id
+```
+
+- Backend order detail and admin order routes exist:
+
+```text
+GET /api/orders/:id
+GET /api/admin/orders
+PATCH /api/orders/:id/status
+```
+
+- Firestore rules file exists:
+
+```text
+firestore.rules
+```
+
+- Storage rules file exists:
+
+```text
+storage.rules
+```
+
+- Firebase config now references Firestore and Storage rules.
+
 ## Current Frontend Structure
 
 Main frontend path:
@@ -176,8 +234,11 @@ Current frontend routes:
 /register
 /products/:slug
 /profile
+/cart
 /checkout
 /orders
+/orders/:id
+/orders/:id/confirmation
 /admin
 ```
 
@@ -189,8 +250,11 @@ components/register
 components/profile
 components/product-card
 components/product-detail
+components/cart
 components/checkout
 components/order-history
+components/order-detail
+components/order-confirmation
 components/admin-dashboard
 ```
 
@@ -222,6 +286,12 @@ GET /api/products/:id
 GET /api/auth/session
 POST /api/upload/product-image
 POST /api/cart/items
+POST /api/products
+PATCH /api/products/:id
+DELETE /api/products/:id
+GET /api/orders
+GET /api/orders/:id
+GET /api/admin/orders
 POST /api/orders
 PATCH /api/orders/:id/status
 ```
@@ -255,8 +325,7 @@ This warning is not blocking development, but it should be optimized before prod
 
 ### Immediate Next Work
 
-1. Commit and push the current Day 3 and Day 4 changes.
-2. Run the app locally and manually test:
+1. Run the app locally and manually test:
    - register
    - login
    - Google sign-in
@@ -264,12 +333,16 @@ This warning is not blocking development, but it should be optimized before prod
    - profile route
    - product detail route
    - add to cart
-   - checkout skeleton
-   - order history skeleton
-   - admin skeleton
-3. Confirm Firebase Authentication providers are enabled in the Firebase console:
+   - cart page
+   - checkout order creation
+   - order confirmation
+   - order detail
+   - admin product create/edit/delete
+   - admin order status update
+2. Confirm Firebase Authentication providers are enabled in the Firebase console:
    - Email/password
    - Google
+3. Deploy Firestore and Storage rules after reviewing the admin role/user setup.
 
 ### Product/Catalog Improvements
 
@@ -280,23 +353,19 @@ This warning is not blocking development, but it should be optimized before prod
 
 ### Cart/Checkout Improvements
 
-- Build a polished cart drawer or cart page.
-- Add order confirmation page after checkout.
 - Add delivery/contact fields to checkout.
 - Add payment provider integration when ready.
 
 ### Order/Admin Improvements
 
-- Add order detail page.
-- Add admin product create/edit/delete.
-- Add admin order status update UI.
-- Add admin order list connected to backend data.
+- Add admin product image upload flow.
+- Add richer order filtering/search for admin.
 
 ### Security/Production Work
 
 - Restrict CORS to the deployed frontend domain.
-- Confirm Firestore security rules.
-- Confirm Firebase Storage security rules.
+- Deploy and manually verify Firestore security rules.
+- Deploy and manually verify Firebase Storage security rules.
 - Avoid committing service account keys.
 - Add environment-based API URLs instead of hardcoded `http://localhost:5000/api`.
 - Optimize Angular bundle size.
@@ -310,6 +379,7 @@ Day 1: Firebase + Angular + Express setup complete.
 Day 2: Product/category data model + seed + API contract complete.
 Day 3: Auth + product detail + protected route skeletons complete.
 Day 4: Core real-data catalog, cart, checkout, orders, and admin product listing complete.
+Day 5: Cart page, order confirmation/detail, admin CRUD/order management, and security rules complete.
 ```
 
-The next major phase is to add production polish: full cart drawer/page, order confirmation/details, admin create/edit/delete, admin order management, and deployment hardening.
+The next major phase is to test the end-to-end flows in the browser, deploy/review Firebase rules, and continue toward payment/admin polish.

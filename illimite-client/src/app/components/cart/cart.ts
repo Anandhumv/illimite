@@ -2,30 +2,23 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Router } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
-import { OrderService } from '../../core/services/order.service';
 import { ApiProductService } from '../../services/api-product.service';
 import { Product } from '../../models/product.model';
 
 @Component({
-  selector: 'app-checkout',
+  selector: 'app-cart',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './checkout.html',
-  styleUrl: './checkout.css'
+  templateUrl: './cart.html',
+  styleUrl: './cart.css'
 })
-export class CheckoutComponent implements OnInit {
+export class CartComponent implements OnInit {
   readonly cartService = inject(CartService);
-  private readonly orderService = inject(OrderService);
   private readonly apiProductService = inject(ApiProductService);
-  private readonly router = inject(Router);
 
-  shippingAddress = '';
-  paymentRef = 'mock-payment-ref';
-  readonly message = signal('');
-  readonly isSubmitting = signal(false);
   readonly productLookup = signal<Record<string, Product>>({});
+  readonly isLoading = signal(true);
   readonly total = computed(() =>
     this.cartService.cartItems().reduce((sum, item) => sum + item.qty * item.priceAtAdd, 0)
   );
@@ -40,8 +33,9 @@ export class CheckoutComponent implements OnInit {
             return lookup;
           }, {})
         );
+        this.isLoading.set(false);
       },
-      error: (err) => console.error('Failed to load checkout product summaries:', err)
+      error: () => this.isLoading.set(false)
     });
   }
 
@@ -50,31 +44,14 @@ export class CheckoutComponent implements OnInit {
   }
 
   async updateQuantity(productId: string, qty: number): Promise<void> {
-    await this.cartService.updateQuantity(productId, qty);
+    await this.cartService.updateQuantity(productId, Number(qty));
   }
 
   async removeItem(productId: string): Promise<void> {
     await this.cartService.removeFromCart(productId);
   }
 
-  async submitOrder(): Promise<void> {
-    this.message.set('');
-
-    if (!this.shippingAddress.trim()) {
-      this.message.set('Add a shipping address before placing the order.');
-      return;
-    }
-
-    this.isSubmitting.set(true);
-
-    try {
-      const order = await this.orderService.placeOrder(this.shippingAddress, this.paymentRef);
-      await this.router.navigate(['/orders', order.id, 'confirmation']);
-    } catch (error) {
-      const fallback = 'Checkout skeleton is ready. Sign in and add cart items to place an order.';
-      this.message.set(error instanceof Error ? error.message : fallback);
-    } finally {
-      this.isSubmitting.set(false);
-    }
+  async clearCart(): Promise<void> {
+    await this.cartService.clearCart();
   }
 }
