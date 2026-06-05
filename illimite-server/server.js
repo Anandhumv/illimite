@@ -3,12 +3,8 @@ const cors = require('cors');
 const { admin, db, bucket } = require('./config/firebase');
 require('dotenv').config();
 
-<<<<<<< HEAD
-// 1. Import your central Firebase configuration module and upload router
-=======
-const { db } = require('./config/firebase');
->>>>>>> d961d8a6c5126d280d12b7c25c9d50724a8207b8
 const uploadRouter = require('./routes/upload');
+const cartRouter = require('./routes/cart');
 const { verifyFirebaseToken } = require('./middleware/auth');
 
 const app = express();
@@ -33,6 +29,7 @@ app.get('/api/auth/session', verifyFirebaseToken, (req, res) => {
 });
 
 app.use('/api/upload', uploadRouter);
+app.use('/api/cart', cartRouter);
 
 async function requireAdmin(req, res, next) {
   try {
@@ -189,30 +186,6 @@ app.delete('/api/products/:id', verifyFirebaseToken, requireAdmin, async (req, r
   }
 });
 
-app.post('/api/cart/items', verifyFirebaseToken, async (req, res) => {
-  const items = Array.isArray(req.body?.items) ? req.body.items : [];
-
-  try {
-    await db.collection('carts').doc(req.user.uid).set({
-      uid: req.user.uid,
-      items,
-      updatedAt: new Date().toISOString()
-    }, { merge: true });
-
-    res.status(200).json({
-      success: true,
-      message: 'Cart synchronized successfully',
-      cart: {
-        uid: req.user.uid,
-        items
-      }
-    });
-  } catch (err) {
-    console.error('[Server] Error syncing cart:', err.message);
-    res.status(500).json({ error: 'Failed to synchronize cart', details: err.message });
-  }
-});
-
 app.get('/api/orders', verifyFirebaseToken, async (req, res) => {
   try {
     const snapshot = await db.collection('orders')
@@ -228,48 +201,6 @@ app.get('/api/orders', verifyFirebaseToken, async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-// GET /api/orders - Return hardcoded order history
-app.get('/api/orders', (req, res) => {
-  const orders = [
-    { id: 'ORD001', date: '2026-06-01', items: 2, status: 'Delivered', total: 59.97 },
-    { id: 'ORD002', date: '2026-06-03', items: 1, status: 'Pending', total: 29.99 }
-  ];
-  res.status(200).json(orders);
-});
-
-// PATCH /api/orders/:id/status - Mock Day 2 contract route for fulfillment states
-app.patch('/api/orders/:id/status', (req, res) => {
-  res.status(200).json({
-    success: true,
-    orderId: req.params.id,
-    status: req.body.status,
-    message: 'Order status updated'
-  });
-});
-// GET /api/admin/products — Task 3.6
-app.get('/api/admin/products', async (req, res) => {
-  try {
-    const snapshot = await db.collection('products')
-      .where('active', '==', true)
-      .get();
-    const products = snapshot.docs.map(doc => ({
-      id: doc.id,
-      name: doc.data().name,
-      price: doc.data().price,
-      stock: doc.data().stock,
-      category: doc.data().category
-    }));
-    res.status(200).json(products);
-  } catch (err) {
-    console.error('[Server] Error fetching admin products:', err.message);
-    res.status(500).json({ error: 'Failed to fetch products', details: err.message });
-  }
-});
-// --- Start Server ---
-=======
-=======
 app.get('/api/admin/orders', verifyFirebaseToken, requireAdmin, async (req, res) => {
   try {
     const snapshot = await db.collection('orders').orderBy('createdAt', 'desc').get();
@@ -304,7 +235,6 @@ app.get('/api/orders/:id', verifyFirebaseToken, async (req, res) => {
   }
 });
 
->>>>>>> main
 app.post('/api/orders', verifyFirebaseToken, async (req, res) => {
   const items = Array.isArray(req.body?.items) ? req.body.items : [];
   const shippingAddress = req.body?.shippingAddress || '';
@@ -422,7 +352,6 @@ app.patch('/api/orders/:id/status', verifyFirebaseToken, requireAdmin, async (re
   }
 });
 
->>>>>>> d961d8a6c5126d280d12b7c25c9d50724a8207b8
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Backend server is running smoothly on port ${PORT}`);
