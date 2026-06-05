@@ -7,6 +7,7 @@
 
     <nav class="app-nav" aria-label="Primary navigation">
       <a mat-button routerLink="/">Catalog</a>
+      <a mat-button routerLink="/cart">Cart</a>
       <a mat-button routerLink="/checkout">Checkout</a>
       <a mat-button routerLink="/orders">Orders</a>
       @if (isAdmin()) {
@@ -21,7 +22,7 @@
       }
     </nav>
 
-    <button mat-stroked-button class="cart-action" routerLink="/checkout" [matBadge]="cartCount()" matBadgeSize="small">
+    <button mat-stroked-button class="cart-action" routerLink="/cart" [matBadge]="cartCount()" matBadgeSize="small">
       Cart
     </button>
   </mat-toolbar>

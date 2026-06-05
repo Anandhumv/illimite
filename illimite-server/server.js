@@ -34,6 +34,25 @@ app.get('/api/auth/session', verifyFirebaseToken, (req, res) => {
 
 app.use('/api/upload', uploadRouter);
 
+async function requireAdmin(req, res, next) {
+  try {
+    const userDoc = await db.collection('users').doc(req.user.uid).get();
+    const role = userDoc.exists ? userDoc.data().role : 'customer';
+
+    if (role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Admin access required'
+      });
+    }
+
+    return next();
+  } catch (err) {
+    console.error('[Server] Error checking admin role:', err.message);
+    return res.status(500).json({ error: 'Failed to verify admin role', details: err.message });
+  }
+}
+
 app.get('/api/categories', async (req, res) => {
   try {
     const snapshot = await db.collection('categories').get();
@@ -68,6 +87,105 @@ app.get('/api/products/:id', async (req, res) => {
   } catch (err) {
     console.error('[Server] Error fetching product:', err.message);
     res.status(500).json({ error: 'Failed to fetch product', details: err.message });
+  }
+});
+
+app.post('/api/products', verifyFirebaseToken, requireAdmin, async (req, res) => {
+  const product = req.body || {};
+  const requiredFields = ['name', 'slug', 'description', 'price', 'categoryId', 'categoryName', 'stock'];
+  const missing = requiredFields.filter(field => product[field] === undefined || product[field] === '');
+
+  if (missing.length) {
+    return res.status(400).json({ error: `Missing product fields: ${missing.join(', ')}` });
+  }
+
+  try {
+    const productId = product.id || product.slug;
+    const productData = {
+      id: productId,
+      slug: product.slug,
+      name: product.name,
+      description: product.description,
+      price: Number(product.price),
+      imageUrl: product.imageUrl || '',
+      imageUrls: Array.isArray(product.imageUrls) ? product.imageUrls : product.imageUrl ? [product.imageUrl] : [],
+      categoryId: product.categoryId,
+      categoryName: product.categoryName,
+      stock: Number(product.stock),
+      createdAt: product.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    await db.collection('products').doc(productId).set(productData);
+    res.status(201).json({ success: true, product: productData, message: 'Product created successfully' });
+  } catch (err) {
+    console.error('[Server] Error creating product:', err.message);
+    res.status(500).json({ error: 'Failed to create product', details: err.message });
+  }
+});
+
+app.patch('/api/products/:id', verifyFirebaseToken, requireAdmin, async (req, res) => {
+  const updates = req.body || {};
+  const allowedFields = [
+    'slug',
+    'name',
+    'description',
+    'price',
+    'imageUrl',
+    'imageUrls',
+    'categoryId',
+    'categoryName',
+    'stock'
+  ];
+
+  const productUpdates = allowedFields.reduce((acc, field) => {
+    if (updates[field] !== undefined) {
+      acc[field] = ['price', 'stock'].includes(field) ? Number(updates[field]) : updates[field];
+    }
+    return acc;
+  }, {});
+
+  if (!Object.keys(productUpdates).length) {
+    return res.status(400).json({ error: 'No valid product fields supplied' });
+  }
+
+  try {
+    const productRef = db.collection('products').doc(req.params.id);
+    const productSnap = await productRef.get();
+
+    if (!productSnap.exists) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    productUpdates.updatedAt = new Date().toISOString();
+    await productRef.set(productUpdates, { merge: true });
+
+    const updated = await productRef.get();
+    res.status(200).json({
+      success: true,
+      product: { id: updated.id, ...updated.data() },
+      message: 'Product updated successfully'
+    });
+  } catch (err) {
+    console.error('[Server] Error updating product:', err.message);
+    res.status(500).json({ error: 'Failed to update product', details: err.message });
+  }
+});
+
+app.delete('/api/products/:id', verifyFirebaseToken, requireAdmin, async (req, res) => {
+  try {
+    const productRef = db.collection('products').doc(req.params.id);
+    const productSnap = await productRef.get();
+
+    if (!productSnap.exists) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    await productRef.delete();
+    res.status(200).json({ success: true, productId: req.params.id, message: 'Product deleted successfully' });
+  } catch (err) {
+    console.error('[Server] Error deleting product:', err.message);
+    res.status(500).json({ error: 'Failed to delete product', details: err.message });
   }
 });
 
@@ -111,6 +229,7 @@ app.get('/api/orders', verifyFirebaseToken, async (req, res) => {
 });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // GET /api/orders - Return hardcoded order history
 app.get('/api/orders', (req, res) => {
   const orders = [
@@ -150,6 +269,42 @@ app.get('/api/admin/products', async (req, res) => {
 });
 // --- Start Server ---
 =======
+=======
+app.get('/api/admin/orders', verifyFirebaseToken, requireAdmin, async (req, res) => {
+  try {
+    const snapshot = await db.collection('orders').orderBy('createdAt', 'desc').get();
+    const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.status(200).json(orders);
+  } catch (err) {
+    console.error('[Server] Error fetching admin orders:', err.message);
+    res.status(500).json({ error: 'Failed to fetch admin orders', details: err.message });
+  }
+});
+
+app.get('/api/orders/:id', verifyFirebaseToken, async (req, res) => {
+  try {
+    const orderDoc = await db.collection('orders').doc(req.params.id).get();
+
+    if (!orderDoc.exists) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    const order = { id: orderDoc.id, ...orderDoc.data() };
+    const userDoc = await db.collection('users').doc(req.user.uid).get();
+    const role = userDoc.exists ? userDoc.data().role : 'customer';
+
+    if (order.userId !== req.user.uid && role !== 'admin') {
+      return res.status(403).json({ error: 'You cannot view this order' });
+    }
+
+    res.status(200).json(order);
+  } catch (err) {
+    console.error('[Server] Error fetching order:', err.message);
+    res.status(500).json({ error: 'Failed to fetch order', details: err.message });
+  }
+});
+
+>>>>>>> main
 app.post('/api/orders', verifyFirebaseToken, async (req, res) => {
   const items = Array.isArray(req.body?.items) ? req.body.items : [];
   const shippingAddress = req.body?.shippingAddress || '';
@@ -242,7 +397,7 @@ app.post('/api/orders', verifyFirebaseToken, async (req, res) => {
   }
 });
 
-app.patch('/api/orders/:id/status', verifyFirebaseToken, async (req, res) => {
+app.patch('/api/orders/:id/status', verifyFirebaseToken, requireAdmin, async (req, res) => {
   const status = req.body?.status;
 
   if (!status) {

@@ -5,6 +5,7 @@ export interface Product {
   description: string;
   price: number;
   imageUrl: string;
+  imageUrls?: string[];
   categoryId: string;  // Explicit link to the matching categories collection document
   categoryName: string;// Denormalized field for fast rendering without separate queries
   stock: number;       // Corrected property name matching your checkout transaction

@@ -1,4 +1,10 @@
 {
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
   "hosting": {
     "public": "illimite-client/dist/illimite-client/browser",
     "ignore": [

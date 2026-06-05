@@ -33,7 +33,7 @@
   color: var(--ink);
   display: grid;
   gap: 16px;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr auto auto auto;
 }
 
 .order-card h2 {
@@ -50,6 +50,15 @@
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.order-card a {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font-weight: 800;
+  padding: 10px 12px;
+  text-decoration: none;
 }
 
 @media (max-width: 700px) {
