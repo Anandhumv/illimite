@@ -116,6 +116,12 @@ export class App implements OnInit {
   }
 
   async addToCart(product: Product): Promise<void> {
+    if (!this.authService.currentUser()) {
+      this.toastService.info('Please login or register before adding products to cart.');
+      await this.router.navigate(['/login']);
+      return;
+    }
+
     try {
       await this.cartService.addToCart(product.id || product.slug, 1, product.price);
       this.toastService.success(`${product.name} added to cart.`);

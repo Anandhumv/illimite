@@ -31,11 +31,16 @@ export class CartService {
           // Logged in user: load from Firestore, merging any guest cart items
           await this.syncGuestCartToFirestore(user.uid);
         } else {
-          // Guest user: load from local storage
-          this.loadGuestCart();
+          // Guests cannot keep cart state. Require auth before cart writes.
+          this.clearGuestCartState();
         }
       });
     });
+  }
+
+  private clearGuestCartState(): void {
+    this.cartItems.set([]);
+    localStorage.removeItem(this.GUEST_CART_KEY);
   }
 
   /**
@@ -130,7 +135,8 @@ export class CartService {
         console.error('Error saving cart through API:', error);
       }
     } else {
-      this.saveGuestCart(normalizedItems);
+      this.clearGuestCartState();
+      throw new Error('User must be logged in to use the cart.');
     }
   }
 

@@ -25,6 +25,29 @@ const categories = [
   { id: 'bathroom', name: 'Bathroom', slug: 'bathroom', imageUrl: `${placeholderImage}+Bathroom` }
 ];
 
+const productImages = {
+  'aura-pendant-light': 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=900&q=80',
+  'solis-brass-desk-lamp': 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=900&q=80',
+  'lumiere-wall-sconce': 'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?auto=format&fit=crop&w=900&q=80',
+  'monolith-lounge-chair': 'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?auto=format&fit=crop&w=900&q=80',
+  'nordic-oak-dining-table': 'https://images.unsplash.com/photo-1577140917170-285929fb55b7?auto=format&fit=crop&w=900&q=80',
+  'sora-wool-rug': 'https://images.unsplash.com/photo-1600166898405-da9535204843?auto=format&fit=crop&w=900&q=80',
+  'zenith-ceramic-vase': 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=900&q=80',
+  'forma-ceramic-vase-set': 'https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?auto=format&fit=crop&w=900&q=80',
+  'chronos-walnut-wall-clock': 'https://images.unsplash.com/photo-1501139083538-0139583c060f?auto=format&fit=crop&w=900&q=80',
+  'terra-cotta-plant-pot': 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=900&q=80',
+  'nexus-wireless-charger': 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?auto=format&fit=crop&w=900&q=80',
+  'aether-noise-cancelling-headphones': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80',
+  'ember-temperature-control-mug': 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=900&q=80',
+  'flux-leather-desk-pad': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80',
+  'somnus-weighted-blanket': 'https://images.unsplash.com/photo-1616627561950-9f746e330187?auto=format&fit=crop&w=900&q=80',
+  'vaporstone-ultrasonic-diffuser': 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80',
+  'cura-essential-oils-set': 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=900&q=80',
+  'verde-linen-bedding-set': 'https://images.unsplash.com/photo-1615874694520-474822394e73?auto=format&fit=crop&w=900&q=80',
+  'hale-bamboo-bath-mat': 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=900&q=80',
+  'meridian-turkish-towel-set': 'https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=900&q=80'
+};
+
 const products = [
   { slug: 'aura-pendant-light', name: 'Aura Minimalist Pendant Light', description: 'A brushed aluminum suspension lamp with warm, diffused lighting for calm dining spaces.', price: 249, imageUrl: 'assets/products/aura-light.jpg', categoryId: 'lighting', categoryName: 'Lighting', stock: 15 },
   { slug: 'solis-brass-desk-lamp', name: 'Solis Brass Desk Lamp', description: 'A compact task lamp with a brushed brass finish and adjustable head.', price: 145, imageUrl: 'assets/products/solis-lamp.jpg', categoryId: 'lighting', categoryName: 'Lighting', stock: 12 },
@@ -74,14 +97,15 @@ async function seedDatabase() {
     console.log(`[Seed] Staging ${products.length} products...`);
     products.forEach((product) => {
       const productRef = db.collection('products').doc(product.slug);
+      const imageUrl = productImages[product.slug] || product.imageUrl;
       batch.set(productRef, {
         id: product.slug,
         slug: product.slug,
         name: product.name,
         description: product.description,
         price: product.price,
-        imageUrl: product.imageUrl,
-        imageUrls: [product.imageUrl],
+        imageUrl,
+        imageUrls: [imageUrl],
         categoryId: product.categoryId,
         categoryName: product.categoryName,
         stock: product.stock,

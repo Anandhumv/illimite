@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import { ProductDetailComponent } from './product-detail';
 import { ApiProductService } from '../../services/api-product.service';
 import { CartService } from '../../core/services/cart.service';
+import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 
 describe('ProductDetailComponent', () => {
   let component: ProductDetailComponent;
@@ -46,6 +48,20 @@ describe('ProductDetailComponent', () => {
           provide: CartService,
           useValue: {
             addToCart: () => Promise.resolve()
+          }
+        },
+        {
+          provide: AuthService,
+          useValue: {
+            currentUser: () => ({ uid: 'test-user', role: 'customer' })
+          }
+        },
+        {
+          provide: ToastService,
+          useValue: {
+            success: () => undefined,
+            error: () => undefined,
+            info: () => undefined
           }
         }
       ]

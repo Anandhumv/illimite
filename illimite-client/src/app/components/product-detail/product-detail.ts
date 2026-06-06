@@ -1,10 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ApiProductService } from '../../services/api-product.service';
 import { CartService } from '../../core/services/cart.service';
 import { Product } from '../../models/product.model';
 import { ToastService } from '../../core/services/toast.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -18,6 +19,8 @@ export class ProductDetailComponent implements OnInit {
   private readonly apiProductService = inject(ApiProductService);
   private readonly cartService = inject(CartService);
   private readonly toastService = inject(ToastService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   productSlug: string | null = null;
   product: Product | null = null;
@@ -49,6 +52,12 @@ export class ProductDetailComponent implements OnInit {
 
   async addCurrentProductToCart(): Promise<void> {
     if (!this.product) {
+      return;
+    }
+
+    if (!this.authService.currentUser()) {
+      this.toastService.info('Please login or register before adding products to cart.');
+      await this.router.navigate(['/login']);
       return;
     }
 
