@@ -255,7 +255,7 @@ app.post('/api/orders', verifyFirebaseToken, async (req, res) => {
       let total = 0;
 
       for (const item of items) {
-        const qty = Number(item.qty || 0);
+        const qty = Number(item.qty ?? item.quantity ?? 0);
         if (!item.productId || qty <= 0) {
           throw new Error('Each order item must include productId and a positive qty');
         }
@@ -284,6 +284,7 @@ app.post('/api/orders', verifyFirebaseToken, async (req, res) => {
             name: product.name,
             imageUrl: product.imageUrl || '',
             qty,
+            quantity: qty,
             price
           }
         });
@@ -329,9 +330,14 @@ app.post('/api/orders', verifyFirebaseToken, async (req, res) => {
 
 app.patch('/api/orders/:id/status', verifyFirebaseToken, requireAdmin, async (req, res) => {
   const status = req.body?.status;
+  const allowedStatuses = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'];
 
   if (!status) {
     return res.status(400).json({ error: 'Order status is required' });
+  }
+
+  if (!allowedStatuses.includes(status)) {
+    return res.status(400).json({ error: `Order status must be one of: ${allowedStatuses.join(', ')}` });
   }
 
   try {

@@ -45,7 +45,7 @@ export class CartService {
     const raw = localStorage.getItem(this.GUEST_CART_KEY);
     if (raw) {
       try {
-        this.cartItems.set(JSON.parse(raw));
+        this.cartItems.set(this.normalizeCartItems(JSON.parse(raw)));
       } catch (e) {
         console.error('Failed to parse guest cart:', e);
         this.cartItems.set([]);
@@ -59,7 +59,7 @@ export class CartService {
    * Save the cart to local storage for guests.
    */
   private saveGuestCart(items: CartItem[]): void {
-    localStorage.setItem(this.GUEST_CART_KEY, JSON.stringify(items));
+    localStorage.setItem(this.GUEST_CART_KEY, JSON.stringify(this.normalizeCartItems(items)));
   }
 
   /**
@@ -72,7 +72,7 @@ export class CartService {
       let guestItems: CartItem[] = [];
       if (guestRaw) {
         try {
-          guestItems = JSON.parse(guestRaw);
+          guestItems = this.normalizeCartItems(JSON.parse(guestRaw));
         } catch {
           // ignore
         }
@@ -85,7 +85,7 @@ export class CartService {
 
       if (cartSnap.exists()) {
         const cartData = cartSnap.data() as Cart;
-        firestoreItems = cartData.items || [];
+        firestoreItems = this.normalizeCartItems(cartData.items || []);
       }
 
       // 3. Merge guest items into firestore items
@@ -119,18 +119,47 @@ export class CartService {
    * Write cart state to storage (Firestore for auth user, LocalStorage for guest).
    */
   private async persistCart(items: CartItem[]): Promise<void> {
-    this.cartItems.set(items);
+    const normalizedItems = this.normalizeCartItems(items);
+    this.cartItems.set(normalizedItems);
 
     const user = this.authService.currentUser();
     if (user) {
       try {
-        await firstValueFrom(this.http.post(`${this.apiBaseUrl}/cart/items`, { items }));
+        await firstValueFrom(this.http.post(`${this.apiBaseUrl}/cart/items`, { items: normalizedItems }));
       } catch (error) {
         console.error('Error saving cart through API:', error);
       }
     } else {
-      this.saveGuestCart(items);
+      this.saveGuestCart(normalizedItems);
     }
+  }
+
+  private normalizeCartItems(items: unknown): CartItem[] {
+    if (!Array.isArray(items)) {
+      return [];
+    }
+
+    return items
+      .map((item) => {
+        const candidate = item as Partial<CartItem> & {
+          quantity?: number;
+          price?: number;
+        };
+        const productId = typeof candidate.productId === 'string' ? candidate.productId : '';
+        const qty = Number(candidate.qty ?? candidate.quantity ?? 0);
+        const priceAtAdd = Number(candidate.priceAtAdd ?? candidate.price ?? 0);
+
+        if (!productId || !Number.isFinite(qty) || qty <= 0 || !Number.isFinite(priceAtAdd) || priceAtAdd < 0) {
+          return null;
+        }
+
+        return {
+          productId,
+          qty,
+          priceAtAdd
+        };
+      })
+      .filter((item): item is CartItem => item !== null);
   }
 
   /**

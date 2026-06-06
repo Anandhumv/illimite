@@ -12,14 +12,40 @@ function cartRef(userId) {
   return db.collection(CART_COLLECTION).doc(userId);
 }
 
+function normalizeCartItem(item) {
+  if (!item || typeof item !== 'object') {
+    return null;
+  }
+
+  const productId = typeof item.productId === 'string' ? item.productId.trim() : '';
+  const qty = Number(item.qty ?? item.quantity ?? 0);
+  const priceAtAdd = Number(item.priceAtAdd ?? item.price ?? 0);
+
+  if (!productId || !Number.isInteger(qty) || qty < 1 || Number.isNaN(priceAtAdd) || priceAtAdd < 0) {
+    return null;
+  }
+
+  return {
+    productId,
+    qty,
+    quantity: qty,
+    priceAtAdd,
+    price: priceAtAdd,
+    name: typeof item.name === 'string' ? item.name : '',
+    imageUrl: typeof item.imageUrl === 'string' ? item.imageUrl : ''
+  };
+}
+
 function validateCartItem(item) {
   if (!item || typeof item !== 'object') return false;
   if (typeof item.productId !== 'string' || !item.productId.trim()) return false;
-  if (typeof item.name !== 'string' || !item.name.trim()) return false;
-  if (typeof item.price !== 'number' || item.price < 0) return false;
-  if (typeof item.quantity !== 'number' || item.quantity < 1 || !Number.isInteger(item.quantity)) return false;
-  if (typeof item.imageUrl !== 'string') return false;
+  if (typeof item.qty !== 'number' || item.qty < 1 || !Number.isInteger(item.qty)) return false;
+  if (typeof item.priceAtAdd !== 'number' || item.priceAtAdd < 0) return false;
   return true;
+}
+
+function normalizeCartItems(items) {
+  return items.map(normalizeCartItem);
 }
 
 // GET /api/cart — Fetch the authenticated user's cart
@@ -27,6 +53,7 @@ router.get('/', async (req, res) => {
   try {
     const snap = await cartRef(req.user.uid).get();
     const cart = snap.exists ? snap.data() : { uid: req.user.uid, items: [], updatedAt: new Date().toISOString() };
+    cart.items = normalizeCartItems(Array.isArray(cart.items) ? cart.items : []).filter(Boolean);
     res.status(200).json({ success: true, cart });
   } catch (err) {
     console.error('[Cart] Error fetching cart:', err.message);
@@ -36,12 +63,12 @@ router.get('/', async (req, res) => {
 
 // PUT /api/cart — Replace the entire cart
 router.put('/', async (req, res) => {
-  const items = Array.isArray(req.body?.items) ? req.body.items : [];
+  const rawItems = Array.isArray(req.body?.items) ? req.body.items : [];
+  const items = normalizeCartItems(rawItems);
 
-  const invalid = items.find(item => !validateCartItem(item));
-  if (invalid) {
+  if (items.some(item => !item || !validateCartItem(item))) {
     return res.status(400).json({
-      error: 'Invalid cart item. Each item must have productId (string), name (string), price (number), quantity (positive integer), imageUrl (string).'
+      error: 'Invalid cart item. Each item must include productId, qty/quantity, and priceAtAdd/price.'
     });
   }
 
@@ -62,11 +89,35 @@ router.put('/', async (req, res) => {
 
 // POST /api/cart/items — Add or update a single item in the cart
 router.post('/items', async (req, res) => {
-  const item = req.body;
+  if (Array.isArray(req.body?.items)) {
+    const items = normalizeCartItems(req.body.items);
+
+    if (items.some(item => !item || !validateCartItem(item))) {
+      return res.status(400).json({
+        error: 'Invalid cart item. Each item must include productId, qty/quantity, and priceAtAdd/price.'
+      });
+    }
+
+    try {
+      const cartData = {
+        uid: req.user.uid,
+        items,
+        updatedAt: new Date().toISOString()
+      };
+
+      await cartRef(req.user.uid).set(cartData, { merge: true });
+      return res.status(200).json({ success: true, cart: cartData, message: 'Cart synchronized successfully' });
+    } catch (err) {
+      console.error('[Cart] Error syncing cart:', err.message);
+      return res.status(500).json({ error: 'Failed to synchronize cart', details: err.message });
+    }
+  }
+
+  const item = normalizeCartItem(req.body);
 
   if (!validateCartItem(item)) {
     return res.status(400).json({
-      error: 'Invalid item. Required: productId (string), name (string), price (number), quantity (positive integer), imageUrl (string).'
+      error: 'Invalid item. Required: productId, qty/quantity, and priceAtAdd/price.'
     });
   }
 
@@ -77,7 +128,14 @@ router.post('/items', async (req, res) => {
     const existingIndex = cart.items.findIndex(i => i.productId === item.productId);
 
     if (existingIndex >= 0) {
-      cart.items[existingIndex].quantity += item.quantity;
+      const current = normalizeCartItem(cart.items[existingIndex]) || cart.items[existingIndex];
+      const nextQty = Number(current.qty ?? current.quantity ?? 0) + item.qty;
+      cart.items[existingIndex] = {
+        ...current,
+        ...item,
+        qty: nextQty,
+        quantity: nextQty
+      };
     } else {
       cart.items.push(item);
     }
@@ -98,7 +156,7 @@ router.post('/items', async (req, res) => {
 
 // PATCH /api/cart/items/:productId — Update quantity of a specific item
 router.patch('/items/:productId', async (req, res) => {
-  const { quantity } = req.body;
+  const quantity = Number(req.body?.qty ?? req.body?.quantity);
   const { productId } = req.params;
 
   if (typeof quantity !== 'number' || quantity < 1 || !Number.isInteger(quantity)) {
@@ -119,7 +177,11 @@ router.patch('/items/:productId', async (req, res) => {
       return res.status(404).json({ error: 'Item not found in cart' });
     }
 
-    cart.items[index].quantity = quantity;
+    cart.items[index] = {
+      ...cart.items[index],
+      qty: quantity,
+      quantity
+    };
 
     const cartData = {
       uid: req.user.uid,

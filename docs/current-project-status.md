@@ -13,10 +13,11 @@ Day 3: Complete for Auth + skeletons
 Day 4: Complete for real-data core build
 Day 5: Complete for cart/order/admin polish + security rules
 Day 6: Complete for integration polish
-Overall project completion: about 70-75%
+Day 7: Complete for end-to-end feature integration
+Overall project completion: about 75-80%
 ```
 
-The app is now an early ecommerce MVP with Firebase setup, backend API foundation, seeded product/category data, a searchable/filterable product catalog, Firebase-backed auth screens, protected routes, product detail loading, add-to-cart behavior, API-backed cart/order flows, a dedicated cart page, checkout confirmation, order detail pages, order history, profile, admin product management, admin order management, global toast/error handling, order status flow UI, and Firebase security rules files.
+The app is now an early ecommerce MVP with Firebase setup, backend API foundation, seeded product/category data, a searchable/filterable product catalog, Firebase-backed auth screens, protected routes, product detail loading, add-to-cart behavior, API-backed cart/order flows, a dedicated cart page, checkout confirmation, order detail pages, order history, profile, admin product management, admin order management, global toast/error handling, order status flow UI, normalized cart/order contracts across teammate slices, and Firebase security rules files.
 
 ## Completed Work
 
@@ -224,6 +225,37 @@ Completed:
 - Admin order management shows a visual status flow.
 - Order detail page shows the fulfillment status flow.
 
+### Day 7 - Feature Complete
+
+Completed:
+
+- The main ecommerce journey is connected to the real backend and Firestore:
+
+```text
+register -> browse -> cart -> checkout -> order history -> admin status update
+```
+
+- Backend Firebase config now loads `.env` directly, so service account paths work reliably from server and helper entry points.
+- Frontend cart items are normalized when loaded from localStorage or Firestore.
+- Backend cart API now accepts both frontend cart shapes:
+  - `qty` / `priceAtAdd`
+  - `quantity` / `price`
+- Backend cart sync route supports full-cart synchronization through:
+
+```text
+POST /api/cart/items
+```
+
+- Backend order creation accepts both cart item quantity/price shapes.
+- Backend order documents store both `qty` and `quantity` for compatibility.
+- Admin order status updates are validated against the supported status flow:
+
+```text
+pending, paid, processing, shipped, delivered, cancelled
+```
+
+- The known cart-contract gap between teammate slices has been fixed.
+
 ## Current Frontend Structure
 
 Main frontend path:
@@ -362,6 +394,8 @@ This warning is not blocking development, but it should be optimized before prod
    - admin order status update
    - toast messages
    - blocked auth/admin route messages
+   - cart sync after login
+   - cart checkout after teammate branch merges
 2. Confirm Firebase Authentication providers are enabled in the Firebase console:
    - Email/password
    - Google
@@ -404,6 +438,7 @@ Day 3: Auth + product detail + protected route skeletons complete.
 Day 4: Core real-data catalog, cart, checkout, orders, and admin product listing complete.
 Day 5: Cart page, order confirmation/detail, admin CRUD/order management, and security rules complete.
 Day 6: Global errors/toasts, auth-role feedback, search/filter polish, cart feedback, and order status flow complete.
+Day 7: End-to-end feature journey and teammate slice integration complete.
 ```
 
 The next major phase is to test the end-to-end flows in the browser, deploy/review Firebase rules, and continue toward payment/admin polish.

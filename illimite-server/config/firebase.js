@@ -1,5 +1,6 @@
 const admin = require("firebase-admin");
 const path = require("path");
+require("dotenv").config();
 
 const serviceAccountPath = process.env.SERVICE_ACCOUNT_PATH || "./config/serviceAccountKey.json";
 const resolvedServiceAccountPath = path.resolve(__dirname, "..", serviceAccountPath);
