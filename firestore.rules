@@ -36,6 +36,10 @@ service cloud.firestore {
       allow read, write: if isOwner(userId);
     }
 
+    match /wishlists/{userId}/items/{productId} {
+      allow read, write: if isOwner(userId);
+    }
+
     match /orders/{orderId} {
       allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
       allow read: if isOwner(resource.data.userId) || isAdmin();

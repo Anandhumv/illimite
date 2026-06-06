@@ -5,8 +5,9 @@ import { of } from 'rxjs';
 import { ProductDetailComponent } from './product-detail';
 import { ApiProductService } from '../../services/api-product.service';
 import { CartService } from '../../core/services/cart.service';
-import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
+import { AuthService } from '../../core/services/auth.service';
+import { WishlistService } from '../../core/services/wishlist.service';
 
 describe('ProductDetailComponent', () => {
   let component: ProductDetailComponent;
@@ -54,6 +55,12 @@ describe('ProductDetailComponent', () => {
           provide: AuthService,
           useValue: {
             currentUser: () => ({ uid: 'test-user', role: 'customer' })
+          }
+        },
+        {
+          provide: WishlistService,
+          useValue: {
+            addToWishlist: () => Promise.resolve()
           }
         },
         {

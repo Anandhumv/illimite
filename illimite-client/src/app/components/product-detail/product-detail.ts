@@ -1,32 +1,37 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ApiProductService } from '../../services/api-product.service';
 import { CartService } from '../../core/services/cart.service';
 import { Product } from '../../models/product.model';
 import { ToastService } from '../../core/services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
+import { WishlistService } from '../../core/services/wishlist.service';
 
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css'
 })
 export class ProductDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly apiProductService = inject(ApiProductService);
   private readonly cartService = inject(CartService);
   private readonly toastService = inject(ToastService);
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
+  private readonly wishlistService = inject(WishlistService);
 
   productSlug: string | null = null;
   product: Product | null = null;
   errorMessage = '';
   cartMessage = '';
   isLoading = true;
+  selectedImage = '';
+  selectedQuantity = 1;
 
   ngOnInit(): void {
     this.productSlug = this.route.snapshot.paramMap.get('slug');
@@ -40,6 +45,7 @@ export class ProductDetailComponent implements OnInit {
     this.apiProductService.getProductById(this.productSlug).subscribe({
       next: (product) => {
         this.product = product;
+        this.selectedImage = this.galleryImages[0] || '';
         this.isLoading = false;
       },
       error: () => {
@@ -55,20 +61,108 @@ export class ProductDetailComponent implements OnInit {
       return;
     }
 
+    try {
+      await this.cartService.addToCart(this.product.id || this.product.slug, this.selectedQuantity, this.product.price);
+      this.cartMessage = 'Added to cart.';
+      this.toastService.success(`${this.selectedQuantity} ${this.product.name} added to cart.`);
+    } catch (error) {
+      console.error('Failed to add product to cart:', error);
+      this.toastService.error('Unable to add this product to cart.');
+    }
+  }
+
+  async buyNow(): Promise<void> {
+    await this.addCurrentProductToCart();
+    await this.router.navigate(['/checkout']);
+  }
+
+  async addCurrentProductToWishlist(): Promise<void> {
+    if (!this.product) {
+      return;
+    }
+
     if (!this.authService.currentUser()) {
-      this.toastService.info('Please login or register before adding products to cart.');
+      this.toastService.info('Please login or register before adding products to your wishlist.');
       await this.router.navigate(['/login']);
       return;
     }
 
     try {
-      await this.cartService.addToCart(this.product.id || this.product.slug, 1, this.product.price);
-      this.cartMessage = 'Added to cart.';
-      this.toastService.success(`${this.product.name} added to cart.`);
+      await this.wishlistService.addToWishlist(this.product);
+      this.toastService.success(`${this.product.name} added to wishlist.`);
     } catch (error) {
-      console.error('Failed to add product to cart:', error);
-      this.toastService.error('Unable to add this product to cart.');
+      console.error('Failed to add product to wishlist:', error);
+      this.toastService.error('Unable to add this product to wishlist.');
     }
+  }
+
+  selectImage(imageUrl: string): void {
+    this.selectedImage = imageUrl;
+  }
+
+  get galleryImages(): string[] {
+    if (!this.product) {
+      return [];
+    }
+
+    const images = [
+      ...(this.product.imageUrls || []),
+      this.product.imageUrl
+    ].filter(Boolean);
+
+    return Array.from(new Set(images));
+  }
+
+  get quantityOptions(): number[] {
+    const stock = this.product?.stock || 1;
+    return Array.from({ length: Math.min(stock, 10) }, (_, index) => index + 1);
+  }
+
+  get unitPriceLabel(): string {
+    if (!this.product) {
+      return '';
+    }
+
+    return `${this.formatPrice(this.product.price)} / item`;
+  }
+
+  get ratingText(): string {
+    return `${this.product?.rating ?? 4.4}`;
+  }
+
+  get reviewSummary(): string {
+    const ratings = this.product?.ratingCount ?? 128;
+    const reviews = this.product?.reviewCount ?? 32;
+    return `${ratings} ratings & ${reviews} reviews`;
+  }
+
+  get discountPercent(): number {
+    return this.product?.discountPercent ?? 15;
+  }
+
+  get originalPrice(): number {
+    if (!this.product) {
+      return 0;
+    }
+
+    return this.product.originalPrice ?? Math.round(this.product.price / (1 - this.discountPercent / 100));
+  }
+
+  get productHighlights(): string[] {
+    return this.product?.highlights?.length
+      ? this.product.highlights
+      : ['Premium everyday build', 'Modern minimalist design', 'Easy to use and maintain'];
+  }
+
+  get productOffers(): string[] {
+    return this.product?.offers?.length
+      ? this.product.offers
+      : ['Bank offer: 10% instant discount on selected cards', 'Free delivery on this product'];
+  }
+
+  get specificationEntries(): { label: string; value: string }[] {
+    const specs = this.product?.specifications || {};
+    return Object.entries(specs).map(([label, value]) => ({ label, value }));
   }
 
   formatPrice(price: number): string {

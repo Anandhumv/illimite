@@ -6,38 +6,141 @@
   } @else if (errorMessage) {
     <div class="loader-placeholder loader-placeholder--error">{{ errorMessage }}</div>
   } @else if (product) {
-    <div class="detail-grid">
-      <div class="detail-media-pane">
-        @if (product.imageUrl) {
-          <img [src]="product.imageUrl" [alt]="product.name" class="detail-image" />
-        } @else {
-          <div class="detail-image-fallback">{{ product.categoryName.charAt(0).toUpperCase() }}</div>
-        }
-      </div>
+    <div class="product-detail-layout">
+      <section class="gallery-pane" aria-label="Product images">
+        <div class="main-image-frame">
+          @if (selectedImage) {
+            <img [src]="selectedImage" [alt]="product.name" class="detail-image" />
+          } @else {
+            <div class="detail-image-fallback">{{ product.categoryName.charAt(0).toUpperCase() }}</div>
+          }
+        </div>
 
-      <div class="detail-info-pane">
+        @if (galleryImages.length > 1) {
+          <div class="thumbnail-row">
+            @for (image of galleryImages; track image) {
+              <button
+                type="button"
+                class="thumbnail-button"
+                [class.thumbnail-button--active]="image === selectedImage"
+                (click)="selectImage(image)"
+              >
+                <img [src]="image" [alt]="product.name + ' image option'" />
+              </button>
+            }
+          </div>
+        }
+      </section>
+
+      <section class="info-pane">
         <span class="detail-tag">{{ product.categoryName }}</span>
         <h1 class="detail-title">{{ product.name }}</h1>
-        <p class="detail-price">{{ formatPrice(product.price) }}</p>
-
-        <div class="detail-divider"></div>
-
         <p class="detail-description">{{ product.description }}</p>
+
+        <div class="rating-row" aria-label="Rating">
+          <span class="rating-badge">{{ ratingText }} ★</span>
+          <a routerLink="/">{{ reviewSummary }}</a>
+        </div>
+
+        <div class="price-block">
+          <span class="deal">-{{ discountPercent }}%</span>
+          <strong>{{ formatPrice(product.price) }}</strong>
+          <span class="mrp">M.R.P. <del>{{ formatPrice(originalPrice) }}</del></span>
+          <p>{{ unitPriceLabel }}</p>
+        </div>
+
+        <section class="detail-panel" aria-label="Available offers">
+          <h2>Available offers</h2>
+          <ul>
+            @for (offer of productOffers; track offer) {
+              <li>{{ offer }}</li>
+            }
+          </ul>
+        </section>
+
+        <section class="detail-panel" aria-label="Product highlights">
+          <h2>Highlights</h2>
+          <ul>
+            @for (highlight of productHighlights; track highlight) {
+              <li>{{ highlight }}</li>
+            }
+          </ul>
+        </section>
+
+        @if (specificationEntries.length > 0) {
+          <section class="detail-panel" aria-label="Specifications">
+            <h2>Specifications</h2>
+            <dl class="spec-grid">
+              @for (spec of specificationEntries; track spec.label) {
+                <div>
+                  <dt>{{ spec.label }}</dt>
+                  <dd>{{ spec.value }}</dd>
+                </div>
+              }
+            </dl>
+          </section>
+        }
+
+        <div class="service-row">
+          <span>{{ product.returnPolicy || '10 days returnable' }}</span>
+          <span>{{ product.deliveryText || 'Free delivery' }}</span>
+          <span>Secure transaction</span>
+        </div>
 
         <div class="detail-meta">
           <p class="detail-stock" [class.low-stock]="product.stock <= 5">
-            Availability: <strong>{{ product.stock }} items left in stock</strong>
+            Availability: <strong>{{ product.stock > 0 ? 'In stock' : 'Out of stock' }}</strong>
           </p>
           <p class="detail-slug">Reference: <code>{{ product.slug || productSlug }}</code></p>
         </div>
+      </section>
 
-        <div class="detail-actions">
-          <button type="button" class="btn-add-cart" (click)="addCurrentProductToCart()">Add to cart</button>
-          @if (cartMessage) {
-            <span>{{ cartMessage }}</span>
-          }
-        </div>
-      </div>
+      <aside class="purchase-card" aria-label="Purchase options">
+        <div class="purchase-price">{{ formatPrice(product.price) }}</div>
+        <p class="delivery-line">{{ product.deliveryText || 'FREE delivery by Sunday, 14 June' }}</p>
+        <p class="location-line">Delivering to Mavoor 673661</p>
+
+        <strong class="stock-line" [class.stock-line--low]="product.stock <= 5">
+          {{ product.stock > 0 ? 'In stock' : 'Out of stock' }}
+        </strong>
+
+        <label class="quantity-control">
+          Quantity
+          <select [(ngModel)]="selectedQuantity">
+            @for (qty of quantityOptions; track qty) {
+              <option [value]="qty">{{ qty }}</option>
+            }
+          </select>
+        </label>
+
+        <button type="button" class="cart-button" (click)="addCurrentProductToCart()" [disabled]="product.stock === 0">
+          Add to cart
+        </button>
+        <button type="button" class="buy-button" (click)="buyNow()" [disabled]="product.stock === 0">
+          Buy Now
+        </button>
+
+        <dl class="purchase-meta">
+          <div>
+            <dt>Delivered by</dt>
+            <dd>Illimite</dd>
+          </div>
+          <div>
+            <dt>Sold by</dt>
+            <dd>{{ product.seller || 'Illimite Home' }}</dd>
+          </div>
+          <div>
+            <dt>Warranty</dt>
+            <dd>{{ product.warranty || 'Illimite care warranty' }}</dd>
+          </div>
+        </dl>
+
+        <button type="button" class="wishlist-button" (click)="addCurrentProductToWishlist()">Add to Wish List</button>
+
+        @if (cartMessage) {
+          <p class="cart-note">{{ cartMessage }}</p>
+        }
+      </aside>
     </div>
   }
 </div>

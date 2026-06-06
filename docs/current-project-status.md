@@ -237,8 +237,8 @@ register -> browse -> cart -> checkout -> order history -> admin status update
 
 - Backend Firebase config now loads `.env` directly, so service account paths work reliably from server and helper entry points.
 - Frontend cart items are normalized when loaded from localStorage or Firestore.
-- Cart access is now signed-in only; guests are redirected to login before cart actions.
-- Catalog and product detail add-to-cart actions require a registered/login user.
+- Guest cart is supported through localStorage and merges into the Firestore cart after login.
+- Catalog and product detail add-to-cart actions work for guests and registered users.
 - Backend cart API now accepts both frontend cart shapes:
   - `qty` / `priceAtAdd`
   - `quantity` / `price`

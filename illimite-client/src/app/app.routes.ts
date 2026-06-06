@@ -17,7 +17,7 @@ export const routes: Routes = [
     { path: 'register', component: RegisterComponent },
     { path: 'products/:slug', component: ProductDetailComponent }, // Dynamic route handler
     { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
-    { path: 'cart', component: CartComponent, canActivate: [authGuard] },
+    { path: 'cart', component: CartComponent },
     { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] },
     { path: 'orders', component: OrderHistoryComponent, canActivate: [authGuard] },
     { path: 'orders/:id/confirmation', component: OrderConfirmationComponent, canActivate: [authGuard] },
