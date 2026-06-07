@@ -17,7 +17,7 @@
       </div>
       <div class="order-meta total">
         <span>Total</span>
-        <strong>{{ orderData.total | currency }}</strong>
+        <strong>{{ orderData.total | currency:'INR':'symbol':'1.0-0' }}</strong>
       </div>
       <div class="actions">
         <a routerLink="/orders">View orders</a>

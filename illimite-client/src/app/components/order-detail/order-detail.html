@@ -23,9 +23,9 @@
             }
             <div>
               <strong>{{ item.name || item.productId }}</strong>
-              <p>{{ item.qty }} x {{ item.price | currency }}</p>
+              <p>{{ item.qty }} x {{ item.price | currency:'INR':'symbol':'1.0-0' }}</p>
             </div>
-            <strong>{{ item.qty * item.price | currency }}</strong>
+            <strong>{{ item.qty * item.price | currency:'INR':'symbol':'1.0-0' }}</strong>
           </div>
         }
       </section>
@@ -61,7 +61,7 @@
         </div>
         <div class="total">
           <span>Total</span>
-          <strong>{{ orderData.total | currency }}</strong>
+          <strong>{{ orderData.total | currency:'INR':'symbol':'1.0-0' }}</strong>
         </div>
       </aside>
     </div>

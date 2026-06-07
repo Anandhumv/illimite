@@ -5,8 +5,8 @@
 .product-card {
     display: flex;
     flex-direction: column;
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
+    background-color: var(--surface);
+    border: 1px solid var(--line);
     border-radius: 4px;
     overflow: hidden;
     cursor: pointer;
@@ -15,7 +15,8 @@
 
 .product-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.04);
+    border-color: var(--accent);
+    box-shadow: 0 14px 28px var(--shadow);
 }
 
 .product-card__image-container {
@@ -23,7 +24,7 @@
     width: 100%;
     aspect-ratio: 4 / 3;
     /* Gives it a clean landscape or box orientation */
-    background-color: #f5f5f3;
+    background-color: var(--card);
     /* Premium soft neutral gray-beige */
     display: flex;
     align-items: center;
@@ -42,8 +43,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f0f0ed;
-    color: #71716a;
+    background-color: var(--panel);
+    color: var(--muted);
     font-weight: 500;
     font-size: 1.5rem;
     letter-spacing: 0.05em;
@@ -60,21 +61,21 @@
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #8c8c84;
+    color: var(--muted);
     margin: 0 0 0.25rem 0;
 }
 
 .product-card__name {
     font-size: 1rem;
     font-weight: 500;
-    color: #1a1a1a;
+    color: var(--ink);
     margin: 0 0 0.5rem 0;
 }
 
 .product-card__price {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #2e2e2d;
+    color: var(--ink);
     margin: 0;
 }
 
@@ -87,10 +88,10 @@
 }
 
 .product-card__cart {
-    background: #1f2933;
+    background: var(--accent);
     border: 0;
     border-radius: 6px;
-    color: #fffaf4;
+    color: var(--surface);
     cursor: pointer;
     font-size: 0.78rem;
     font-weight: 700;

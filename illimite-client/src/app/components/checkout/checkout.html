@@ -27,7 +27,7 @@
 
               <div>
                 <strong>{{ productFor(item.productId)?.name || item.productId }}</strong>
-                <p>{{ item.qty }} x {{ item.priceAtAdd | currency }}</p>
+                <p>{{ item.qty }} x {{ item.priceAtAdd | currency:'INR':'symbol':'1.0-0' }}</p>
               </div>
               <input
                 type="number"
@@ -60,7 +60,7 @@
 
       <div class="summary-line summary-line--total">
         <span>Order total</span>
-        <strong>{{ total() | currency }}</strong>
+        <strong>{{ total() | currency:'INR':'symbol':'1.0-0' }}</strong>
       </div>
 
       <button type="button" (click)="submitOrder()" [disabled]="isSubmitting() || cartService.cartItems().length === 0">

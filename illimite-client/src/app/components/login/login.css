@@ -6,10 +6,10 @@
 }
 
 .auth-card {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
-  box-shadow: 0 20px 55px rgba(35, 28, 20, 0.08);
+  box-shadow: 0 20px 55px var(--shadow);
   display: grid;
   gap: 16px;
   max-width: 420px;
@@ -54,7 +54,7 @@ label {
 }
 
 input {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--ink);
@@ -85,13 +85,13 @@ input:focus {
 }
 
 .btn-primary {
-  background: var(--ink);
-  border: 1px solid var(--ink);
-  color: var(--card);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: var(--surface);
 }
 
 .btn-google {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   color: var(--ink);
 }
@@ -133,10 +133,10 @@ input:focus {
 }
 
 .auth-error-banner {
-  background: #fff4f1;
-  border: 1px solid #d6aaa0;
+  background: rgba(141, 90, 97, 0.1);
+  border: 1px solid var(--accent-muted);
   border-radius: 8px;
-  color: #9a3f31;
+  color: var(--error);
   padding: 12px;
 }
 

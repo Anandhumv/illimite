@@ -186,7 +186,7 @@
               <span>{{ order.items.length }} items</span>
             </div>
             <div>{{ order.userId }}</div>
-            <div>{{ order.total | currency }}</div>
+            <div>{{ order.total | currency:'INR':'symbol':'1.0-0' }}</div>
             <div>
               <select
                 class="status-select"

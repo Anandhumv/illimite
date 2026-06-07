@@ -32,7 +32,7 @@
 }
 
 .panel {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 22px;
@@ -103,21 +103,21 @@
 }
 
 .flow-step--done {
-  background: rgba(52, 80, 69, 0.12);
-  border-color: rgba(52, 80, 69, 0.28);
-  color: #345045;
+  background: rgba(141, 90, 97, 0.12);
+  border-color: rgba(141, 90, 97, 0.28);
+  color: var(--accent-muted);
 }
 
 .flow-step--current {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--card);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--surface);
 }
 
 .flow-step--cancelled {
   background: rgba(154, 63, 49, 0.12);
   border-color: rgba(154, 63, 49, 0.28);
-  color: #9a3f31;
+  color: var(--error);
 }
 
 .total {

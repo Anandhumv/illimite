@@ -29,7 +29,7 @@
 .cart-item,
 .cart-summary,
 .empty-panel {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 18px;
@@ -128,14 +128,14 @@ input {
 
 .primary-action,
 .empty-panel a {
-  background: var(--ink);
-  color: var(--card);
+  background: var(--accent);
+  color: var(--surface);
   padding: 13px 16px;
 }
 
 .secondary-action,
 .text-action {
-  background: transparent;
+  background: var(--surface);
   border: 1px solid var(--line);
   color: var(--ink);
   padding: 10px 12px;

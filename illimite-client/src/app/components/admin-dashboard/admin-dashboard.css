@@ -32,7 +32,7 @@
 .admin-panel,
 .admin-message,
 .admin-empty {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 20px;
@@ -52,7 +52,7 @@
 }
 
 .admin-message {
-  border-color: rgba(52, 80, 69, 0.35);
+  border-color: var(--accent-muted);
   color: var(--ink);
 }
 
@@ -92,7 +92,7 @@ label {
 input,
 textarea,
 select {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--ink);
@@ -115,9 +115,9 @@ button {
 }
 
 button[type='submit'] {
-  background: var(--ink);
+  background: var(--accent);
   border: 0;
-  color: var(--card);
+  color: var(--surface);
 }
 
 button:disabled {
@@ -127,14 +127,14 @@ button:disabled {
 
 .ghost-action,
 .danger-action {
-  background: transparent;
+  background: var(--surface);
   border: 1px solid var(--line);
   color: var(--ink);
 }
 
 .danger-action {
-  border-color: rgba(154, 63, 49, 0.3);
-  color: #9a3f31;
+  border-color: var(--accent-muted);
+  color: var(--error);
 }
 
 .admin-table {
@@ -189,7 +189,7 @@ button:disabled {
 }
 
 .low-stock {
-  color: #9a3f31 !important;
+  color: var(--error) !important;
   font-weight: 800;
 }
 
@@ -219,21 +219,21 @@ button:disabled {
 }
 
 .flow-step--done {
-  background: rgba(52, 80, 69, 0.12);
-  border-color: rgba(52, 80, 69, 0.28);
-  color: #345045;
+  background: rgba(141, 90, 97, 0.12);
+  border-color: rgba(141, 90, 97, 0.28);
+  color: var(--accent-muted);
 }
 
 .flow-step--current {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--card);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--surface);
 }
 
 .flow-step--cancelled {
   background: rgba(154, 63, 49, 0.12);
   border-color: rgba(154, 63, 49, 0.28);
-  color: #9a3f31;
+  color: var(--error);
 }
 
 .view-action {

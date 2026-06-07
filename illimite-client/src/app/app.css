@@ -4,7 +4,7 @@
 
 .app-toolbar {
   align-items: center;
-  background: rgba(255, 253, 250, 0.92);
+  background: rgba(246, 235, 209, 0.94);
   border-bottom: 1px solid var(--line);
   color: var(--ink);
   display: grid;
@@ -27,9 +27,9 @@
 
 .brand__mark {
   align-items: center;
-  background: var(--ink);
+  background: var(--accent);
   border-radius: 8px;
-  color: var(--card);
+  color: var(--surface);
   display: inline-flex;
   font-size: 0.72rem;
   font-weight: 800;
@@ -54,7 +54,14 @@
 }
 
 .cart-action {
-  border-color: var(--line);
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.app-nav a,
+.app-toolbar a,
+.app-toolbar button {
+  color: var(--accent) !important;
 }
 
 .toast-stack {
@@ -68,11 +75,11 @@
 }
 
 .toast {
-  background: var(--ink);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: var(--accent);
+  border: 1px solid rgba(246, 235, 209, 0.26);
   border-radius: 8px;
-  box-shadow: 0 18px 42px rgba(35, 28, 20, 0.16);
-  color: var(--card);
+  box-shadow: 0 18px 42px var(--shadow);
+  color: var(--surface);
   cursor: pointer;
   font: inherit;
   font-weight: 800;
@@ -82,15 +89,16 @@
 }
 
 .toast--success {
-  background: #345045;
+  background: var(--accent-muted);
 }
 
 .toast--error {
-  background: #9a3f31;
+  background: var(--error);
 }
 
 .toast--info {
-  background: #5f4b35;
+  background: var(--taupe);
+  color: var(--ink);
 }
 
 .route-page {
@@ -230,8 +238,8 @@
 }
 
 .product-card:hover {
-  border-color: #b8b0a5;
-  box-shadow: 0 18px 42px rgba(35, 28, 20, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 18px 42px var(--shadow);
   transform: translateY(-3px);
 }
 
@@ -239,17 +247,17 @@
   align-items: center;
   aspect-ratio: 4 / 3;
   background:
-    linear-gradient(135deg, rgba(191, 148, 101, 0.16), rgba(52, 80, 69, 0.12)),
+    linear-gradient(135deg, rgba(231, 214, 168, 0.72), rgba(141, 90, 97, 0.16)),
     var(--panel);
   border-bottom: 1px solid var(--line);
-  color: rgba(32, 29, 25, 0.52);
+  color: var(--muted);
   display: flex;
   justify-content: center;
 }
 
 .product-card__image span {
   align-items: center;
-  border: 1px solid rgba(32, 29, 25, 0.16);
+  border: 1px solid rgba(114, 47, 55, 0.18);
   border-radius: 50%;
   display: flex;
   font-size: clamp(2rem, 7vw, 4rem);
@@ -304,8 +312,8 @@
 }
 
 .status-panel--error {
-  border-color: #d6aaa0;
-  color: #9a3f31;
+  border-color: var(--accent-muted);
+  color: var(--error);
 }
 
 .status-panel--compact {

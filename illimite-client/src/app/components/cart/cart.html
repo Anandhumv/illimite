@@ -24,14 +24,14 @@
               <div class="cart-item__details">
                 <p>{{ product.categoryName }}</p>
                 <h2>{{ product.name }}</h2>
-                <span>{{ item.priceAtAdd | currency }} each</span>
+                <span>{{ item.priceAtAdd | currency:'INR':'symbol':'1.0-0' }} each</span>
               </div>
             } @else {
               <div class="cart-thumb">IL</div>
               <div class="cart-item__details">
                 <p>Product</p>
                 <h2>{{ item.productId }}</h2>
-                <span>{{ item.priceAtAdd | currency }} each</span>
+                <span>{{ item.priceAtAdd | currency:'INR':'symbol':'1.0-0' }} each</span>
               </div>
             }
 
@@ -45,7 +45,7 @@
               />
             </label>
 
-            <strong>{{ item.qty * item.priceAtAdd | currency }}</strong>
+            <strong>{{ item.qty * item.priceAtAdd | currency:'INR':'symbol':'1.0-0' }}</strong>
             <button type="button" class="text-action" (click)="removeItem(item.productId)">Remove</button>
           </article>
         }
@@ -59,7 +59,7 @@
         </div>
         <div class="total">
           <span>Total</span>
-          <strong>{{ total() | currency }}</strong>
+          <strong>{{ total() | currency:'INR':'symbol':'1.0-0' }}</strong>
         </div>
         <a class="primary-action" routerLink="/checkout">Continue to checkout</a>
         <button type="button" class="secondary-action" (click)="clearCart()">Clear cart</button>

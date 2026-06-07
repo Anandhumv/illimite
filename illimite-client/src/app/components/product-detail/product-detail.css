@@ -13,7 +13,7 @@
 }
 
 .loader-placeholder {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--muted);
@@ -22,8 +22,8 @@
 }
 
 .loader-placeholder--error {
-  border-color: #d6aaa0;
-  color: #9a3f31;
+  border-color: var(--accent-muted);
+  color: var(--error);
 }
 
 .product-detail-layout {
@@ -74,7 +74,7 @@
 }
 
 .thumbnail-button {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
   cursor: pointer;
@@ -83,8 +83,8 @@
 }
 
 .thumbnail-button--active {
-  border-color: var(--ink);
-  box-shadow: 0 0 0 2px rgba(35, 28, 20, 0.12);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(114, 47, 55, 0.16);
 }
 
 .thumbnail-button img {
@@ -126,9 +126,9 @@
 }
 
 .rating-badge {
-  background: #087333;
+  background: var(--accent);
   border-radius: 999px;
-  color: #fff;
+  color: var(--surface);
   font-size: 0.82rem;
   font-weight: 800;
   padding: 6px 10px;
@@ -180,7 +180,7 @@ a {
 }
 
 .detail-panel li::marker {
-  color: #087333;
+  color: var(--accent);
 }
 
 .spec-grid {
@@ -208,7 +208,7 @@ a {
 }
 
 .deal {
-  color: #b33123;
+  color: var(--accent);
   font-size: 1.5rem;
 }
 
@@ -220,7 +220,7 @@ label {
 }
 
 select {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--ink);
@@ -246,11 +246,11 @@ select {
 
 .low-stock,
 .stock-line--low {
-  color: #9a3f31;
+  color: var(--error);
 }
 
 .purchase-card {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 22px;
@@ -259,7 +259,7 @@ select {
 }
 
 .stock-line {
-  color: #087333;
+  color: var(--accent-muted);
   font-size: 1.2rem;
 }
 
@@ -272,7 +272,7 @@ select {
 .wishlist-button {
   border: 0;
   border-radius: 999px;
-  color: #1f1a14;
+  color: var(--surface);
   cursor: pointer;
   font: inherit;
   font-weight: 800;
@@ -280,11 +280,11 @@ select {
 }
 
 .cart-button {
-  background: #ffd814;
+  background: var(--accent);
 }
 
 .buy-button {
-  background: #ff9f1c;
+  background: var(--accent-muted);
 }
 
 .cart-button:disabled,
@@ -294,10 +294,10 @@ select {
 }
 
 .wishlist-button {
-  background: transparent;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
-  color: var(--ink);
+  color: var(--accent);
 }
 
 .purchase-meta {
