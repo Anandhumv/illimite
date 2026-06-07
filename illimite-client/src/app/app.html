@@ -8,6 +8,7 @@
     <nav class="app-nav" aria-label="Primary navigation">
       <a mat-button routerLink="/">Catalog</a>
       <a mat-button routerLink="/cart">Cart</a>
+      <a mat-button routerLink="/wishlist">Wishlist</a>
       <a mat-button routerLink="/checkout">Checkout</a>
       <a mat-button routerLink="/orders">Orders</a>
       @if (isAdmin()) {
@@ -43,15 +44,36 @@
 
   @if (isHomeRoute()) {
     <main class="catalog-page">
-      <header class="catalog-hero">
-        <p class="catalog-hero__eyebrow">Illimite Catalog</p>
-        <div class="catalog-hero__layout">
-          <h1 class="catalog-hero__title">Curated products for calm, modern spaces.</h1>
-          <p class="catalog-hero__copy">
-            A minimal storefront view powered by your seeded backend products.
-          </p>
+      <section class="category-showcase" aria-label="Shop by category">
+        @for (category of categories(); track category.id) {
+          <button
+            type="button"
+            class="category-tile"
+            [class.category-tile--active]="selectedCategoryId() === category.id"
+            (click)="selectCategory(category.id)"
+          >
+            <span class="category-tile__image">
+              <img [src]="category.imageUrl" [alt]="getCategoryDisplayName(category)" loading="lazy" />
+            </span>
+            <span class="category-tile__label">{{ getCategoryDisplayName(category) }}</span>
+          </button>
+        }
+      </section>
+
+      <section class="motion-hero" aria-label="Featured product gallery">
+        <div class="motion-hero__track">
+          @for (product of heroSlides(); track product.id + '-' + $index) {
+            <article class="motion-hero__slide">
+              <img [src]="product.imageUrl" [alt]="product.name" />
+            </article>
+          }
         </div>
-      </header>
+        <div class="motion-hero__shade"></div>
+        <div class="motion-hero__content">
+          <p>Premium Home Objects</p>
+          <h1>Elegance / Elevate Your <em>Home</em> with warm design.</h1>
+        </div>
+      </section>
 
       <section class="catalog-section" aria-labelledby="catalog-heading">
         <div class="catalog-toolbar">
@@ -101,6 +123,20 @@
             <app-product-card [product]="item" (addToCart)="addToCart($event)"></app-product-card>
           }
         </div>
+      </section>
+
+      <section class="comment-section" aria-labelledby="comment-heading">
+        <h2 id="comment-heading">Leave a comment</h2>
+        <span class="comment-section__rule"></span>
+
+        <form class="comment-form" (submit)="$event.preventDefault()">
+          <input type="text" name="commentName" placeholder="Name" aria-label="Name" />
+          <input type="email" name="commentEmail" placeholder="Email" aria-label="Email" />
+          <textarea name="commentMessage" rows="6" placeholder="Message" aria-label="Message"></textarea>
+
+          <p>Please note, comments must be approved before they are published</p>
+          <button type="submit">Post Comment</button>
+        </form>
       </section>
     </main>
   } @else {

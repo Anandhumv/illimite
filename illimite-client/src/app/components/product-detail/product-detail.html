@@ -61,8 +61,8 @@
         <section class="detail-panel" aria-label="Product highlights">
           <h2>Highlights</h2>
           <ul>
-            @for (highlight of productHighlights; track highlight) {
-              <li>{{ highlight }}</li>
+          @for (highlight of productHighlights; track highlight) {
+              <li>{{ cleanDisplayText(highlight) }}</li>
             }
           </ul>
         </section>
@@ -124,14 +124,6 @@
           <div>
             <dt>Delivered by</dt>
             <dd>Illimite</dd>
-          </div>
-          <div>
-            <dt>Sold by</dt>
-            <dd>{{ product.seller || 'Illimite Home' }}</dd>
-          </div>
-          <div>
-            <dt>Warranty</dt>
-            <dd>{{ product.warranty || 'Illimite care warranty' }}</dd>
           </div>
         </dl>
 

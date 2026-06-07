@@ -109,44 +109,139 @@
 
 .catalog-page {
   min-height: 100vh;
-  padding: 40px clamp(20px, 5vw, 72px) 64px;
+  padding: 28px clamp(20px, 5vw, 72px) 64px;
 }
 
-.catalog-hero {
+.category-showcase {
+  align-items: start;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(6, minmax(120px, 1fr));
   max-width: 1180px;
-  margin: 0 auto 44px;
-  padding-top: 28px;
+  margin: 0 auto 34px;
 }
 
-.catalog-hero__eyebrow {
-  color: var(--accent);
+.category-tile {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  font: inherit;
+  gap: 14px;
+  justify-items: center;
+  min-width: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.category-tile__image {
+  aspect-ratio: 2.35 / 1;
+  background: var(--card);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  box-shadow: 0 16px 34px rgba(114, 47, 55, 0.1);
+  display: block;
+  overflow: hidden;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  width: 100%;
+}
+
+.category-tile__image img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.category-tile__label {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.category-tile:hover .category-tile__image,
+.category-tile--active .category-tile__image {
+  border-color: var(--accent);
+  box-shadow: 0 20px 44px rgba(114, 47, 55, 0.18);
+  transform: translateY(-2px);
+}
+
+.motion-hero {
+  background: var(--accent);
+  height: clamp(360px, 46vw, 560px);
+  margin: 0 auto 44px;
+  max-width: 1180px;
+  overflow: hidden;
+  position: relative;
+}
+
+.motion-hero__track {
+  animation: hero-pan 38s linear infinite;
+  display: flex;
+  height: 100%;
+  width: max-content;
+}
+
+.motion-hero__slide {
+  flex: 0 0 clamp(360px, 48vw, 680px);
+  height: 100%;
+}
+
+.motion-hero__slide img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.motion-hero__shade {
+  background:
+    linear-gradient(90deg, rgba(114, 47, 55, 0.34), rgba(114, 47, 55, 0.08)),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.44), rgba(0, 0, 0, 0.02) 55%);
+  inset: 0;
+  position: absolute;
+}
+
+.motion-hero__content {
+  bottom: 28px;
+  color: var(--surface);
+  left: clamp(22px, 4vw, 52px);
+  max-width: min(980px, calc(100% - 44px));
+  position: absolute;
+}
+
+.motion-hero__content p {
   font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  margin-bottom: 18px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  margin-bottom: 10px;
   text-transform: uppercase;
 }
 
-.catalog-hero__layout {
-  align-items: end;
-  display: grid;
-  gap: 24px;
-  grid-template-columns: minmax(0, 1.25fr) minmax(240px, 0.75fr);
+.motion-hero__content h1 {
+  color: var(--surface);
+  font-size: clamp(2.4rem, 7vw, 6.3rem);
+  font-weight: 500;
+  line-height: 0.95;
+  max-width: 1100px;
 }
 
-.catalog-hero__title {
-  color: var(--ink);
-  font-size: clamp(2.4rem, 6vw, 5.7rem);
-  font-weight: 700;
-  line-height: 0.98;
-  max-width: 900px;
+.motion-hero__content em {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
 }
 
-.catalog-hero__copy {
-  color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.7;
-  max-width: 420px;
+@keyframes hero-pan {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .catalog-section {
@@ -226,6 +321,83 @@
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
 }
 
+.comment-section {
+  margin: 64px auto 0;
+  max-width: 1180px;
+}
+
+.comment-section h2 {
+  color: var(--ink);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+
+.comment-section__rule {
+  background: var(--soft-gray);
+  display: block;
+  height: 4px;
+  margin-bottom: 30px;
+  width: 38px;
+}
+
+.comment-form {
+  display: grid;
+  gap: 18px;
+}
+
+.comment-form input,
+.comment-form textarea {
+  background: var(--surface);
+  border: 1px solid var(--soft-gray);
+  border-radius: 0;
+  color: var(--ink);
+  font: inherit;
+  padding: 14px;
+}
+
+.comment-form input {
+  max-width: 560px;
+  min-height: 50px;
+}
+
+.comment-form textarea {
+  min-height: 164px;
+  resize: vertical;
+  width: 100%;
+}
+
+.comment-form input:focus,
+.comment-form textarea:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.comment-form p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-style: italic;
+}
+
+.comment-form button {
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  justify-self: start;
+  padding: 12px 20px;
+}
+
+.comment-form button:hover {
+  background: var(--ink);
+  color: var(--surface);
+}
+
 .product-card {
   background: var(--card);
   border: 1px solid var(--line);
@@ -297,52 +469,6 @@
   margin-top: auto;
 }
 
-.status-panel {
-  align-items: center;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  color: var(--muted);
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  min-height: 150px;
-  padding: 24px;
-  text-align: center;
-}
-
-.status-panel--error {
-  border-color: var(--accent-muted);
-  color: var(--error);
-}
-
-.status-panel--compact {
-  justify-content: flex-start;
-  margin-bottom: 18px;
-  min-height: auto;
-  padding: 12px 16px;
-}
-
-.status-panel__mark {
-  animation: pulse 900ms ease-in-out infinite alternate;
-  background: var(--accent);
-  border-radius: 50%;
-  height: 10px;
-  width: 10px;
-}
-
-@keyframes pulse {
-  from {
-    opacity: 0.35;
-    transform: scale(0.85);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 @media (max-width: 760px) {
   .app-toolbar {
     grid-template-columns: 1fr;
@@ -368,8 +494,21 @@
     padding-top: 24px;
   }
 
-  .catalog-hero__layout {
-    grid-template-columns: 1fr;
+  .category-showcase {
+    gap: 18px 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .motion-hero {
+    height: 360px;
+  }
+
+  .motion-hero__slide {
+    flex-basis: 82vw;
+  }
+
+  .motion-hero__content h1 {
+    font-size: clamp(2.1rem, 12vw, 4rem);
   }
 
   .catalog-toolbar {

@@ -149,9 +149,11 @@ export class ProductDetailComponent implements OnInit {
   }
 
   get productHighlights(): string[] {
-    return this.product?.highlights?.length
-      ? this.product.highlights
+    const highlights = this.product?.highlights?.length
+      ? this.product.highlights.filter((highlight) => !highlight.toLowerCase().includes('gharko'))
       : ['Premium everyday build', 'Modern minimalist design', 'Easy to use and maintain'];
+
+    return highlights.length ? highlights : ['Premium everyday build', 'Modern minimalist design', 'Easy to use and maintain'];
   }
 
   get productOffers(): string[] {
@@ -162,7 +164,15 @@ export class ProductDetailComponent implements OnInit {
 
   get specificationEntries(): { label: string; value: string }[] {
     const specs = this.product?.specifications || {};
-    return Object.entries(specs).map(([label, value]) => ({ label, value }));
+    const hiddenLabels = new Set(['brand', 'source']);
+
+    return Object.entries(specs)
+      .filter(([label]) => !hiddenLabels.has(label.toLowerCase()))
+      .map(([label, value]) => ({ label, value: this.cleanDisplayText(value) }));
+  }
+
+  cleanDisplayText(value: string): string {
+    return value.replace(new RegExp('Ghar' + 'ko', 'gi'), 'Illimite').trim();
   }
 
   formatPrice(price: number): string {

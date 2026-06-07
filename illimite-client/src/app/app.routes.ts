@@ -9,6 +9,7 @@ import { CartComponent } from './components/cart/cart';
 import { OrderConfirmationComponent } from './components/order-confirmation/order-confirmation';
 import { OrderDetailComponent } from './components/order-detail/order-detail';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
+import { WishlistComponent } from './components/wishlist/wishlist';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 
@@ -18,6 +19,7 @@ export const routes: Routes = [
     { path: 'products/:slug', component: ProductDetailComponent }, // Dynamic route handler
     { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
     { path: 'cart', component: CartComponent },
+    { path: 'wishlist', component: WishlistComponent, canActivate: [authGuard] },
     { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] },
     { path: 'orders', component: OrderHistoryComponent, canActivate: [authGuard] },
     { path: 'orders/:id/confirmation', component: OrderConfirmationComponent, canActivate: [authGuard] },

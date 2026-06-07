@@ -1,0 +1,41 @@
+<section class="wishlist-page">
+  <header class="page-heading">
+    <p>Wishlist</p>
+    <h1>Your saved pieces</h1>
+  </header>
+
+  @if (isLoading()) {
+    <div class="wishlist-panel">Loading wishlist...</div>
+  } @else if (errorMessage()) {
+    <div class="wishlist-panel wishlist-panel--error">{{ errorMessage() }}</div>
+  } @else if (items().length === 0) {
+    <div class="wishlist-panel">
+      <h2>No wishlist items yet</h2>
+      <p>Save products you love and they will appear here.</p>
+      <a routerLink="/">Browse catalog</a>
+    </div>
+  } @else {
+    <div class="wishlist-grid">
+      @for (item of items(); track item.productId) {
+        <article class="wishlist-card">
+          <a [routerLink]="['/products', item.slug]" class="wishlist-card__image">
+            @if (item.imageUrl) {
+              <img [src]="item.imageUrl" [alt]="item.name" />
+            } @else {
+              <span>{{ item.categoryName.charAt(0).toUpperCase() }}</span>
+            }
+          </a>
+
+          <div class="wishlist-card__body">
+            <p>{{ item.categoryName }}</p>
+            <h2>
+              <a [routerLink]="['/products', item.slug]">{{ item.name }}</a>
+            </h2>
+            <strong>{{ item.price | currency:'INR':'symbol':'1.0-0' }}</strong>
+            <button type="button" (click)="removeItem(item.productId)">Remove</button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

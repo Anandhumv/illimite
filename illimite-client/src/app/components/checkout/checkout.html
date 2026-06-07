@@ -45,8 +45,16 @@
     <section class="panel">
       <h2>Order details</h2>
       <label>
-        Shipping address
-        <textarea [(ngModel)]="shippingAddress" rows="4" placeholder="Street, city, postal code"></textarea>
+        Street address
+        <input [(ngModel)]="streetAddress" placeholder="House name, street, area" />
+      </label>
+      <label>
+        City
+        <input [(ngModel)]="city" placeholder="City" />
+      </label>
+      <label>
+        Postal code
+        <input [(ngModel)]="postalCode" placeholder="Postal code" inputmode="numeric" />
       </label>
       <label>
         Payment reference

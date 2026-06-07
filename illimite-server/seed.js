@@ -97,15 +97,15 @@ function productDetailsFor(product) {
     reviewCount,
     discountPercent,
     originalPrice: Math.round(product.price / (1 - discountPercent / 100)),
-    brand: 'Gharko',
-    seller: 'Gharko',
-    warranty: 'Quality checked by Gharko',
+    brand: 'Illimite',
+    seller: 'Illimite',
+    warranty: 'Quality checked',
     deliveryText: 'Delivery timelines vary by location',
     returnPolicy: 'Returns as per store policy',
     highlights: [
       `Curated ${product.categoryName.toLowerCase()} piece`,
       'Premium home styling finish',
-      'Original Gharko product image',
+      'Original product image',
       'Designed for warm, modern interiors'
     ],
     offers: [
@@ -114,9 +114,7 @@ function productDetailsFor(product) {
       'Carefully packed for delivery'
     ],
     specifications: {
-      Brand: 'Gharko',
       Category: product.categoryName,
-      Source: product.sourceUrl,
       Care: 'Clean gently with a soft dry cloth'
     }
   };
@@ -145,7 +143,7 @@ async function fetchCollectionProducts(category) {
         .map((image) => normalizeImageUrl(image.src))
         .filter(Boolean);
       const price = toPrice(product.variants?.[0]?.price);
-      const description = stripHtml(product.body_html) || `${product.title} from Gharko's ${category.name} collection.`;
+      const description = stripHtml(product.body_html) || `${product.title} from the ${category.name} collection.`;
 
       return {
         id: product.handle,
@@ -182,7 +180,7 @@ async function clearCollection(collectionName) {
 }
 
 async function seedDatabase() {
-  console.log('[Seed] Starting Gharko-only Firestore seeding...');
+  console.log('[Seed] Starting storefront-only Firestore seeding...');
 
   try {
     const now = new Date().toISOString();
@@ -209,7 +207,7 @@ async function seedDatabase() {
       });
     });
 
-    console.log(`[Seed] Staging ${uniqueProducts.length} Gharko products...`);
+    console.log(`[Seed] Staging ${uniqueProducts.length} storefront products...`);
     uniqueProducts.forEach((product) => {
       const productRef = db.collection('products').doc(product.slug);
       batch.set(productRef, {
@@ -221,7 +219,7 @@ async function seedDatabase() {
     });
 
     await batch.commit();
-    console.log('[Seed] Success. Firestore now contains only the requested Gharko categories and products.');
+    console.log('[Seed] Success. Firestore now contains only the requested storefront categories and products.');
     process.exit(0);
   } catch (error) {
     console.error('[Seed] Seeding process failed:', error);

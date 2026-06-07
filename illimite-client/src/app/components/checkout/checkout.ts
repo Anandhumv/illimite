@@ -23,7 +23,9 @@ export class CheckoutComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
 
-  shippingAddress = '';
+  streetAddress = '';
+  city = '';
+  postalCode = '';
   paymentRef = 'mock-payment-ref';
   readonly message = signal('');
   readonly isSubmitting = signal(false);
@@ -64,16 +66,17 @@ export class CheckoutComponent implements OnInit {
 
   async submitOrder(): Promise<void> {
     this.message.set('');
+    const shippingAddress = this.formattedShippingAddress;
 
-    if (!this.shippingAddress.trim()) {
-      this.message.set('Add a shipping address before placing the order.');
+    if (!shippingAddress) {
+      this.message.set('Add your street address, city, and postal code before placing the order.');
       return;
     }
 
     this.isSubmitting.set(true);
 
     try {
-      const order = await this.orderService.placeOrder(this.shippingAddress, this.paymentRef);
+      const order = await this.orderService.placeOrder(shippingAddress, this.paymentRef);
       this.toastService.success('Order placed successfully.');
       await this.router.navigate(['/orders', order.id, 'confirmation']);
     } catch (error) {
@@ -83,5 +86,13 @@ export class CheckoutComponent implements OnInit {
     } finally {
       this.isSubmitting.set(false);
     }
+  }
+
+  get formattedShippingAddress(): string {
+    const parts = [this.streetAddress, this.city, this.postalCode]
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    return parts.length === 3 ? parts.join(', ') : '';
   }
 }

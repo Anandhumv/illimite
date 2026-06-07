@@ -42,6 +42,43 @@ h1 {
   color: var(--ink);
 }
 
+.confirmation-items {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+  padding-top: 16px;
+}
+
+.confirmation-item {
+  align-items: center;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 72px 1fr;
+}
+
+.confirmation-item img,
+.confirmation-thumb {
+  aspect-ratio: 1;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  display: grid;
+  font-weight: 800;
+  object-fit: cover;
+  place-items: center;
+  width: 72px;
+}
+
+.confirmation-item strong {
+  color: var(--ink);
+}
+
+.confirmation-item p {
+  color: var(--muted);
+  margin-top: 4px;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

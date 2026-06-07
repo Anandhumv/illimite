@@ -64,6 +64,11 @@ export class App implements OnInit {
   readonly currentUrl = signal<string>('/');
   readonly isHomeRoute = computed(() => this.currentUrl() === '/' || this.currentUrl() === '');
   readonly isAdmin = computed(() => this.authService.currentUser()?.role === 'admin');
+  readonly heroProducts = computed(() => this.products().filter((product) => product.imageUrl).slice(0, 12));
+  readonly heroSlides = computed(() => {
+    const products = this.heroProducts();
+    return products.length ? [...products, ...products] : [];
+  });
 
   ngOnInit(): void {
     this.currentUrl.set(this.router.url);
@@ -97,6 +102,20 @@ export class App implements OnInit {
   clearFilters(): void {
     this.searchTerm.set('');
     this.selectedCategoryId.set('all');
+  }
+
+  selectCategory(categoryId: string): void {
+    this.selectedCategoryId.set(categoryId);
+    document.getElementById('catalog-heading')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  getCategoryDisplayName(category: CategoryOption): string {
+    const labels: Record<string, string> = {
+      'home-fragrance': 'Candles & Diffusers',
+      'home-furnishing': 'Cushion & Throws'
+    };
+
+    return labels[category.id] || category.name;
   }
 
   trackByProductId(_: number, product: Product): string {
