@@ -3,8 +3,8 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { filter } from 'rxjs';
 import { ApiProductService, CategoryOption } from './services/api-product.service';
@@ -23,8 +23,8 @@ import { ToastService } from './core/services/toast.service';
     FormsModule,
     RouterLink,
     RouterOutlet,
-    MatBadgeModule,
     MatButtonModule,
+    MatMenuModule,
     MatToolbarModule,
     ProductCard,
     UiLoaderComponent,
@@ -60,7 +60,6 @@ export class App implements OnInit {
   });
   readonly productCount = computed(() => this.products().length);
   readonly filteredProductCount = computed(() => this.filteredProducts().length);
-  readonly cartCount = computed(() => this.cartService.cartItems().reduce((sum, item) => sum + item.qty, 0));
   readonly currentUrl = signal<string>('/');
   readonly isHomeRoute = computed(() => this.currentUrl() === '/' || this.currentUrl() === '');
   readonly isAdmin = computed(() => this.authService.currentUser()?.role === 'admin');

@@ -14,17 +14,48 @@
       @if (isAdmin()) {
         <a mat-button routerLink="/admin">Admin</a>
       }
-      @if (authService.currentUser(); as user) {
-        <a mat-button routerLink="/profile">{{ user.displayName }}</a>
-        <button mat-button type="button" (click)="logout()">Logout</button>
-      } @else {
+      @if (!authService.currentUser()) {
         <a mat-button routerLink="/login">Login</a>
       }
     </nav>
 
-    <button mat-stroked-button class="cart-action" routerLink="/cart" [matBadge]="cartCount()" matBadgeSize="small">
-      Cart
-    </button>
+    <div class="profile-section">
+      <button
+        mat-icon-button
+        class="profile-btn"
+        [matMenuTriggerFor]="profileMenu"
+        aria-label="Profile menu"
+      >
+        <svg class="profile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </button>
+
+      <mat-menu #profileMenu="matMenu" class="profile-menu" xPosition="before" [overlapTrigger]="false">
+        @if (authService.currentUser(); as user) {
+          <div class="profile-menu__header">
+            <span class="profile-menu__name">{{ user.displayName }}</span>
+            <span class="profile-menu__email">{{ user.email }}</span>
+          </div>
+          <div class="profile-menu__divider"></div>
+          <a mat-menu-item routerLink="/profile">
+            <span>My Account / Profile Settings</span>
+          </a>
+          <a mat-menu-item routerLink="/orders">
+            <span>Order History</span>
+          </a>
+          <div class="profile-menu__divider"></div>
+          <button mat-menu-item (click)="logout()">
+            <span>Log Out</span>
+          </button>
+        } @else {
+          <a mat-menu-item routerLink="/login">
+            <span>Sign In</span>
+          </a>
+        }
+      </mat-menu>
+    </div>
   </mat-toolbar>
 
   <div class="toast-stack" aria-live="polite" aria-atomic="true">
