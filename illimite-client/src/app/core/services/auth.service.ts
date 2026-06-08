@@ -163,8 +163,17 @@ export class AuthService {
   }
 
   async getIdToken(): Promise<string | null> {
-    const user = this.auth.currentUser;
+    const user = this.auth.currentUser || await this.waitForFirebaseUser();
     return user ? user.getIdToken() : null;
+  }
+
+  private waitForFirebaseUser(): Promise<FirebaseUser | null> {
+    return new Promise((resolve) => {
+      const unsubscribe = onAuthStateChanged(this.auth, (user) => {
+        unsubscribe();
+        resolve(user);
+      });
+    });
   }
 
   /**

@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from './auth.service';
 import { CartService } from './cart.service';
@@ -50,7 +51,11 @@ export class OrderService {
       throw new Error('User must be logged in to view their orders.');
     }
 
-    return await firstValueFrom(this.http.get<Order[]>(`${this.apiBaseUrl}/orders`));
+    try {
+      return await firstValueFrom(this.http.get<Order[]>(`${this.apiBaseUrl}/orders`));
+    } catch (error) {
+      throw new Error(this.resolveApiError(error, 'Unable to load orders.'));
+    }
   }
 
   async getOrderById(orderId: string): Promise<Order | null> {
@@ -65,5 +70,13 @@ export class OrderService {
     await firstValueFrom(
       this.http.patch(`${this.apiBaseUrl}/orders/${orderId}/status`, { status })
     );
+  }
+
+  private resolveApiError(error: unknown, fallback: string): string {
+    if (error instanceof HttpErrorResponse) {
+      return error.error?.details || error.error?.error || error.message || fallback;
+    }
+
+    return error instanceof Error ? error.message : fallback;
   }
 }
