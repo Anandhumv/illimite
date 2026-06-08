@@ -21,6 +21,8 @@ interface ProductForm {
   stock: number;
 }
 
+type AdminSection = 'catalog' | 'inventory' | 'fulfillment';
+
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
@@ -41,6 +43,7 @@ export class AdminDashboardComponent implements OnInit {
   readonly errorMessage = signal('');
   readonly adminMessage = signal('');
   readonly editingProductId = signal<string | null>(null);
+  readonly activeSection = signal<AdminSection>('catalog');
   readonly orderStatuses: OrderStatus[] = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'];
   readonly activeOrderStatuses: OrderStatus[] = ['pending', 'paid', 'processing', 'shipped', 'delivered'];
   readonly productForm = signal<ProductForm>(this.emptyProductForm());
@@ -100,6 +103,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   editProduct(product: Product): void {
+    this.activeSection.set('catalog');
     this.editingProductId.set(product.id);
     this.productForm.set({
       id: product.id,
@@ -218,6 +222,15 @@ export class AdminDashboardComponent implements OnInit {
     }
 
     return 'pending';
+  }
+
+  shortId(value: string): string {
+    const normalized = (value || 'Customer').trim();
+    return normalized.length > 8 ? normalized.slice(0, 8) : normalized;
+  }
+
+  setActiveSection(section: AdminSection): void {
+    this.activeSection.set(section);
   }
 
   private emptyProductForm(): ProductForm {
