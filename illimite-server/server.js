@@ -190,10 +190,12 @@ app.get('/api/orders', verifyFirebaseToken, async (req, res) => {
   try {
     const snapshot = await db.collection('orders')
       .where('userId', '==', req.user.uid)
-      .orderBy('createdAt', 'desc')
       .get();
 
-    const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const orders = snapshot.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .sort((first, second) => new Date(second.createdAt || 0) - new Date(first.createdAt || 0));
+
     res.status(200).json(orders);
   } catch (err) {
     console.error('[Server] Error fetching orders:', err.message);

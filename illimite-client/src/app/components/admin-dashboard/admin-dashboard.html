@@ -22,202 +22,251 @@
   } @else if (errorMessage()) {
     <div class="admin-empty">{{ errorMessage() }}</div>
   } @else {
-    <section class="admin-grid">
-      <form class="admin-panel product-form" (ngSubmit)="saveProduct()">
-        <div class="panel-heading">
-          <div>
-            <p>Catalog</p>
-            <h2>{{ editingProductId() ? 'Edit product' : 'Create product' }}</h2>
-          </div>
-          @if (editingProductId()) {
-            <button type="button" class="ghost-action" (click)="resetForm()">New product</button>
-          }
-        </div>
-
-        <label>
-          Name
-          <input
-            [ngModel]="productForm().name"
-            (ngModelChange)="updateForm('name', $event)"
-            name="name"
-            required
-          />
-        </label>
-
-        <div class="form-row">
-          <label>
-            ID
-            <input
-              [ngModel]="productForm().id"
-              (ngModelChange)="updateForm('id', $event)"
-              name="id"
-              [readonly]="!!editingProductId()"
-              required
-            />
-          </label>
-          <label>
-            Slug
-            <input
-              [ngModel]="productForm().slug"
-              (ngModelChange)="updateForm('slug', $event)"
-              name="slug"
-              required
-            />
-          </label>
-        </div>
-
-        <label>
-          Description
-          <textarea
-            [ngModel]="productForm().description"
-            (ngModelChange)="updateForm('description', $event)"
-            name="description"
-            rows="4"
-          ></textarea>
-        </label>
-
-        <div class="form-row">
-          <label>
-            Price
-            <input
-              type="number"
-              min="0"
-              [ngModel]="productForm().price"
-              (ngModelChange)="updateForm('price', $event)"
-              name="price"
-            />
-          </label>
-          <label>
-            Stock
-            <input
-              type="number"
-              min="0"
-              [ngModel]="productForm().stock"
-              (ngModelChange)="updateForm('stock', $event)"
-              name="stock"
-            />
-          </label>
-        </div>
-
-        <label>
-          Category
-          <select
-            [ngModel]="productForm().categoryId"
-            (ngModelChange)="updateForm('categoryId', $event)"
-            name="categoryId"
-            required
-          >
-            <option value="">Choose category</option>
-            @for (category of categories(); track category.id) {
-              <option [value]="category.id">{{ category.name }}</option>
-            }
-          </select>
-        </label>
-
-        <label>
-          Image URL
-          <input
-            [ngModel]="productForm().imageUrl"
-            (ngModelChange)="updateForm('imageUrl', $event)"
-            name="imageUrl"
-            placeholder="https://..."
-          />
-        </label>
-
-        <button type="submit" [disabled]="isSaving()">
-          {{ isSaving() ? 'Saving...' : editingProductId() ? 'Update product' : 'Create product' }}
-        </button>
-      </form>
-
-      <section class="admin-panel">
-        <div class="panel-heading">
-          <div>
-            <p>Inventory</p>
-            <h2>Real products</h2>
-          </div>
-        </div>
-
-        @if (products().length === 0) {
-          <div class="admin-empty">No products available.</div>
-        } @else {
-          <div class="admin-table product-table">
-            <div>Product</div>
-            <div>Category</div>
-            <div>Stock</div>
-            <div>Actions</div>
-            @for (product of products(); track product.id) {
-              <div>
-                <strong>{{ product.name }}</strong>
-                <span>{{ product.id }}</span>
-              </div>
-              <div>{{ product.categoryName }}</div>
-              <div [class.low-stock]="product.stock <= 5">{{ product.stock }}</div>
-              <div class="row-actions">
-                <button type="button" class="ghost-action" (click)="editProduct(product)">Edit</button>
-                <button type="button" class="danger-action" (click)="deleteProduct(product)">Delete</button>
-              </div>
-            }
-          </div>
-        }
-      </section>
+    <section class="section-switcher" aria-label="Admin dashboard sections">
+      <button
+        type="button"
+        class="section-card"
+        [class.section-card--active]="activeSection() === 'catalog'"
+        (click)="setActiveSection('catalog')"
+      >
+        <span>Catalog</span>
+        <strong>Create product</strong>
+      </button>
+      <button
+        type="button"
+        class="section-card"
+        [class.section-card--active]="activeSection() === 'inventory'"
+        (click)="setActiveSection('inventory')"
+      >
+        <span>Inventory</span>
+        <strong>Real products</strong>
+      </button>
+      <button
+        type="button"
+        class="section-card"
+        [class.section-card--active]="activeSection() === 'fulfillment'"
+        (click)="setActiveSection('fulfillment')"
+      >
+        <span>Fulfillment</span>
+        <strong>Order management</strong>
+      </button>
     </section>
 
-    <section class="admin-panel">
-      <div class="panel-heading">
-        <div>
-          <p>Fulfillment</p>
-          <h2>Order management</h2>
-        </div>
-      </div>
+    <section class="active-admin-section">
+      @if (activeSection() === 'catalog') {
+        <form class="admin-panel product-form" (ngSubmit)="saveProduct()">
+          <div class="panel-heading">
+            <div>
+              <p>Catalog</p>
+              <h2>{{ editingProductId() ? 'Edit product' : 'Create product' }}</h2>
+            </div>
+            @if (editingProductId()) {
+              <button type="button" class="ghost-action" (click)="resetForm()">New product</button>
+            }
+          </div>
 
-      @if (orders().length === 0) {
-        <div class="admin-empty">No orders yet.</div>
-      } @else {
-        <div class="admin-table order-table">
-          <div>Order</div>
-          <div>Customer</div>
-          <div>Total</div>
-          <div>Status</div>
-          <div>Flow</div>
-          <div>View</div>
-          @for (order of orders(); track order.id) {
-            <div>
-              <strong>{{ order.id }}</strong>
-              <span>{{ order.items.length }} items</span>
-            </div>
-            <div>{{ order.userId }}</div>
-            <div>{{ order.total | currency:'INR':'symbol':'1.0-0' }}</div>
-            <div>
-              <select
-                class="status-select"
-                [ngModel]="order.status"
-                (ngModelChange)="updateOrderStatus(order, $event)"
-                [name]="'status-' + order.id"
-              >
-                @for (status of orderStatuses; track status) {
-                  <option [value]="status">{{ status }}</option>
-                }
-              </select>
-            </div>
-            <div class="status-flow compact-flow">
-              @for (status of activeOrderStatuses; track status) {
-                <span
-                  class="flow-step"
-                  [class.flow-step--done]="statusStepState(order, status) === 'done'"
-                  [class.flow-step--current]="statusStepState(order, status) === 'current'"
-                >
-                  {{ status }}
-                </span>
+          <label>
+            Name
+            <input
+              [ngModel]="productForm().name"
+              (ngModelChange)="updateForm('name', $event)"
+              name="name"
+              required
+            />
+          </label>
+
+          <div class="form-row">
+            <label>
+              ID
+              <input
+                [ngModel]="productForm().id"
+                (ngModelChange)="updateForm('id', $event)"
+                name="id"
+                [readonly]="!!editingProductId()"
+                required
+              />
+            </label>
+            <label>
+              Slug
+              <input
+                [ngModel]="productForm().slug"
+                (ngModelChange)="updateForm('slug', $event)"
+                name="slug"
+                required
+              />
+            </label>
+          </div>
+
+          <label>
+            Description
+            <textarea
+              [ngModel]="productForm().description"
+              (ngModelChange)="updateForm('description', $event)"
+              name="description"
+              rows="4"
+            ></textarea>
+          </label>
+
+          <div class="form-row">
+            <label>
+              Price
+              <input
+                type="number"
+                min="0"
+                [ngModel]="productForm().price"
+                (ngModelChange)="updateForm('price', $event)"
+                name="price"
+              />
+            </label>
+            <label>
+              Stock
+              <input
+                type="number"
+                min="0"
+                [ngModel]="productForm().stock"
+                (ngModelChange)="updateForm('stock', $event)"
+                name="stock"
+              />
+            </label>
+          </div>
+
+          <label>
+            Category
+            <select
+              [ngModel]="productForm().categoryId"
+              (ngModelChange)="updateForm('categoryId', $event)"
+              name="categoryId"
+              required
+            >
+              <option value="">Choose category</option>
+              @for (category of categories(); track category.id) {
+                <option [value]="category.id">{{ category.name }}</option>
               }
-              @if (order.status === 'cancelled') {
-                <span class="flow-step flow-step--cancelled">cancelled</span>
-              }
-            </div>
+            </select>
+          </label>
+
+          <label>
+            Image URL
+            <input
+              [ngModel]="productForm().imageUrl"
+              (ngModelChange)="updateForm('imageUrl', $event)"
+              name="imageUrl"
+              placeholder="https://..."
+            />
+          </label>
+
+          <button type="submit" [disabled]="isSaving()">
+            {{ isSaving() ? 'Saving...' : editingProductId() ? 'Update product' : 'Create product' }}
+          </button>
+        </form>
+      }
+
+      @if (activeSection() === 'inventory') {
+        <section class="admin-panel">
+          <div class="panel-heading">
             <div>
-              <a class="view-action" [routerLink]="['/orders', order.id]">View</a>
+              <p>Inventory</p>
+              <h2>Real products</h2>
+            </div>
+          </div>
+
+          @if (products().length === 0) {
+            <div class="admin-empty">No products available.</div>
+          } @else {
+            <div class="admin-table product-table">
+              <div>Product</div>
+              <div>Category</div>
+              <div>Stock</div>
+              <div>Actions</div>
+              @for (product of products(); track product.id) {
+                <div>
+                  <strong>{{ product.name }}</strong>
+                  <span>{{ product.id }}</span>
+                </div>
+                <div>{{ product.categoryName }}</div>
+                <div [class.low-stock]="product.stock <= 5">{{ product.stock }}</div>
+                <div class="row-actions">
+                  <button type="button" class="ghost-action" (click)="editProduct(product)">Edit</button>
+                  <button type="button" class="danger-action" (click)="deleteProduct(product)">Delete</button>
+                </div>
+              }
             </div>
           }
-        </div>
+        </section>
+      }
+
+      @if (activeSection() === 'fulfillment') {
+        <section class="admin-panel order-panel">
+          <div class="panel-heading">
+            <div>
+              <p>Fulfillment</p>
+              <h2>Order management</h2>
+            </div>
+          </div>
+
+          @if (orders().length === 0) {
+            <div class="admin-empty">No orders yet.</div>
+          } @else {
+            <div class="order-list">
+              <div class="order-list__head">
+                <span>Order</span>
+                <span>Status</span>
+              </div>
+
+              @for (order of orders(); track order.id) {
+                <article class="order-card">
+                  <div class="order-card__topline">
+                    <div class="order-identity">
+                      <strong title="{{ order.id }}">{{ shortId(order.id) }}</strong>
+                      <span>{{ order.items.length }} {{ order.items.length === 1 ? 'item' : 'items' }}</span>
+                    </div>
+                    <a class="view-action" [routerLink]="['/orders', order.id]">View</a>
+                  </div>
+
+                  <dl class="order-summary">
+                    <div>
+                      <dt>Customer</dt>
+                      <dd title="{{ order.userId }}">{{ shortId(order.userId || 'Customer') }}</dd>
+                    </div>
+                    <div>
+                      <dt>Total</dt>
+                      <dd>{{ order.total | currency:'INR':'symbol':'1.0-0' }}</dd>
+                    </div>
+                  </dl>
+
+                  <label class="status-control">
+                    Status
+                    <select
+                      class="status-select"
+                      [ngModel]="order.status"
+                      (ngModelChange)="updateOrderStatus(order, $event)"
+                      [name]="'status-' + order.id"
+                    >
+                      @for (status of orderStatuses; track status) {
+                        <option [value]="status">{{ status }}</option>
+                      }
+                    </select>
+                  </label>
+
+                  <div class="status-flow compact-flow" aria-label="Order status flow">
+                    @for (status of activeOrderStatuses; track status) {
+                      <span
+                        class="flow-step"
+                        [class.flow-step--done]="statusStepState(order, status) === 'done'"
+                        [class.flow-step--current]="statusStepState(order, status) === 'current'"
+                      >
+                        {{ status }}
+                      </span>
+                    }
+                    @if (order.status === 'cancelled') {
+                      <span class="flow-step flow-step--cancelled">cancelled</span>
+                    }
+                  </div>
+                </article>
+              }
+            </div>
+          }
+        </section>
       }
     </section>
   }
