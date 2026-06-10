@@ -22,7 +22,7 @@ export class OrderService {
   private readonly cartService = inject(CartService);
   private readonly apiBaseUrl = 'http://localhost:5000/api';
 
-  async placeOrder(shippingAddress: string, paymentRef: string): Promise<Order> {
+  async placeOrder(shippingAddress: string, paymentRef: string, customerName?: string): Promise<Order> {
     const user = this.authService.currentUser();
     if (!user) {
       throw new Error('User must be logged in to place an order.');
@@ -37,7 +37,8 @@ export class OrderService {
       this.http.post<CreateOrderResponse>(`${this.apiBaseUrl}/orders`, {
         items,
         shippingAddress,
-        paymentRef
+        paymentRef,
+        customerName
       })
     );
 

@@ -11,6 +11,7 @@ export type OrderStatus = 'pending' | 'paid' | 'processing' | 'shipped' | 'deliv
 export interface Order {
   id: string;
   userId: string;
+  customerName?: string;
   items: OrderItem[];
   total: number;
   status: OrderStatus;

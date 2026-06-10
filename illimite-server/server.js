@@ -6,6 +6,7 @@ require('dotenv').config();
 const uploadRouter = require('./routes/upload');
 const cartRouter = require('./routes/cart');
 const { verifyFirebaseToken } = require('./middleware/auth');
+const { generateOrderId } = require('./utils/orderIdGenerator');
 
 const app = express();
 
@@ -241,6 +242,7 @@ app.post('/api/orders', verifyFirebaseToken, async (req, res) => {
   const items = Array.isArray(req.body?.items) ? req.body.items : [];
   const shippingAddress = req.body?.shippingAddress || '';
   const paymentRef = req.body?.paymentRef || 'mock-payment-ref';
+  const customerName = req.body?.customerName?.trim() || req.user?.displayName || 'Customer';
 
   if (!items.length) {
     return res.status(400).json({ error: 'Cannot place an order with an empty cart' });
@@ -251,7 +253,8 @@ app.post('/api/orders', verifyFirebaseToken, async (req, res) => {
   }
 
   try {
-    const orderRef = db.collection('orders').doc();
+    const customOrderId = generateOrderId(customerName);
+    const orderRef = db.collection('orders').doc(customOrderId);
     const order = await db.runTransaction(async (transaction) => {
       const productUpdates = [];
       let total = 0;
@@ -297,8 +300,9 @@ app.post('/api/orders', verifyFirebaseToken, async (req, res) => {
       });
 
       const orderData = {
-        id: orderRef.id,
+        id: customOrderId,
         userId: req.user.uid,
+        customerName,
         items: productUpdates.map(update => update.orderItem),
         total,
         status: 'pending',

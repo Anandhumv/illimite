@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
 import { ApiProductService } from '../../services/api-product.service';
@@ -18,11 +19,13 @@ import { ToastService } from '../../core/services/toast.service';
 })
 export class CheckoutComponent implements OnInit {
   readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
   private readonly orderService = inject(OrderService);
   private readonly apiProductService = inject(ApiProductService);
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
 
+  customerName = '';
   streetAddress = '';
   city = '';
   postalCode = '';
@@ -35,6 +38,11 @@ export class CheckoutComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    const user = this.authService.currentUser();
+    if (user?.displayName) {
+      this.customerName = user.displayName;
+    }
+
     this.apiProductService.getProducts().subscribe({
       next: (products) => {
         this.productLookup.set(
@@ -76,7 +84,7 @@ export class CheckoutComponent implements OnInit {
     this.isSubmitting.set(true);
 
     try {
-      const order = await this.orderService.placeOrder(shippingAddress, this.paymentRef);
+      const order = await this.orderService.placeOrder(shippingAddress, this.paymentRef, this.customerName);
       this.toastService.success('Order placed successfully.');
       await this.router.navigate(['/orders', order.id, 'confirmation']);
     } catch (error) {
