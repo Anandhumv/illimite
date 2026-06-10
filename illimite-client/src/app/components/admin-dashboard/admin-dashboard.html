@@ -50,6 +50,15 @@
         <span>Fulfillment</span>
         <strong>Order management</strong>
       </button>
+      <button
+        type="button"
+        class="section-card"
+        [class.section-card--active]="activeSection() === 'comments'"
+        (click)="setActiveSection('comments')"
+      >
+        <span>Community</span>
+        <strong>Comments</strong>
+      </button>
     </section>
 
     <section class="active-admin-section">
@@ -262,6 +271,37 @@
                       <span class="flow-step flow-step--cancelled">cancelled</span>
                     }
                   </div>
+                </article>
+              }
+            </div>
+          }
+        </section>
+      }
+
+      @if (activeSection() === 'comments') {
+        <section class="admin-panel comments-panel">
+          <div class="panel-heading">
+            <div>
+              <p>Community</p>
+              <h2>Posted comments</h2>
+            </div>
+          </div>
+
+          @if (comments().length === 0) {
+            <div class="admin-empty">No comments posted yet.</div>
+          } @else {
+            <div class="comment-list">
+              @for (comment of comments(); track comment.id) {
+                <article class="comment-card">
+                  <div class="comment-card__header">
+                    <div>
+                      <strong>{{ comment.name }}</strong>
+                      <span>{{ comment.email }}</span>
+                    </div>
+                    <span class="comment-status">{{ comment.status }}</span>
+                  </div>
+                  <p>{{ comment.message }}</p>
+                  <time>{{ comment.createdAt | date:'medium' }}</time>
                 </article>
               }
             </div>

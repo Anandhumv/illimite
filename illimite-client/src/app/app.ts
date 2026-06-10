@@ -8,6 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { filter } from 'rxjs';
 import { ApiProductService, CategoryOption } from './services/api-product.service';
+import { CommentService } from './services/comment.service';
 import { Product } from './models/product.model';
 import { AuthService } from './core/services/auth.service';
 import { CartService } from './core/services/cart.service';
@@ -36,6 +37,7 @@ import { ToastService } from './core/services/toast.service';
 })
 export class App implements OnInit {
   private readonly apiProductService = inject(ApiProductService);
+  private readonly commentService = inject(CommentService);
   private readonly router = inject(Router);
   readonly authService = inject(AuthService);
   readonly cartService = inject(CartService);
@@ -47,6 +49,10 @@ export class App implements OnInit {
   readonly selectedCategoryId = signal<string>('all');
   readonly isLoading = signal<boolean>(true);
   readonly errorMessage = signal<string | null>(null);
+  readonly commentName = signal('');
+  readonly commentEmail = signal('');
+  readonly commentMessage = signal('');
+  readonly isPostingComment = signal(false);
   readonly filteredProducts = computed(() => {
     const query = this.searchTerm().trim().toLowerCase();
     const categoryId = this.selectedCategoryId();
@@ -147,5 +153,32 @@ export class App implements OnInit {
     await this.authService.signOut();
     this.toastService.info('Signed out successfully.');
     this.router.navigate(['/']);
+  }
+
+  postComment(): void {
+    const name = this.commentName().trim();
+    const email = this.commentEmail().trim();
+    const message = this.commentMessage().trim();
+
+    if (!name || !email || !message) {
+      this.toastService.error('Please fill name, email, and message before posting.');
+      return;
+    }
+
+    this.isPostingComment.set(true);
+    this.commentService.createComment({ name, email, message }).subscribe({
+      next: () => {
+        this.commentName.set('');
+        this.commentEmail.set('');
+        this.commentMessage.set('');
+        this.toastService.success('Comment posted. Admin approval is pending.');
+        this.isPostingComment.set(false);
+      },
+      error: (error) => {
+        console.error('Failed to post comment:', error);
+        this.toastService.error('Unable to post your comment right now.');
+        this.isPostingComment.set(false);
+      }
+    });
   }
 }

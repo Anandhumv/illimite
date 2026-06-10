@@ -160,13 +160,36 @@
         <h2 id="comment-heading">Leave a comment</h2>
         <span class="comment-section__rule"></span>
 
-        <form class="comment-form" (submit)="$event.preventDefault()">
-          <input type="text" name="commentName" placeholder="Name" aria-label="Name" />
-          <input type="email" name="commentEmail" placeholder="Email" aria-label="Email" />
-          <textarea name="commentMessage" rows="6" placeholder="Message" aria-label="Message"></textarea>
+        <form class="comment-form" (ngSubmit)="postComment()">
+          <input
+            type="text"
+            name="commentName"
+            placeholder="Name"
+            aria-label="Name"
+            [ngModel]="commentName()"
+            (ngModelChange)="commentName.set($event)"
+          />
+          <input
+            type="email"
+            name="commentEmail"
+            placeholder="Email"
+            aria-label="Email"
+            [ngModel]="commentEmail()"
+            (ngModelChange)="commentEmail.set($event)"
+          />
+          <textarea
+            name="commentMessage"
+            rows="6"
+            placeholder="Message"
+            aria-label="Message"
+            [ngModel]="commentMessage()"
+            (ngModelChange)="commentMessage.set($event)"
+          ></textarea>
 
           <p>Please note, comments must be approved before they are published</p>
-          <button type="submit">Post Comment</button>
+          <button type="submit" [disabled]="isPostingComment()">
+            {{ isPostingComment() ? 'Posting...' : 'Post Comment' }}
+          </button>
         </form>
       </section>
     </main>

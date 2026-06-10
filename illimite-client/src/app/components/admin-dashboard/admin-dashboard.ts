@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ApiProductService } from '../../services/api-product.service';
+import { CommentService, StorefrontComment } from '../../services/comment.service';
 import { Product } from '../../models/product.model';
 import { Order, OrderStatus } from '../../core/models/order.model';
 import { OrderService } from '../../core/services/order.service';
@@ -21,7 +22,7 @@ interface ProductForm {
   stock: number;
 }
 
-type AdminSection = 'catalog' | 'inventory' | 'fulfillment';
+type AdminSection = 'catalog' | 'inventory' | 'fulfillment' | 'comments';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -32,12 +33,14 @@ type AdminSection = 'catalog' | 'inventory' | 'fulfillment';
 })
 export class AdminDashboardComponent implements OnInit {
   private readonly apiProductService = inject(ApiProductService);
+  private readonly commentService = inject(CommentService);
   private readonly orderService = inject(OrderService);
   private readonly toastService = inject(ToastService);
 
   readonly products = signal<Product[]>([]);
   readonly categories = signal<{ id: string; name: string; slug: string; imageUrl: string }[]>([]);
   readonly orders = signal<Order[]>([]);
+  readonly comments = signal<StorefrontComment[]>([]);
   readonly isLoading = signal(true);
   readonly isSaving = signal(false);
   readonly errorMessage = signal('');
@@ -56,7 +59,8 @@ export class AdminDashboardComponent implements OnInit {
     { label: 'Products', value: String(this.products().length) },
     { label: 'Low stock', value: String(this.lowStockCount()) },
     { label: 'Units available', value: String(this.totalStock()) },
-    { label: 'Open orders', value: String(this.openOrders()) }
+    { label: 'Open orders', value: String(this.openOrders()) },
+    { label: 'Comments', value: String(this.comments().length) }
   ]);
 
   async ngOnInit(): Promise<void> {
@@ -68,15 +72,17 @@ export class AdminDashboardComponent implements OnInit {
     this.errorMessage.set('');
 
     try {
-      const [products, categories, orders] = await Promise.all([
+      const [products, categories, orders, comments] = await Promise.all([
         firstValueFrom(this.apiProductService.getProducts()),
         firstValueFrom(this.apiProductService.getCategories()),
-        this.orderService.getAllOrders()
+        this.orderService.getAllOrders(),
+        firstValueFrom(this.commentService.getAdminComments())
       ]);
 
       this.products.set(products);
       this.categories.set(categories);
       this.orders.set(orders);
+      this.comments.set(comments);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unable to load admin data.';
       this.errorMessage.set(message);

@@ -28,7 +28,7 @@
 .metric-grid {
   display: grid;
   gap: 14px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 }
 
 .metric-card,
@@ -60,7 +60,7 @@
 }
 
 .section-switcher {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .section-card {
@@ -379,6 +379,52 @@ button:disabled {
   font-weight: 800;
   padding: 9px 11px;
   text-decoration: none;
+}
+
+.comment-list {
+  display: grid;
+  gap: 14px;
+}
+
+.comment-card {
+  background: rgba(246, 235, 209, 0.52);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.comment-card__header {
+  align-items: start;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.comment-card strong {
+  color: var(--ink);
+  display: block;
+}
+
+.comment-card span,
+.comment-card time {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.comment-card p {
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.comment-status {
+  background: var(--panel);
+  border-radius: 999px;
+  color: var(--accent) !important;
+  font-weight: 800;
+  padding: 6px 10px;
+  text-transform: uppercase;
 }
 
 @media (max-width: 1180px) {

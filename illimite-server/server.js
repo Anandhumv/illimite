@@ -51,6 +51,45 @@ async function requireAdmin(req, res, next) {
   }
 }
 
+app.post('/api/comments', async (req, res) => {
+  const name = String(req.body?.name || '').trim();
+  const email = String(req.body?.email || '').trim();
+  const message = String(req.body?.message || '').trim();
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'Name, email, and message are required' });
+  }
+
+  try {
+    const commentRef = db.collection('comments').doc();
+    const comment = {
+      id: commentRef.id,
+      name,
+      email,
+      message,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    };
+
+    await commentRef.set(comment);
+    res.status(201).json({ success: true, message: 'Comment submitted for admin review' });
+  } catch (err) {
+    console.error('[Server] Error creating comment:', err.message);
+    res.status(500).json({ error: 'Failed to submit comment', details: err.message });
+  }
+});
+
+app.get('/api/admin/comments', verifyFirebaseToken, requireAdmin, async (req, res) => {
+  try {
+    const snapshot = await db.collection('comments').orderBy('createdAt', 'desc').get();
+    const comments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.status(200).json(comments);
+  } catch (err) {
+    console.error('[Server] Error fetching comments:', err.message);
+    res.status(500).json({ error: 'Failed to fetch comments', details: err.message });
+  }
+});
+
 app.get('/api/categories', async (req, res) => {
   try {
     const snapshot = await db.collection('categories').get();
