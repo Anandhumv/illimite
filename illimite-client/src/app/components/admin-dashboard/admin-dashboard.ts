@@ -43,6 +43,7 @@ export class AdminDashboardComponent implements OnInit {
   readonly comments = signal<StorefrontComment[]>([]);
   readonly isLoading = signal(true);
   readonly isSaving = signal(false);
+  readonly isRefreshingComments = signal(false);
   readonly errorMessage = signal('');
   readonly adminMessage = signal('');
   readonly editingProductId = signal<string | null>(null);
@@ -72,17 +73,16 @@ export class AdminDashboardComponent implements OnInit {
     this.errorMessage.set('');
 
     try {
-      const [products, categories, orders, comments] = await Promise.all([
+      const [products, categories, orders] = await Promise.all([
         firstValueFrom(this.apiProductService.getProducts()),
         firstValueFrom(this.apiProductService.getCategories()),
-        this.orderService.getAllOrders(),
-        firstValueFrom(this.commentService.getAdminComments())
+        this.orderService.getAllOrders()
       ]);
 
       this.products.set(products);
       this.categories.set(categories);
       this.orders.set(orders);
-      this.comments.set(comments);
+      await this.refreshComments(false);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unable to load admin data.';
       this.errorMessage.set(message);
@@ -237,6 +237,27 @@ export class AdminDashboardComponent implements OnInit {
 
   setActiveSection(section: AdminSection): void {
     this.activeSection.set(section);
+
+    if (section === 'comments') {
+      this.refreshComments(false);
+    }
+  }
+
+  async refreshComments(showToast = true): Promise<void> {
+    this.isRefreshingComments.set(true);
+
+    try {
+      const comments = await firstValueFrom(this.commentService.getAdminComments());
+      this.comments.set(comments);
+      if (showToast) {
+        this.toastService.success('Comments refreshed.');
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to load comments.';
+      this.toastService.error(message);
+    } finally {
+      this.isRefreshingComments.set(false);
+    }
   }
 
   private emptyProductForm(): ProductForm {

@@ -171,12 +171,13 @@ export class App implements OnInit {
         this.commentName.set('');
         this.commentEmail.set('');
         this.commentMessage.set('');
-        this.toastService.success('Comment posted. Admin approval is pending.');
+        this.toastService.success('Comment sent successfully.');
         this.isPostingComment.set(false);
       },
       error: (error) => {
         console.error('Failed to post comment:', error);
-        this.toastService.error('Unable to post your comment right now.');
+        const message = error?.error?.details || error?.error?.error || 'Unable to post your comment right now.';
+        this.toastService.error(message);
         this.isPostingComment.set(false);
       }
     });

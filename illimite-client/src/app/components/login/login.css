@@ -69,6 +69,18 @@ input:focus {
   outline: none;
 }
 
+input.ng-invalid.ng-touched,
+input.ng-invalid.ng-dirty {
+  border-color: var(--error);
+}
+
+.field-error {
+  color: var(--error);
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin: 0;
+}
+
 .btn-primary,
 .btn-google {
   align-items: center;

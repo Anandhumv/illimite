@@ -25,8 +25,16 @@ export class LoginComponent {
   ) { }
 
   async onSubmit() {
-    if (!this.email || !this.password) {
+    const email = this.email.trim();
+
+    if (!email || !this.password) {
       this.errorMessage = 'Please fill in all fields.';
+      this.toastService.error(this.errorMessage);
+      return;
+    }
+
+    if (!this.isValidEmail(email)) {
+      this.errorMessage = 'Enter a valid email address.';
       this.toastService.error(this.errorMessage);
       return;
     }
@@ -35,7 +43,7 @@ export class LoginComponent {
     this.errorMessage = '';
 
     try {
-      await this.authService.signInWithEmailAndPassword(this.email, this.password);
+      await this.authService.signInWithEmailAndPassword(email, this.password);
       this.isLoading = false;
       this.toastService.success('Signed in successfully.');
       this.router.navigate(['/']);
@@ -65,6 +73,10 @@ export class LoginComponent {
   private getAuthError(error: unknown): string {
     const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : '';
 
+    if (code.includes('auth/invalid-email')) {
+      return 'Enter a valid email address.';
+    }
+
     if (code.includes('auth/invalid-credential') || code.includes('auth/wrong-password')) {
       return 'Email or password is incorrect.';
     }
@@ -74,5 +86,9 @@ export class LoginComponent {
     }
 
     return 'Unable to sign in right now. Please try again.';
+  }
+
+  private isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 }

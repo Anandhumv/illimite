@@ -285,6 +285,9 @@
               <p>Community</p>
               <h2>Posted comments</h2>
             </div>
+            <button type="button" class="ghost-action" (click)="refreshComments()" [disabled]="isRefreshingComments()">
+              {{ isRefreshingComments() ? 'Refreshing...' : 'Refresh' }}
+            </button>
           </div>
 
           @if (comments().length === 0) {
