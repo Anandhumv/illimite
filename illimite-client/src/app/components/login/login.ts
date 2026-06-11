@@ -34,7 +34,7 @@ export class LoginComponent {
     }
 
     if (!this.isValidEmail(email)) {
-      this.errorMessage = 'Enter a valid email address.';
+      this.errorMessage = 'Enter a valid Gmail address like name@gmail.com.';
       this.toastService.error(this.errorMessage);
       return;
     }
@@ -74,7 +74,7 @@ export class LoginComponent {
     const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : '';
 
     if (code.includes('auth/invalid-email')) {
-      return 'Enter a valid email address.';
+      return 'Enter a valid Gmail address like name@gmail.com.';
     }
 
     if (code.includes('auth/invalid-credential') || code.includes('auth/wrong-password')) {
@@ -89,6 +89,6 @@ export class LoginComponent {
   }
 
   private isValidEmail(email: string): boolean {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    return /^[A-Za-z0-9._%+-]+@gmail\.com$/i.test(email);
   }
 }

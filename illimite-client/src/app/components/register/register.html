@@ -16,7 +16,19 @@
 
       <div class="form-group">
         <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" [(ngModel)]="email" required />
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          #emailField="ngModel"
+          required
+          email
+          pattern="^[A-Za-z0-9._%+-]+@gmail\.com$"
+        />
+        @if (emailField.invalid && (emailField.dirty || emailField.touched)) {
+          <p class="field-error">Enter a valid Gmail address like name&#64;gmail.com.</p>
+        }
       </div>
 
       <div class="form-group">
@@ -30,7 +42,7 @@
         />
       </div>
 
-      <button type="submit" class="btn-primary" [disabled]="isLoading">
+      <button type="submit" class="btn-primary" [disabled]="isLoading || registerForm.invalid">
         {{ isLoading ? 'Creating account...' : 'Register' }}
       </button>
     </form>

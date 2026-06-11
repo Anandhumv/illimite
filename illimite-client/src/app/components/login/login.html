@@ -19,9 +19,10 @@
           #emailField="ngModel"
           required
           email
+          pattern="^[A-Za-z0-9._%+-]+@gmail\.com$"
         />
         @if (emailField.invalid && (emailField.dirty || emailField.touched)) {
-          <p class="field-error">Enter a valid email address.</p>
+          <p class="field-error">Enter a valid Gmail address like name&#64;gmail.com.</p>
         }
       </div>
 

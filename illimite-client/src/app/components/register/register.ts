@@ -26,8 +26,17 @@ export class RegisterComponent {
   ) { }
 
   async onRegister() {
-    if (!this.name || !this.email || !this.password) {
+    const name = this.name.trim();
+    const email = this.email.trim();
+
+    if (!name || !email || !this.password) {
       this.errorMessage = 'All fields are strictly required.';
+      this.toastService.error(this.errorMessage);
+      return;
+    }
+
+    if (!this.isValidGmail(email)) {
+      this.errorMessage = 'Enter a valid Gmail address like name@gmail.com.';
       this.toastService.error(this.errorMessage);
       return;
     }
@@ -36,7 +45,7 @@ export class RegisterComponent {
     this.errorMessage = '';
 
     try {
-      await this.authService.signUpWithEmailAndPassword(this.email, this.password, this.name);
+      await this.authService.signUpWithEmailAndPassword(email, this.password, name);
       this.isLoading = false;
       this.toastService.success('Account created successfully.');
       this.router.navigate(['/']);
@@ -64,7 +73,7 @@ export class RegisterComponent {
     }
 
     if (code.includes('auth/invalid-email')) {
-      return 'Enter a valid email address.';
+      return 'Enter a valid Gmail address like name@gmail.com.';
     }
 
     if (code.includes('auth/network-request-failed')) {
@@ -84,5 +93,9 @@ export class RegisterComponent {
     }
 
     return 'Unable to create your account right now. Please try again.';
+  }
+
+  private isValidGmail(email: string): boolean {
+    return /^[A-Za-z0-9._%+-]+@gmail\.com$/i.test(email);
   }
 }
