@@ -8,7 +8,7 @@
       <div class="auth-error-banner">{{ errorMessage }}</div>
     }
 
-    <form class="auth-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <form class="auth-form" (ngSubmit)="onSubmit()" #loginForm="ngForm" autocomplete="off">
       <div class="form-group">
         <label for="email">Email Address</label>
         <input
@@ -20,6 +20,9 @@
           required
           email
           pattern="^[A-Za-z0-9._%+-]+@gmail\.com$"
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
         />
         @if (emailField.invalid && (emailField.dirty || emailField.touched)) {
           <p class="field-error">Enter a valid Gmail address like name&#64;gmail.com.</p>
@@ -34,6 +37,7 @@
           name="password"
           [(ngModel)]="password"
           required
+          autocomplete="new-password"
         />
       </div>
 

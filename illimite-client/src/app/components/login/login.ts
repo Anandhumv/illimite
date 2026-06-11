@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -12,7 +12,7 @@ import { ToastService } from '../../core/services/toast.service';
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   email = '';
   password = '';
   errorMessage = '';
@@ -23,6 +23,11 @@ export class LoginComponent {
     private authService: AuthService,
     private toastService: ToastService
   ) { }
+
+  ngOnInit(): void {
+    this.resetForm();
+    setTimeout(() => this.resetForm());
+  }
 
   async onSubmit() {
     const email = this.email.trim();
@@ -90,5 +95,12 @@ export class LoginComponent {
 
   private isValidEmail(email: string): boolean {
     return /^[A-Za-z0-9._%+-]+@gmail\.com$/i.test(email);
+  }
+
+  private resetForm(): void {
+    this.email = '';
+    this.password = '';
+    this.errorMessage = '';
+    this.isLoading = false;
   }
 }
