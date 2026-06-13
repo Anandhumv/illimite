@@ -165,6 +165,11 @@ export class App implements OnInit {
       return;
     }
 
+    if (!this.isValidGmail(email)) {
+      this.toastService.error('Enter a valid Gmail address like name@gmail.com.');
+      return;
+    }
+
     this.isPostingComment.set(true);
     this.commentService.createComment({ name, email, message }).subscribe({
       next: () => {
@@ -181,5 +186,9 @@ export class App implements OnInit {
         this.isPostingComment.set(false);
       }
     });
+  }
+
+  private isValidGmail(email: string): boolean {
+    return /^[A-Za-z0-9._%+-]+@gmail\.com$/i.test(email);
   }
 }

@@ -9,6 +9,7 @@ const { verifyFirebaseToken } = require('./middleware/auth');
 const { generateOrderId } = require('./utils/orderIdGenerator');
 
 const app = express();
+const GMAIL_ADDRESS_PATTERN = /^[A-Za-z0-9._%+-]+@gmail\.com$/i;
 
 app.use(cors());
 app.use(express.json());
@@ -58,6 +59,10 @@ app.post('/api/comments', async (req, res) => {
 
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Name, email, and message are required' });
+  }
+
+  if (!GMAIL_ADDRESS_PATTERN.test(email)) {
+    return res.status(400).json({ error: 'Enter a valid Gmail address like name@gmail.com' });
   }
 
   try {

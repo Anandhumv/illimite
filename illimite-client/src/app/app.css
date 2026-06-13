@@ -420,6 +420,19 @@
   outline: none;
 }
 
+.comment-form input.ng-invalid.ng-touched,
+.comment-form input.ng-invalid.ng-dirty,
+.comment-form textarea.ng-invalid.ng-touched,
+.comment-form textarea.ng-invalid.ng-dirty {
+  border-color: var(--error);
+}
+
+.comment-form__error {
+  color: var(--error);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
 .comment-form p {
   color: var(--muted);
   font-size: 0.92rem;

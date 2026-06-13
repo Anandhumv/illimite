@@ -160,7 +160,7 @@
         <h2 id="comment-heading">Leave a comment</h2>
         <span class="comment-section__rule"></span>
 
-        <form class="comment-form" (ngSubmit)="postComment()">
+        <form class="comment-form" (ngSubmit)="postComment()" #commentForm="ngForm">
           <input
             type="text"
             name="commentName"
@@ -168,6 +168,7 @@
             aria-label="Name"
             [ngModel]="commentName()"
             (ngModelChange)="commentName.set($event)"
+            required
           />
           <input
             type="email"
@@ -176,7 +177,17 @@
             aria-label="Email"
             [ngModel]="commentEmail()"
             (ngModelChange)="commentEmail.set($event)"
+            #commentEmailField="ngModel"
+            required
+            email
+            pattern="^[A-Za-z0-9._%+-]+@gmail\.com$"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
           />
+          @if (commentEmailField.invalid && (commentEmailField.dirty || commentEmailField.touched)) {
+            <span class="comment-form__error">Enter a valid Gmail address like name&#64;gmail.com.</span>
+          }
           <textarea
             name="commentMessage"
             rows="6"
@@ -184,10 +195,11 @@
             aria-label="Message"
             [ngModel]="commentMessage()"
             (ngModelChange)="commentMessage.set($event)"
+            required
           ></textarea>
 
           <p>Please note, comments must be approved before they are published</p>
-          <button type="submit" [disabled]="isPostingComment()">
+          <button type="submit" [disabled]="isPostingComment() || commentForm.invalid">
             {{ isPostingComment() ? 'Posting...' : 'Post Comment' }}
           </button>
         </form>
