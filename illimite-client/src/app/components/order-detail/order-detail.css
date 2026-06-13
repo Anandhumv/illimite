@@ -94,7 +94,7 @@
   background: var(--accent);
   border: 1px solid var(--accent);
   border-radius: 999px;
-  color: var(--surface);
+  color: var(--muted);
   font-size: 0.76rem;
   font-weight: 800;
   padding: 8px 12px;

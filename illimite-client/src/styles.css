@@ -1,22 +1,50 @@
 @import '@angular/material/prebuilt-themes/azure-blue.css';
 
 :root {
-  --page: #071742;
-  --card: rgba(7, 43, 107, 0.76);
-  --panel: rgba(26, 77, 148, 0.36);
-  --ink: #d5a25e;
-  --muted: #e2e8f0;
-  --body: #e2e8f0;
-  --line: #072b6b;
-  --accent: #d5a25e;
-  --accent-muted: #357cb6;
-  --taupe: #357cb6;
-  --soft-gray: #072b6b;
-  --surface: rgba(7, 43, 107, 0.9);
-  --button-text: #071742;
-  --error: #f18f7d;
-  --warm-glow: rgba(171, 109, 72, 0.2);
-  --shadow: rgba(0, 0, 0, 0.34);
+  /* --page: Main app/page background (Matte Pitch Black) */
+  --page: #0a0a0a;
+
+  /* --warm-glow: Soft radial background glow behind the page layout */
+  --warm-glow: radial-gradient(circle at 50% 20%, rgba(171, 109, 72, 0.15) 0%, rgba(10, 10, 10, 0) 70%);
+
+  /* --card: Product cards, category tiles, panels (Elevated soft dark gray) */
+  --card: #121212;
+
+  /* --panel: Image placeholders, cart thumbnails, secondary container boxes */
+  --panel: #1a1a1a;
+
+  /* --surface: Forms, auth cards, inputs, product detail purchase sheets */
+  --surface: #161616;
+
+  /* --line: Borders and dividers around cards, inputs, panels, tables */
+  --line: #242424;
+
+  /* --soft-gray: Comment form borders / subtle rule lines */
+  --soft-gray: #2d2d2d;
+
+  /* --shadow: Deep, rich drop shadows to give components separation */
+  --shadow: rgba(0, 0, 0, 0.65);
+
+  /* --ink: Important text, main titles, serif headings (Champagne Gold) */
+  --ink: #e3c193;
+
+  /* --body / --muted: Long descriptions, secondary text, readable labels */
+  --body: #c5c5c5;
+  --muted: #8e8e8e;
+
+  /* --accent: Primary solid gold fill for buttons, active state pills, logo marks */
+  --accent: #c29b62;
+
+  /* --accent-muted: Secondary buttons, tan backgrounds, subtle highlighted panels */
+  --accent-muted: #a3804e;
+
+  /* --button-text: Dark text inside the high-contrast gold buttons */
+  --button-text: #0a0a0a;
+
+  /* --error: Destructive states, validation errors, low stock warnings */
+  --error: #d9534f;
+
+  --taupe: #8e8e8e;
 }
 
 *, *::before, *::after {
@@ -31,8 +59,7 @@ html {
 
 body {
   background:
-    radial-gradient(circle at 18% 12%, var(--warm-glow), transparent 34rem),
-    linear-gradient(140deg, rgba(26, 77, 148, 0.18), transparent 42rem),
+    var(--warm-glow),
     var(--page);
   color: var(--body);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;

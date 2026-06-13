@@ -356,13 +356,13 @@ button:disabled {
 .flow-step--done {
   background: rgba(213, 162, 94, 0.12);
   border-color: rgba(213, 162, 94, 0.28);
-  color: var(--accent-muted);
+  color: var(--accent);
 }
 
 .flow-step--current {
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--surface);
+  color: var(--muted);
 }
 
 .flow-step--cancelled {
