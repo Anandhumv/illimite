@@ -83,38 +83,25 @@
   text-align: right;
 }
 
-.status-flow {
+.status-summary {
   border-top: 1px solid var(--line);
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  justify-content: flex-start;
   padding-top: 14px;
 }
 
-.flow-step {
-  background: var(--panel);
-  border: 1px solid var(--line);
+.status-pill {
+  background: var(--accent);
+  border: 1px solid var(--accent);
   border-radius: 999px;
-  color: var(--muted);
-  font-size: 0.7rem;
+  color: var(--surface);
+  font-size: 0.76rem;
   font-weight: 800;
-  padding: 6px 9px;
+  padding: 8px 12px;
   text-transform: uppercase;
 }
 
-.flow-step--done {
-  background: rgba(141, 90, 97, 0.12);
-  border-color: rgba(141, 90, 97, 0.28);
-  color: var(--accent-muted);
-}
-
-.flow-step--current {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--surface);
-}
-
-.flow-step--cancelled {
+.status-pill--cancelled {
   background: rgba(154, 63, 49, 0.12);
   border-color: rgba(154, 63, 49, 0.28);
   color: var(--error);

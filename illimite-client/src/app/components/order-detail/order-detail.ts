@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderService } from '../../core/services/order.service';
-import { Order, OrderStatus } from '../../core/models/order.model';
+import { Order } from '../../core/models/order.model';
 import { ToastService } from '../../core/services/toast.service';
 
 @Component({
@@ -20,7 +20,6 @@ export class OrderDetailComponent implements OnInit {
   readonly order = signal<Order | null>(null);
   readonly isLoading = signal(true);
   readonly message = signal('');
-  readonly activeOrderStatuses: OrderStatus[] = ['pending', 'paid', 'processing', 'shipped', 'delivered'];
 
   async ngOnInit(): Promise<void> {
     const orderId = this.route.snapshot.paramMap.get('id');
@@ -41,18 +40,4 @@ export class OrderDetailComponent implements OnInit {
     }
   }
 
-  statusStepState(order: Order, status: OrderStatus): 'done' | 'current' | 'pending' {
-    const currentIndex = this.activeOrderStatuses.indexOf(order.status);
-    const statusIndex = this.activeOrderStatuses.indexOf(status);
-
-    if (statusIndex < currentIndex) {
-      return 'done';
-    }
-
-    if (statusIndex === currentIndex) {
-      return 'current';
-    }
-
-    return 'pending';
-  }
 }
