@@ -287,10 +287,14 @@ select {
   background: var(--accent-muted);
 }
 
+.cart-button--sold-out,
 .cart-button:disabled,
 .buy-button:disabled {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--muted);
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: 0.4;
 }
 
 .wishlist-button {

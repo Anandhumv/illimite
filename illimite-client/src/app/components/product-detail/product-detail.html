@@ -104,19 +104,27 @@
           {{ product.stock > 0 ? 'In stock' : 'Out of stock' }}
         </strong>
 
-        <label class="quantity-control">
-          Quantity
-          <select [(ngModel)]="selectedQuantity">
-            @for (qty of quantityOptions; track qty) {
-              <option [value]="qty">{{ qty }}</option>
-            }
-          </select>
-        </label>
+        @if (!isSoldOut) {
+          <label class="quantity-control">
+            Quantity
+            <select [(ngModel)]="selectedQuantity">
+              @for (qty of quantityOptions; track qty) {
+                <option [value]="qty">{{ qty }}</option>
+              }
+            </select>
+          </label>
+        }
 
-        <button type="button" class="cart-button" (click)="addCurrentProductToCart()" [disabled]="product.stock === 0">
-          Add to cart
+        <button
+          type="button"
+          class="cart-button"
+          [class.cart-button--sold-out]="isSoldOut"
+          (click)="addCurrentProductToCart()"
+          [disabled]="isSoldOut"
+        >
+          {{ isSoldOut ? 'Sold Out' : 'Add to cart' }}
         </button>
-        <button type="button" class="buy-button" (click)="buyNow()" [disabled]="product.stock === 0">
+        <button type="button" class="buy-button" (click)="buyNow()" [disabled]="isSoldOut">
           Buy Now
         </button>
 

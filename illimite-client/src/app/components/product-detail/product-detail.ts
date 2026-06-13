@@ -6,7 +6,6 @@ import { ApiProductService } from '../../services/api-product.service';
 import { CartService } from '../../core/services/cart.service';
 import { Product } from '../../models/product.model';
 import { ToastService } from '../../core/services/toast.service';
-import { AuthService } from '../../core/services/auth.service';
 import { WishlistService } from '../../core/services/wishlist.service';
 
 @Component({
@@ -22,7 +21,6 @@ export class ProductDetailComponent implements OnInit {
   private readonly apiProductService = inject(ApiProductService);
   private readonly cartService = inject(CartService);
   private readonly toastService = inject(ToastService);
-  private readonly authService = inject(AuthService);
   private readonly wishlistService = inject(WishlistService);
 
   productSlug: string | null = null;
@@ -61,6 +59,10 @@ export class ProductDetailComponent implements OnInit {
       return;
     }
 
+    if (this.isSoldOut) {
+      return;
+    }
+
     try {
       await this.cartService.addToCart(this.product.id || this.product.slug, this.selectedQuantity, this.product.price);
       this.cartMessage = 'Added to cart.';
@@ -78,12 +80,6 @@ export class ProductDetailComponent implements OnInit {
 
   async addCurrentProductToWishlist(): Promise<void> {
     if (!this.product) {
-      return;
-    }
-
-    if (!this.authService.currentUser()) {
-      this.toastService.info('Please login or register before adding products to your wishlist.');
-      await this.router.navigate(['/login']);
       return;
     }
 
@@ -114,8 +110,16 @@ export class ProductDetailComponent implements OnInit {
   }
 
   get quantityOptions(): number[] {
-    const stock = this.product?.stock || 1;
+    const stock = this.product?.stock || 0;
+    if (stock <= 0) {
+      return [];
+    }
+
     return Array.from({ length: Math.min(stock, 10) }, (_, index) => index + 1);
+  }
+
+  get isSoldOut(): boolean {
+    return Number(this.product?.stock || 0) <= 0;
   }
 
   get unitPriceLabel(): string {

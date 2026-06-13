@@ -124,3 +124,12 @@
     font-weight: 700;
     padding: 8px 12px;
 }
+
+.product-card__cart--sold-out,
+.product-card__cart:disabled {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    cursor: not-allowed;
+    opacity: 0.4;
+}

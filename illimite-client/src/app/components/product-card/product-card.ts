@@ -1,8 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { Product } from '../../models/product.model';
-import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
 import { WishlistService } from '../../core/services/wishlist.service';
 
@@ -14,8 +13,6 @@ import { WishlistService } from '../../core/services/wishlist.service';
   styleUrl: './product-card.css'       // Ensure no '.component' chunk is here
 })
 export class ProductCard {
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
   private readonly wishlistService = inject(WishlistService);
 
@@ -25,18 +22,16 @@ export class ProductCard {
 
   onAddToCart(event: Event): void {
     event.stopPropagation();
+    if (this.isSoldOut()) {
+      return;
+    }
+
     this.addToCart.emit(this.product);
   }
 
   async onAddToWishlist(event: Event): Promise<void> {
     event.preventDefault();
     event.stopPropagation();
-
-    if (!this.authService.currentUser()) {
-      this.toastService.info('Please login or register before adding products to your wishlist.');
-      await this.router.navigate(['/login']);
-      return;
-    }
 
     try {
       await this.wishlistService.addToWishlist(this.product);
@@ -49,6 +44,10 @@ export class ProductCard {
 
   getProductInitial(product: Product): string {
     return (product.categoryName || product.name || 'P').charAt(0).toUpperCase();
+  }
+
+  isSoldOut(): boolean {
+    return Number(this.product.stock || 0) <= 0;
   }
 
   formatPrice(price: number): string {

@@ -26,7 +26,15 @@
         <h3 class="product-card__name">{{ product.name }}</h3>
         <div class="product-card__footer">
             <p class="product-card__price">{{ formatPrice(product.price) }}</p>
-            <button type="button" class="product-card__cart" (click)="onAddToCart($event)">Add</button>
+            <button
+                type="button"
+                class="product-card__cart"
+                [class.product-card__cart--sold-out]="isSoldOut()"
+                [disabled]="isSoldOut()"
+                (click)="onAddToCart($event)"
+            >
+                {{ isSoldOut() ? 'Sold Out' : 'Add' }}
+            </button>
         </div>
     </div>
 </div>
