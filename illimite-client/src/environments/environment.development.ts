@@ -1,5 +1,6 @@
 export const environment = {
   production: false,
+  apiBaseUrl: 'http://localhost:5000/api',
   firebase: {
     apiKey: 'AIzaSyBkuwnSnT9HDbwTR6EJhZBzs4QNJLQVvRc',
     authDomain: 'illimite-ec139.firebaseapp.com',

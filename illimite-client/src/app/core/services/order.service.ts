@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { AuthService } from './auth.service';
 import { CartService } from './cart.service';
 import { Order, OrderStatus } from '../models/order.model';
+import { environment } from '../../../environments/environment';
 
 interface CreateOrderResponse {
   success: boolean;
@@ -20,7 +21,7 @@ export class OrderService {
   private readonly http = inject(HttpClient);
   private readonly authService = inject(AuthService);
   private readonly cartService = inject(CartService);
-  private readonly apiBaseUrl = 'http://localhost:5000/api';
+  private readonly apiBaseUrl = environment.apiBaseUrl;
 
   async placeOrder(shippingAddress: string, paymentRef: string, customerName?: string): Promise<Order> {
     const user = this.authService.currentUser();

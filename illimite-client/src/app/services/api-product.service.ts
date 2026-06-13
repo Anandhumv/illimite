@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product.model';
+import { environment } from '../../environments/environment';
 
 export interface CategoryOption {
   id: string;
@@ -15,7 +16,7 @@ export interface CategoryOption {
 })
 export class ApiProductService {
   private readonly http = inject(HttpClient);
-  private readonly apiBaseUrl = 'http://localhost:5000/api';
+  private readonly apiBaseUrl = environment.apiBaseUrl;
 
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.apiBaseUrl}/products`);

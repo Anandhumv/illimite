@@ -4,6 +4,7 @@ import { Firestore, doc, getDoc, setDoc, serverTimestamp } from '@angular/fire/f
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from './auth.service';
 import { Cart, CartItem } from '../models/cart.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class CartService {
 
   readonly cartItems = signal<CartItem[]>([]);
   private readonly GUEST_CART_KEY = 'illimite_guest_cart';
-  private readonly apiBaseUrl = 'http://localhost:5000/api';
+  private readonly apiBaseUrl = environment.apiBaseUrl;
 
   constructor() {
     // Monitor auth state changes to load and sync cart

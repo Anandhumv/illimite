@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface StorefrontComment {
   id: string;
@@ -22,7 +23,7 @@ export interface CreateCommentPayload {
 })
 export class CommentService {
   private readonly http = inject(HttpClient);
-  private readonly apiBaseUrl = 'http://localhost:5000/api';
+  private readonly apiBaseUrl = environment.apiBaseUrl;
 
   createComment(payload: CreateCommentPayload): Observable<{ success: boolean; message: string }> {
     return this.http.post<{ success: boolean; message: string }>(`${this.apiBaseUrl}/comments`, payload);
