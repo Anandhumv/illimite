@@ -1,19 +1,22 @@
 @import '@angular/material/prebuilt-themes/azure-blue.css';
 
 :root {
-  --page: #efdfbb;
-  --card: #f6ebd1;
-  --panel: #e7d6a8;
-  --ink: #722f37;
-  --muted: #8d5a61;
-  --line: #e7d6a8;
-  --accent: #722f37;
-  --accent-muted: #8d5a61;
-  --taupe: #b6aa96;
-  --soft-gray: #d8d1c4;
-  --surface: #fff9ec;
-  --error: #9a3f31;
-  --shadow: rgba(114, 47, 55, 0.14);
+  --page: #071742;
+  --card: rgba(7, 43, 107, 0.76);
+  --panel: rgba(26, 77, 148, 0.36);
+  --ink: #d5a25e;
+  --muted: #e2e8f0;
+  --body: #e2e8f0;
+  --line: #072b6b;
+  --accent: #d5a25e;
+  --accent-muted: #357cb6;
+  --taupe: #357cb6;
+  --soft-gray: #072b6b;
+  --surface: rgba(7, 43, 107, 0.9);
+  --button-text: #071742;
+  --error: #f18f7d;
+  --warm-glow: rgba(171, 109, 72, 0.2);
+  --shadow: rgba(0, 0, 0, 0.34);
 }
 
 *, *::before, *::after {
@@ -28,9 +31,10 @@ html {
 
 body {
   background:
-    radial-gradient(circle at top left, rgba(246, 235, 209, 0.72), transparent 34rem),
+    radial-gradient(circle at 18% 12%, var(--warm-glow), transparent 34rem),
+    linear-gradient(140deg, rgba(26, 77, 148, 0.18), transparent 42rem),
     var(--page);
-  color: var(--ink);
+  color: var(--body);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 16px;
   line-height: 1.6;
@@ -57,6 +61,7 @@ h3,
 h4,
 h5,
 h6 {
+  color: var(--accent);
   font-weight: 700;
   line-height: 1.2;
 }

@@ -102,8 +102,8 @@
 }
 
 .status-pill--cancelled {
-  background: rgba(154, 63, 49, 0.12);
-  border-color: rgba(154, 63, 49, 0.28);
+  background: rgba(241, 143, 125, 0.12);
+  border-color: rgba(241, 143, 125, 0.28);
   color: var(--error);
 }
 

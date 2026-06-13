@@ -84,7 +84,7 @@
 
 .thumbnail-button--active {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(114, 47, 55, 0.16);
+  box-shadow: 0 0 0 2px rgba(213, 162, 94, 0.22);
 }
 
 .thumbnail-button img {

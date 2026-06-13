@@ -259,7 +259,7 @@ button:disabled {
 }
 
 .order-card {
-  background: rgba(246, 235, 209, 0.52);
+  background: rgba(26, 77, 148, 0.26);
   border: 1px solid var(--line);
   border-radius: 8px;
   display: grid;
@@ -354,8 +354,8 @@ button:disabled {
 }
 
 .flow-step--done {
-  background: rgba(141, 90, 97, 0.12);
-  border-color: rgba(141, 90, 97, 0.28);
+  background: rgba(213, 162, 94, 0.12);
+  border-color: rgba(213, 162, 94, 0.28);
   color: var(--accent-muted);
 }
 
@@ -366,8 +366,8 @@ button:disabled {
 }
 
 .flow-step--cancelled {
-  background: rgba(154, 63, 49, 0.12);
-  border-color: rgba(154, 63, 49, 0.28);
+  background: rgba(241, 143, 125, 0.12);
+  border-color: rgba(241, 143, 125, 0.28);
   color: var(--error);
 }
 
@@ -387,7 +387,7 @@ button:disabled {
 }
 
 .comment-card {
-  background: rgba(246, 235, 209, 0.52);
+  background: rgba(26, 77, 148, 0.26);
   border: 1px solid var(--line);
   border-radius: 8px;
   display: grid;

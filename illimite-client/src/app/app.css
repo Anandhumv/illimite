@@ -4,7 +4,7 @@
 
 .app-toolbar {
   align-items: center;
-  background: rgba(246, 235, 209, 0.94);
+  background: rgba(7, 23, 66, 0.94);
   border-bottom: 1px solid var(--line);
   color: var(--ink);
   display: grid;
@@ -29,7 +29,7 @@
   align-items: center;
   background: var(--accent);
   border-radius: 8px;
-  color: var(--surface);
+  color: var(--button-text);
   display: inline-flex;
   font-size: 0.72rem;
   font-weight: 800;
@@ -88,12 +88,12 @@
 .profile-menu__name {
   font-weight: 700;
   font-size: 0.95rem;
-  color: var(--ink);
+  color: var(--accent);
 }
 
 .profile-menu__email {
   font-size: 0.82rem;
-  color: var(--muted);
+  color: var(--body);
   word-break: break-all;
 }
 
@@ -121,10 +121,10 @@
 
 .toast {
   background: var(--accent);
-  border: 1px solid rgba(246, 235, 209, 0.26);
+  border: 1px solid rgba(213, 162, 94, 0.28);
   border-radius: 8px;
   box-shadow: 0 18px 42px var(--shadow);
-  color: var(--surface);
+  color: var(--button-text);
   cursor: pointer;
   font: inherit;
   font-weight: 800;
@@ -134,7 +134,8 @@
 }
 
 .toast--success {
-  background: var(--accent-muted);
+  background: var(--accent);
+  color: var(--button-text);
 }
 
 .toast--error {
@@ -143,7 +144,7 @@
 
 .toast--info {
   background: var(--taupe);
-  color: var(--ink);
+  color: var(--surface);
 }
 
 .route-page {
@@ -170,7 +171,7 @@
   align-items: center;
   background: transparent;
   border: 0;
-  color: var(--ink);
+  color: var(--body);
   cursor: pointer;
   display: grid;
   font: inherit;
@@ -186,7 +187,7 @@
   background: var(--card);
   border: 2px solid transparent;
   border-radius: 999px;
-  box-shadow: 0 16px 34px rgba(114, 47, 55, 0.1);
+  box-shadow: 0 16px 34px var(--shadow);
   display: block;
   overflow: hidden;
   transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
@@ -201,7 +202,7 @@
 }
 
 .category-tile__label {
-  color: var(--ink);
+  color: var(--body);
   font-size: 1rem;
   font-weight: 500;
 }
@@ -209,7 +210,7 @@
 .category-tile:hover .category-tile__image,
 .category-tile--active .category-tile__image {
   border-color: var(--accent);
-  box-shadow: 0 20px 44px rgba(114, 47, 55, 0.18);
+  box-shadow: 0 20px 44px rgba(213, 162, 94, 0.18);
   transform: translateY(-2px);
 }
 
@@ -243,7 +244,7 @@
 
 .motion-hero__shade {
   background:
-    linear-gradient(90deg, rgba(114, 47, 55, 0.34), rgba(114, 47, 55, 0.08)),
+    linear-gradient(90deg, rgba(7, 23, 66, 0.78), rgba(7, 43, 107, 0.18)),
     linear-gradient(0deg, rgba(0, 0, 0, 0.44), rgba(0, 0, 0, 0.02) 55%);
   inset: 0;
   position: absolute;
@@ -251,7 +252,7 @@
 
 .motion-hero__content {
   bottom: 28px;
-  color: var(--surface);
+  color: var(--body);
   left: clamp(22px, 4vw, 52px);
   max-width: min(980px, calc(100% - 44px));
   position: absolute;
@@ -266,7 +267,7 @@
 }
 
 .motion-hero__content h1 {
-  color: var(--surface);
+  color: var(--accent);
   font-size: clamp(2.4rem, 7vw, 6.3rem);
   font-weight: 500;
   line-height: 0.95;
@@ -307,21 +308,21 @@
   background: transparent;
   border: 1px solid var(--line);
   border-radius: 8px;
-  color: var(--ink);
+  color: var(--accent);
   cursor: pointer;
   font-weight: 800;
   padding: 10px 14px;
 }
 
 .catalog-toolbar h2 {
-  color: var(--ink);
+  color: var(--accent);
   font-size: 1rem;
   font-weight: 700;
   margin-bottom: 4px;
 }
 
 .catalog-toolbar p {
-  color: var(--muted);
+  color: var(--body);
   font-size: 0.9rem;
 }
 
@@ -333,7 +334,7 @@
 }
 
 .catalog-controls label {
-  color: var(--muted);
+  color: var(--accent-muted);
   display: grid;
   font-size: 0.78rem;
   font-weight: 700;
@@ -347,7 +348,7 @@
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 8px;
-  color: var(--ink);
+  color: var(--body);
   font: inherit;
   min-height: 44px;
   padding: 0 12px;
@@ -372,7 +373,7 @@
 }
 
 .comment-section h2 {
-  color: var(--ink);
+  color: var(--accent);
   font-size: 1.15rem;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -398,7 +399,7 @@
   background: var(--surface);
   border: 1px solid var(--soft-gray);
   border-radius: 0;
-  color: var(--ink);
+  color: var(--body);
   font: inherit;
   padding: 14px;
 }
@@ -434,16 +435,16 @@
 }
 
 .comment-form p {
-  color: var(--muted);
+  color: var(--body);
   font-size: 0.92rem;
   font-style: italic;
 }
 
 .comment-form button {
   background: transparent;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--accent);
   border-radius: 0;
-  color: var(--ink);
+  color: var(--accent);
   cursor: pointer;
   font: inherit;
   font-weight: 700;
@@ -452,8 +453,8 @@
 }
 
 .comment-form button:hover {
-  background: var(--ink);
-  color: var(--surface);
+  background: var(--accent);
+  color: var(--button-text);
 }
 
 @media (max-width: 760px) {

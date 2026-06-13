@@ -39,7 +39,7 @@
 
 .product-card__wishlist {
     align-items: center;
-    background: rgba(255, 250, 241, 0.92);
+    background: rgba(7, 43, 107, 0.9);
     border: 1px solid var(--line);
     border-radius: 999px;
     color: var(--accent);
