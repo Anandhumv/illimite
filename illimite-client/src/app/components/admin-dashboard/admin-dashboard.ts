@@ -48,13 +48,13 @@ export class AdminDashboardComponent implements OnInit {
   readonly adminMessage = signal('');
   readonly editingProductId = signal<string | null>(null);
   readonly activeSection = signal<AdminSection>('catalog');
-  readonly orderStatuses: OrderStatus[] = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'];
-  readonly activeOrderStatuses: OrderStatus[] = ['pending', 'paid', 'processing', 'shipped', 'delivered'];
+  readonly orderStatuses: OrderStatus[] = ['paid', 'shipped', 'delivered'];
+  readonly activeOrderStatuses: OrderStatus[] = ['paid', 'shipped', 'delivered'];
   readonly productForm = signal<ProductForm>(this.emptyProductForm());
   readonly lowStockCount = computed(() => this.products().filter(product => product.stock <= 5).length);
   readonly totalStock = computed(() => this.products().reduce((sum, product) => sum + product.stock, 0));
   readonly openOrders = computed(() =>
-    this.orders().filter(order => !['delivered', 'cancelled'].includes(order.status)).length
+    this.orders().filter(order => order.status !== 'delivered').length
   );
   readonly metrics = computed(() => [
     { label: 'Products', value: String(this.products().length) },
@@ -81,7 +81,10 @@ export class AdminDashboardComponent implements OnInit {
 
       this.products.set(products);
       this.categories.set(categories);
-      this.orders.set(orders);
+      this.orders.set(orders.map(order => ({
+        ...order,
+        status: this.normalizeOrderStatus(order.status)
+      })));
       await this.refreshComments(false);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unable to load admin data.';
@@ -211,11 +214,7 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
-  statusStepState(order: Order, status: OrderStatus): 'done' | 'current' | 'pending' | 'cancelled' {
-    if (order.status === 'cancelled') {
-      return status === 'cancelled' ? 'cancelled' : 'pending';
-    }
-
+  statusStepState(order: Order, status: OrderStatus): 'done' | 'current' | 'upcoming' {
     const currentIndex = this.activeOrderStatuses.indexOf(order.status);
     const statusIndex = this.activeOrderStatuses.indexOf(status);
 
@@ -227,7 +226,7 @@ export class AdminDashboardComponent implements OnInit {
       return 'current';
     }
 
-    return 'pending';
+    return 'upcoming';
   }
 
   shortId(value: string): string {
@@ -280,5 +279,11 @@ export class AdminDashboardComponent implements OnInit {
       .trim()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
+  }
+
+  private normalizeOrderStatus(status: string): OrderStatus {
+    return ['paid', 'shipped', 'delivered'].includes(status)
+      ? status as OrderStatus
+      : 'paid';
   }
 }

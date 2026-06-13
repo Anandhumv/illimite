@@ -6,7 +6,7 @@ export interface OrderItem {
   price: number;
 }
 
-export type OrderStatus = 'pending' | 'paid' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'paid' | 'shipped' | 'delivered';
 
 export interface Order {
   id: string;

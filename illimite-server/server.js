@@ -10,6 +10,7 @@ const { generateOrderId } = require('./utils/orderIdGenerator');
 
 const app = express();
 const GMAIL_ADDRESS_PATTERN = /^[A-Za-z0-9._%+-]+@gmail\.com$/i;
+const ORDER_STATUSES = ['paid', 'shipped', 'delivered'];
 
 app.use(cors());
 app.use(express.json());
@@ -50,6 +51,10 @@ async function requireAdmin(req, res, next) {
     console.error('[Server] Error checking admin role:', err.message);
     return res.status(500).json({ error: 'Failed to verify admin role', details: err.message });
   }
+}
+
+function normalizeOrderStatus(status) {
+  return ORDER_STATUSES.includes(status) ? status : 'paid';
 }
 
 app.post('/api/comments', async (req, res) => {
@@ -238,7 +243,10 @@ app.get('/api/orders', verifyFirebaseToken, async (req, res) => {
       .get();
 
     const orders = snapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .map(doc => {
+        const order = { id: doc.id, ...doc.data() };
+        return { ...order, status: normalizeOrderStatus(order.status) };
+      })
       .sort((first, second) => new Date(second.createdAt || 0) - new Date(first.createdAt || 0));
 
     res.status(200).json(orders);
@@ -251,7 +259,10 @@ app.get('/api/orders', verifyFirebaseToken, async (req, res) => {
 app.get('/api/admin/orders', verifyFirebaseToken, requireAdmin, async (req, res) => {
   try {
     const snapshot = await db.collection('orders').orderBy('createdAt', 'desc').get();
-    const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const orders = snapshot.docs.map(doc => {
+      const order = { id: doc.id, ...doc.data() };
+      return { ...order, status: normalizeOrderStatus(order.status) };
+    });
     res.status(200).json(orders);
   } catch (err) {
     console.error('[Server] Error fetching admin orders:', err.message);
@@ -267,7 +278,11 @@ app.get('/api/orders/:id', verifyFirebaseToken, async (req, res) => {
       return res.status(404).json({ error: 'Order not found' });
     }
 
-    const order = { id: orderDoc.id, ...orderDoc.data() };
+    const order = {
+      id: orderDoc.id,
+      ...orderDoc.data(),
+      status: normalizeOrderStatus(orderDoc.data().status)
+    };
     const userDoc = await db.collection('users').doc(req.user.uid).get();
     const role = userDoc.exists ? userDoc.data().role : 'customer';
 
@@ -349,7 +364,7 @@ app.post('/api/orders', verifyFirebaseToken, async (req, res) => {
         customerName,
         items: productUpdates.map(update => update.orderItem),
         total,
-        status: 'pending',
+        status: 'paid',
         shippingAddress,
         paymentRef,
         createdAt: new Date().toISOString(),
@@ -380,7 +395,7 @@ app.post('/api/orders', verifyFirebaseToken, async (req, res) => {
 
 app.patch('/api/orders/:id/status', verifyFirebaseToken, requireAdmin, async (req, res) => {
   const status = req.body?.status;
-  const allowedStatuses = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'];
+  const allowedStatuses = ORDER_STATUSES;
 
   if (!status) {
     return res.status(400).json({ error: 'Order status is required' });

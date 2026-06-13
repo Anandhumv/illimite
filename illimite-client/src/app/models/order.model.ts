@@ -11,6 +11,6 @@ export interface Order {
   userId: string;
   items: CartItem[];
   totalAmount: number;
-  status: 'pending' | 'completed' | 'shipped';
+  status: 'paid' | 'shipped' | 'delivered';
   createdAt: Date;
 }
