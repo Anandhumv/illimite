@@ -1,5 +1,15 @@
 <div class="product-card" [routerLink]="['/products', product.slug]">
     <div class="product-card__image-container">
+        <button
+            type="button"
+            class="product-card__wishlist"
+            aria-label="Add to wishlist"
+            title="Add to wishlist"
+            (click)="onAddToWishlist($event)"
+        >
+            ♥
+        </button>
+
         @if (product.imageUrl) {
         <img [src]="product.imageUrl" [alt]="product.name" class="product-card__image" #cardImage
             (error)="cardImage.style.display = 'none'; fallbackPlaceholder.style.display = 'flex'" />
