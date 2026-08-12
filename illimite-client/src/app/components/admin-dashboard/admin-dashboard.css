@@ -173,7 +173,8 @@
 
 .inventory-category__heading h3 {
   color: var(--ink);
-  font-size: 1rem;
+  font-size: 1.22rem;
+  font-weight: 900;
 }
 
 .inventory-category__heading span {
