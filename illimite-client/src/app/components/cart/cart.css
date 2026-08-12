@@ -35,6 +35,11 @@
   padding: 18px;
 }
 
+.empty-panel {
+  display: grid;
+  gap: 10px;
+}
+
 .cart-item {
   align-items: center;
   display: grid;
@@ -130,6 +135,8 @@ input {
 .empty-panel a {
   background: var(--accent);
   color: var(--surface);
+  display: inline-flex;
+  justify-self: start;
   padding: 13px 16px;
 }
 

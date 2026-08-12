@@ -179,25 +179,57 @@
             </div>
           </div>
 
+          <div class="inventory-toolbar">
+            <label class="search-control">
+              Search products
+              <input
+                type="search"
+                [ngModel]="inventorySearchTerm()"
+                (ngModelChange)="inventorySearchTerm.set($event)"
+                name="inventorySearch"
+                placeholder="Search by name, category, or product ID"
+              />
+            </label>
+            <span class="inventory-count">
+              Showing {{ filteredInventoryCount() }} of {{ products().length }}
+            </span>
+            @if (inventorySearchTerm()) {
+              <button type="button" class="ghost-action" (click)="clearInventorySearch()">Clear</button>
+            }
+          </div>
+
           @if (products().length === 0) {
             <div class="admin-empty">No products available.</div>
+          } @else if (filteredInventoryProducts().length === 0) {
+            <div class="admin-empty">No products match your search.</div>
           } @else {
-            <div class="admin-table product-table">
-              <div>Product</div>
-              <div>Category</div>
-              <div>Stock</div>
-              <div>Actions</div>
-              @for (product of products(); track product.id) {
-                <div>
-                  <strong>{{ product.name }}</strong>
-                  <span>{{ product.id }}</span>
-                </div>
-                <div>{{ product.categoryName }}</div>
-                <div [class.low-stock]="product.stock <= 5">{{ product.stock }}</div>
-                <div class="row-actions">
-                  <button type="button" class="ghost-action" (click)="editProduct(product)">Edit</button>
-                  <button type="button" class="danger-action" (click)="deleteProduct(product)">Delete</button>
-                </div>
+            <div class="inventory-category-list">
+              @for (group of inventoryCategoryGroups(); track group.categoryId) {
+                <section class="inventory-category">
+                  <div class="inventory-category__heading">
+                    <h3>{{ group.categoryName }}</h3>
+                    <span>{{ group.products.length }} {{ group.products.length === 1 ? 'product' : 'products' }}</span>
+                  </div>
+
+                  <div class="admin-table product-table">
+                    <div>Product</div>
+                    <div>Category</div>
+                    <div>Stock</div>
+                    <div>Actions</div>
+                    @for (product of group.products; track product.id) {
+                      <div>
+                        <strong>{{ product.name }}</strong>
+                        <span>{{ product.id }}</span>
+                      </div>
+                      <div>{{ product.categoryName }}</div>
+                      <div [class.low-stock]="product.stock <= 5">{{ product.stock }}</div>
+                      <div class="row-actions">
+                        <button type="button" class="ghost-action" (click)="editProduct(product)">Edit</button>
+                        <button type="button" class="danger-action" (click)="deleteProduct(product)">Delete</button>
+                      </div>
+                    }
+                  </div>
+                </section>
               }
             </div>
           }

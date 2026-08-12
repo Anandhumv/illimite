@@ -22,6 +22,12 @@ interface ProductForm {
   stock: number;
 }
 
+interface InventoryCategoryGroup {
+  categoryId: string;
+  categoryName: string;
+  products: Product[];
+}
+
 type AdminSection = 'catalog' | 'inventory' | 'fulfillment' | 'comments';
 
 @Component({
@@ -48,6 +54,7 @@ export class AdminDashboardComponent implements OnInit {
   readonly adminMessage = signal('');
   readonly editingProductId = signal<string | null>(null);
   readonly activeSection = signal<AdminSection>('catalog');
+  readonly inventorySearchTerm = signal('');
   readonly orderStatuses: OrderStatus[] = ['paid', 'shipped', 'delivered'];
   readonly activeOrderStatuses: OrderStatus[] = ['paid', 'shipped', 'delivered'];
   readonly productForm = signal<ProductForm>(this.emptyProductForm());
@@ -63,6 +70,51 @@ export class AdminDashboardComponent implements OnInit {
     { label: 'Open orders', value: String(this.openOrders()) },
     { label: 'Comments', value: String(this.comments().length) }
   ]);
+  readonly filteredInventoryProducts = computed(() => {
+    const query = this.inventorySearchTerm().trim().toLowerCase();
+    const sortedProducts = [...this.products()].sort((first, second) =>
+      first.name.localeCompare(second.name)
+    );
+
+    if (!query) {
+      return sortedProducts;
+    }
+
+    return sortedProducts.filter((product) => {
+      const searchableText = [
+        product.name,
+        product.id,
+        product.slug,
+        product.categoryName,
+        product.description
+      ].join(' ').toLowerCase();
+
+      return searchableText.includes(query);
+    });
+  });
+  readonly inventoryCategoryGroups = computed<InventoryCategoryGroup[]>(() => {
+    const groups = new Map<string, InventoryCategoryGroup>();
+
+    this.filteredInventoryProducts().forEach((product) => {
+      const categoryId = product.categoryId || 'uncategorized';
+      const categoryName = product.categoryName || 'Uncategorized';
+
+      if (!groups.has(categoryId)) {
+        groups.set(categoryId, {
+          categoryId,
+          categoryName,
+          products: []
+        });
+      }
+
+      groups.get(categoryId)?.products.push(product);
+    });
+
+    return [...groups.values()].sort((first, second) =>
+      first.categoryName.localeCompare(second.categoryName)
+    );
+  });
+  readonly filteredInventoryCount = computed(() => this.filteredInventoryProducts().length);
 
   async ngOnInit(): Promise<void> {
     await this.loadAdminData();
@@ -240,6 +292,10 @@ export class AdminDashboardComponent implements OnInit {
     if (section === 'comments') {
       this.refreshComments(false);
     }
+  }
+
+  clearInventorySearch(): void {
+    this.inventorySearchTerm.set('');
   }
 
   async refreshComments(showToast = true): Promise<void> {
